@@ -21,7 +21,7 @@ Sistema de gestión de inventario compuesto por una Web API, una app de escritor
 | `Inventario.Desktop` | .NET MAUI App | Cliente de escritorio/móvil |
 | `Inventario.UnitTests` | MSTest | Pruebas unitarias de `Core` e `Infrastructure` |
 | `Inventario.IntegrationTests` | MSTest | Pruebas de integración contra `Inventario.Api` |
-| `Inventario.Web` *(próximamente)* | Blazor Web App | Cliente web |
+| `Inventario.Web` | Blazor Web App | Cliente web |
 
 ### Referencias entre proyectos
 
@@ -43,7 +43,7 @@ Inventario.IntegrationTests ► Inventario.Api
 | `Inventario.Api` | `Microsoft.AspNetCore.Authentication.JwtBearer` |
 | `Inventario.Infrastructure` | `Microsoft.EntityFrameworkCore.SqlServer`, `Microsoft.EntityFrameworkCore.Tools`, `Microsoft.EntityFrameworkCore.Design`, `QuestPDF` |
 | `Inventario.UnitTests` | `Moq`, `FluentAssertions` |
-| `Inventario.Web` *(cuando se cree)* | `Microsoft.AspNetCore.Components.WebAssembly` (si es Blazor WASM) |
+| `Inventario.Web` | `Microsoft.AspNetCore.Components.WebAssembly` |
 
 ## Cómo correrlo
 
