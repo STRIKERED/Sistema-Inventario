@@ -1,0 +1,26 @@
+## .NET
+bin/
+obj/
+*.user
+
+## Visual Studio
+.vs/
+*.suo
+*.dbmdl
+*.jfm
+
+## MAUI / Mobile
+*.ap_
+*.apk
+*.appx
+*.appxbundle
+*.appxupload
+*.msix
+*.ipa
+
+## Claude Code local settings
+.claude/
+
+## OS
+Thumbs.db
+.DS_Store

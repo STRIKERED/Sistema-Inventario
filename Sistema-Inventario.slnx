@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="Inventario.Api/Inventario.Api.csproj" />
+  <Project Path="Inventario.Core/Inventario.Core.csproj" />
+  <Project Path="Inventario.Desktop/Inventario.Desktop.csproj" />
+  <Project Path="Inventario.Infrastructure/Inventario.Infrastructure.csproj" />
+  <Project Path="Inventario.IntegrationTests/Inventario.IntegrationTests.csproj" />
+  <Project Path="Inventario.UnitTests/Inventario.UnitTests.csproj" />
+</Solution>
