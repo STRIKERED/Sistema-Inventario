@@ -45,8 +45,6 @@ Inventario.IntegrationTests ► Inventario.Api
 | `Inventario.UnitTests` | `Moq`, `FluentAssertions` |
 | `Inventario.Web` *(cuando se cree)* | `Microsoft.AspNetCore.Components.WebAssembly` (si es Blazor WASM) |
 
-> **Nota de licencia:** se fijó `FluentAssertions` en `7.2.2` a propósito — a partir de la v8 el paquete requiere licencia comercial para uso en empresas. La serie 7.x es la última sin esa restricción. Evitar actualizar a v8+ sin antes revisar [xceed.com/fluent-assertions](https://xceed.com/products/unit-testing/fluent-assertions/).
-
 ## Cómo correrlo
 
 1. Configura la cadena de conexión en `Inventario.Api/appsettings.json` (`ConnectionStrings:DefaultConnection`) apuntando a tu instancia de SQL Server.
