@@ -5,16 +5,22 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:views="clr-namespace:Inventario.Desktop.Views"
     FlyoutBehavior="Flyout"
-    Title="Inventario POS">
+    Title="Sistema de Inventario">
 
     <Shell.FlyoutHeader>
         <Grid Padding="16" HeightRequest="80" BackgroundColor="{AppThemeBinding Light=#512BD4, Dark=#2B0B98}">
-            <Label x:Name="EncabezadoUsuarioLabel" Text="Inventario POS" TextColor="White" FontAttributes="Bold" FontSize="18" VerticalOptions="Center" />
+            <Label x:Name="EncabezadoUsuarioLabel" Text="Sistema de Inventario" TextColor="White" FontAttributes="Bold" FontSize="18" VerticalOptions="Center" />
         </Grid>
     </Shell.FlyoutHeader>
 
     <Shell.FlyoutFooter>
-        <Button Text="Cerrar sesión" Margin="12" Clicked="OnCerrarSesionClicked" />
+        <VerticalStackLayout Padding="12" Spacing="8">
+            <Button Text="Cerrar sesión" Clicked="OnCerrarSesionClicked" />
+            <VerticalStackLayout Spacing="0" HorizontalOptions="Center" Margin="0,4,0,0">
+                <Label Text="Creador: Haroldo Mata Velázquez" FontSize="11" Opacity="0.6" HorizontalTextAlignment="Center" />
+                <Label x:Name="VersionFooterLabel" FontSize="10" Opacity="0.5" HorizontalTextAlignment="Center" />
+            </VerticalStackLayout>
+        </VerticalStackLayout>
     </Shell.FlyoutFooter>
 
     <!-- Pantalla de login: sin flyout ni barra de navegación, para que se vea a pantalla completa. -->

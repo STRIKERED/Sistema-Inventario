@@ -11,6 +11,8 @@ public partial class LoginPage : ContentPage
         InitializeComponent();
         _viewModel = viewModel;
         BindingContext = _viewModel;
+
+        VersionLabel.Text = $"Versión {AppInfo.Current.VersionString}";
     }
 
     protected override void OnAppearing()
