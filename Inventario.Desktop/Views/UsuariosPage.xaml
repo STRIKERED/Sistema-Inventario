@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Inventario.Desktop.ViewModels"
+             xmlns:dtos="clr-namespace:Inventario.Core.Dtos;assembly=Inventario.Core"
+             x:Class="Inventario.Desktop.Views.UsuariosPage"
+             x:DataType="vm:UsuariosViewModel"
+             Title="Usuarios">
+
+    <Grid Padding="16" RowDefinitions="Auto,*">
+
+        <HorizontalStackLayout Grid.Row="0" Spacing="12" Margin="0,0,0,12">
+            <Label Text="Usuarios" FontSize="22" FontAttributes="Bold" VerticalOptions="Center" />
+            <Button Text="Nuevo usuario" Command="{Binding MostrarFormularioCommand}"
+                    IsVisible="{Binding MostrarFormularioNuevoUsuario, Converter={StaticResource InversoConverter}}" />
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+        </HorizontalStackLayout>
+
+        <!-- Lista de usuarios existentes -->
+        <CollectionView Grid.Row="1" ItemsSource="{Binding Usuarios}"
+                         IsVisible="{Binding MostrarFormularioNuevoUsuario, Converter={StaticResource InversoConverter}}">
+            <CollectionView.EmptyView>
+                <Label Text="No hay usuarios registrados." Opacity="0.6" Margin="8" />
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="dtos:UsuarioDto">
+                    <Border Padding="12" Margin="0,4" StrokeShape="RoundRectangle 8">
+                        <Grid ColumnDefinitions="*,Auto,Auto" RowDefinitions="Auto,Auto">
+                            <Label Grid.Row="0" Grid.Column="0" Text="{Binding NombreUsuario}" FontAttributes="Bold" FontSize="16" />
+                            <Label Grid.Row="1" Grid.Column="0" Opacity="0.7">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="{Binding NombreCompleto}" />
+                                        <Span Text=" — " />
+                                        <Span Text="{Binding Rol}" />
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+
+                            <Label Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Text="Activo" VerticalOptions="Center" />
+                            <Switch Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" IsToggled="{Binding Activo, Mode=OneWay}"
+                                    Toggled="OnActivoToggled" VerticalOptions="Center" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Formulario de nuevo usuario -->
+        <ScrollView Grid.Row="1" IsVisible="{Binding MostrarFormularioNuevoUsuario}">
+            <VerticalStackLayout Spacing="12" MaximumWidthRequest="480">
+                <Label Text="Nuevo usuario" FontSize="20" FontAttributes="Bold" />
+
+                <Entry Placeholder="Usuario (para iniciar sesión)" Text="{Binding NombreUsuario}" />
+                <Entry Placeholder="Contraseña (mínimo 6 caracteres)" Text="{Binding Password}" IsPassword="True" />
+                <Entry Placeholder="Nombre completo" Text="{Binding NombreCompleto}" />
+
+                <Label Text="Rol" FontAttributes="Bold" Margin="0,8,0,0" />
+                <Picker ItemsSource="{Binding Roles}" SelectedItem="{Binding RolSeleccionado}" Title="Selecciona un rol" />
+
+                <Label Text="Sucursal (opcional)" FontAttributes="Bold" Margin="0,8,0,0" />
+                <Picker ItemsSource="{Binding Sucursales}" ItemDisplayBinding="{Binding Nombre}"
+                        SelectedItem="{Binding SucursalSeleccionada}" Title="Sin sucursal fija" />
+
+                <HorizontalStackLayout Spacing="12" Margin="0,12,0,0">
+                    <Button Text="Guardar usuario" Command="{Binding GuardarUsuarioCommand}" BackgroundColor="ForestGreen" TextColor="White" />
+                    <Button Text="Cancelar" Command="{Binding CancelarFormularioCommand}" />
+                </HorizontalStackLayout>
+
+                <Label Text="{Binding MensajeError}"
+                       IsVisible="{Binding MensajeError, Converter={StaticResource StringNoVacioConverter}}"
+                       TextColor="Red" />
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
+
+</ContentPage>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Inventario.Desktop.ViewModels"
+             xmlns:models="clr-namespace:Inventario.Desktop.Models"
+             xmlns:controls="clr-namespace:Inventario.Desktop.Controls"
+             x:Class="Inventario.Desktop.Views.VentaPage"
+             x:DataType="vm:VentaViewModel"
+             Title="Punto de venta">
+
+    <Grid Padding="16" RowSpacing="12" ColumnSpacing="16"
+          RowDefinitions="Auto,Auto,*,Auto" ColumnDefinitions="2*,1*">
+
+        <!-- Selección de caja / estado del corte -->
+        <HorizontalStackLayout Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Spacing="12" VerticalOptions="Center">
+            <Label Text="Caja:" VerticalOptions="Center" />
+            <Picker ItemsSource="{Binding Cajas}" ItemDisplayBinding="{Binding Nombre}"
+                    SelectedItem="{Binding CajaSeleccionada}" WidthRequest="200" />
+            <Label Text="Sin corte de caja abierto — abre uno en la pestaña Caja"
+                   TextColor="OrangeRed" IsVisible="{Binding CorteAbierto, Converter={StaticResource EsNuloConverter}}" />
+            <Label Text="{Binding CorteAbierto.Id, StringFormat='Corte abierto #{0}'}"
+                   TextColor="Green" IsVisible="{Binding CorteAbierto, Converter={StaticResource NoEsNuloConverter}}" />
+        </HorizontalStackLayout>
+
+        <!-- Captura por lector de código de barras -->
+        <controls:EntradaCodigoBarras Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                       ComandoEscaneo="{Binding AgregarPorCodigoCommand}" />
+
+        <!-- Carrito -->
+        <CollectionView Grid.Row="2" Grid.Column="0" ItemsSource="{Binding Carrito}">
+            <CollectionView.EmptyView>
+                <Label Text="Escanea o captura un producto para empezar la venta." Opacity="0.6" Margin="8" />
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:LineaVentaItem">
+                    <Grid Padding="8" ColumnSpacing="8" ColumnDefinitions="3*,Auto,Auto,Auto,Auto,Auto">
+                        <Label Text="{Binding ProductoNombre}" VerticalOptions="Center" LineBreakMode="TailTruncation" />
+                        <Stepper Grid.Column="1" Minimum="1" Maximum="9999" Increment="1" Value="{Binding Cantidad}" />
+                        <Label Grid.Column="2" Text="{Binding Cantidad}" VerticalOptions="Center" WidthRequest="30" />
+                        <Entry Grid.Column="3" Text="{Binding DescuentoUnitario}" Keyboard="Numeric" WidthRequest="70" Placeholder="Desc." />
+                        <Label Grid.Column="4" Text="{Binding Importe, StringFormat='{0:C2}'}" VerticalOptions="Center" WidthRequest="90" />
+                        <Button Grid.Column="5" Text="✕" WidthRequest="40"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.QuitarLineaCommand}"
+                                CommandParameter="{Binding .}" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Resumen y cobro -->
+        <Border Grid.Row="2" Grid.Column="1" Padding="16" StrokeShape="RoundRectangle 8" VerticalOptions="Start">
+            <VerticalStackLayout Spacing="10">
+                <Label Text="Resumen" FontAttributes="Bold" FontSize="18" />
+
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Text="Subtotal" />
+                    <Label Grid.Column="1" Text="{Binding SubtotalEstimado, StringFormat='{0:C2}'}" />
+                </Grid>
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Text="Descuento" />
+                    <Label Grid.Column="1" Text="{Binding DescuentoEstimado, StringFormat='{0:C2}'}" />
+                </Grid>
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Text="IVA (estimado)" />
+                    <Label Grid.Column="1" Text="{Binding ImpuestosEstimados, StringFormat='{0:C2}'}" />
+                </Grid>
+                <BoxView HeightRequest="1" Color="Gray" />
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Text="Total" FontAttributes="Bold" FontSize="20" />
+                    <Label Grid.Column="1" Text="{Binding TotalEstimado, StringFormat='{0:C2}'}" FontAttributes="Bold" FontSize="20" />
+                </Grid>
+
+                <Label Text="Método de pago" Margin="0,8,0,0" />
+                <Picker ItemsSource="{Binding MetodosPago}" SelectedItem="{Binding MetodoPago}" />
+
+                <Button Text="Cobrar" Command="{Binding CobrarCommand}" Margin="0,16,0,0"
+                        BackgroundColor="ForestGreen" TextColor="White" />
+
+                <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+                <Label Text="{Binding MensajeError}"
+                       IsVisible="{Binding MensajeError, Converter={StaticResource StringNoVacioConverter}}"
+                       TextColor="Red" />
+            </VerticalStackLayout>
+        </Border>
+
+    </Grid>
+
+</ContentPage>

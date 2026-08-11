@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Inventario.Desktop.Controls.EntradaCodigoBarras">
+
+    <Border StrokeShape="RoundRectangle 8" Padding="4" StrokeThickness="1">
+        <Entry x:Name="EntryCodigo"
+               Placeholder="Escanea o escribe un código de barras y presiona Enter"
+               ReturnType="Search"
+               FontSize="18"
+               TextChanged="OnTextChanged"
+               Completed="OnCompleted" />
+    </Border>
+
+</ContentView>

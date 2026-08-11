@@ -9,4 +9,8 @@ public interface IUsuarioRepository
     Task<IEnumerable<Usuario>> ObtenerTodosAsync();
     Task AgregarAsync(Usuario usuario);
     Task ActualizarAsync(Usuario usuario);
+
+    /// <summary>true si existe al menos un usuario en el sistema (sin importar Activo). Se usa para
+    /// decidir si habilitar el registro del primer Administrador sin autenticación.</summary>
+    Task<bool> ExisteAlgunoAsync();
 }
