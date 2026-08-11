@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Inventario.Desktop.ViewModels"
+             x:Class="Inventario.Desktop.Views.LoginPage"
+             x:DataType="vm:LoginViewModel"
+             Title="Iniciar sesión">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="40" Spacing="16" MaximumWidthRequest="380" HorizontalOptions="Center" VerticalOptions="Center">
+
+            <Label Text="Inventario POS" FontSize="28" FontAttributes="Bold" HorizontalOptions="Center" />
+            <Label Text="Inicia sesión para continuar" FontSize="14" Opacity="0.7" HorizontalOptions="Center" Margin="0,0,0,16"
+                   IsVisible="{Binding RequiereConfiguracionInicial, Converter={StaticResource InversoConverter}}" />
+
+            <!-- Primer arranque: todavía no hay ningún usuario en el sistema -->
+            <VerticalStackLayout Spacing="12" IsVisible="{Binding RequiereConfiguracionInicial}">
+                <Label Text="Todavía no hay usuarios registrados." FontAttributes="Bold" HorizontalTextAlignment="Center" />
+                <Label Text="Crea la cuenta de Administrador para empezar a usar el sistema." FontSize="13" Opacity="0.7"
+                       HorizontalTextAlignment="Center" Margin="0,0,0,8" />
+                <Entry Placeholder="Usuario" Text="{Binding NombreUsuario}" ReturnType="Next" />
+                <Entry Placeholder="Nombre completo (opcional)" Text="{Binding NombreCompleto}" ReturnType="Next" />
+                <Entry Placeholder="Contraseña (mínimo 6 caracteres)" Text="{Binding Password}" IsPassword="True" ReturnType="Next" />
+                <Entry Placeholder="Confirmar contraseña" Text="{Binding ConfirmarPassword}" IsPassword="True" ReturnType="Done"
+                       Completed="OnConfirmarPasswordCompleted" />
+                <Button Text="Crear administrador e ingresar" Command="{Binding CrearAdministradorInicialCommand}"
+                        IsEnabled="{Binding IsBusy, Converter={StaticResource InversoConverter}}" BackgroundColor="ForestGreen" TextColor="White" />
+            </VerticalStackLayout>
+
+            <!-- Login normal -->
+            <VerticalStackLayout Spacing="12" IsVisible="{Binding MostrarLoginNormal}">
+                <Entry Placeholder="Usuario" Text="{Binding NombreUsuario}" ReturnType="Next" />
+                <Entry Placeholder="Contraseña" Text="{Binding Password}" IsPassword="True" ReturnType="Done"
+                       Completed="OnPasswordCompleted" />
+                <Button Text="Ingresar" Command="{Binding IniciarSesionCommand}" IsEnabled="{Binding IsBusy, Converter={StaticResource InversoConverter}}" />
+            </VerticalStackLayout>
+
+            <!-- Elegir sucursal (solo si el usuario no trae una fija, p. ej. Administrador) -->
+            <VerticalStackLayout Spacing="12" IsVisible="{Binding RequiereSeleccionSucursal}">
+                <Label Text="Elige la sucursal con la que vas a operar:" />
+                <Picker ItemsSource="{Binding Sucursales}" ItemDisplayBinding="{Binding Nombre}"
+                        SelectedItem="{Binding SucursalSeleccionada}" Title="Sucursal" />
+                <Button Text="Continuar" Command="{Binding ConfirmarSucursalCommand}" IsEnabled="{Binding IsBusy, Converter={StaticResource InversoConverter}}" />
+            </VerticalStackLayout>
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" HorizontalOptions="Center" />
+
+            <Label Text="{Binding MensajeError}"
+                   IsVisible="{Binding MensajeError, Converter={StaticResource StringNoVacioConverter}}"
+                   TextColor="Red" HorizontalTextAlignment="Center" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

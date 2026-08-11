@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Inventario.Desktop.ViewModels"
+             xmlns:dtos="clr-namespace:Inventario.Core.Dtos;assembly=Inventario.Core"
+             x:Class="Inventario.Desktop.Views.CajaPage"
+             x:DataType="vm:CajaViewModel"
+             Title="Caja">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="16" MaximumWidthRequest="520">
+
+            <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                <Label Text="Caja:" VerticalOptions="Center" />
+                <Picker ItemsSource="{Binding Cajas}" ItemDisplayBinding="{Binding Nombre}"
+                        SelectedItem="{Binding CajaSeleccionada}" WidthRequest="220" />
+            </HorizontalStackLayout>
+
+            <!-- Sin corte abierto: formulario de apertura -->
+            <Border Padding="16" StrokeShape="RoundRectangle 8" IsVisible="{Binding HayCorteAbierto, Converter={StaticResource InversoConverter}}">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Abrir corte de caja" FontAttributes="Bold" FontSize="18" />
+                    <Label Text="Monto inicial (fondo de caja):" />
+                    <Entry Text="{Binding MontoInicial}" Keyboard="Numeric" />
+                    <Button Text="Abrir corte" Command="{Binding AbrirCorteCommand}" BackgroundColor="ForestGreen" TextColor="White" />
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Con corte abierto: resumen del turno y formulario de cierre -->
+            <Border Padding="16" StrokeShape="RoundRectangle 8" IsVisible="{Binding HayCorteAbierto}">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="{Binding CorteAbierto.Id, StringFormat='Corte abierto #{0}'}" FontAttributes="Bold" FontSize="18" />
+                    <Label Text="{Binding CorteAbierto.FechaApertura, StringFormat='Abierto: {0:g}'}" />
+                    <Label Text="{Binding CorteAbierto.MontoInicial, StringFormat='Monto inicial: {0:C2}'}" />
+
+                    <Label Text="Ventas del turno" FontAttributes="Bold" Margin="0,8,0,0" />
+                    <CollectionView ItemsSource="{Binding VentasDelTurno}" HeightRequest="160">
+                        <CollectionView.EmptyView>
+                            <Label Text="Sin ventas todavía." Opacity="0.6" />
+                        </CollectionView.EmptyView>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="dtos:VentaDto">
+                                <Grid ColumnDefinitions="*,Auto,Auto" Padding="4">
+                                    <Label Text="{Binding Folio}" />
+                                    <Label Grid.Column="1" Text="{Binding MetodoPago}" Margin="8,0" />
+                                    <Label Grid.Column="2" Text="{Binding Total, StringFormat='{0:C2}'}" />
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                    <BoxView HeightRequest="1" Color="Gray" Margin="0,8" />
+
+                    <Label Text="Cerrar corte de caja" FontAttributes="Bold" FontSize="18" />
+                    <Label Text="Monto contado en caja al cierre:" />
+                    <Entry Text="{Binding MontoFinalContado}" Keyboard="Numeric" />
+                    <Button Text="Cerrar corte" Command="{Binding CerrarCorteCommand}" BackgroundColor="Crimson" TextColor="White" />
+                </VerticalStackLayout>
+            </Border>
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+            <Label Text="{Binding MensajeError}"
+                   IsVisible="{Binding MensajeError, Converter={StaticResource StringNoVacioConverter}}"
+                   TextColor="Red" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Inventario.Desktop.ViewModels"
+             xmlns:dtos="clr-namespace:Inventario.Core.Dtos;assembly=Inventario.Core"
+             xmlns:models="clr-namespace:Inventario.Desktop.Models"
+             xmlns:controls="clr-namespace:Inventario.Desktop.Controls"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             x:Class="Inventario.Desktop.Views.CotizacionesPage"
+             x:DataType="vm:CotizacionesViewModel"
+             Title="Cotizaciones">
+
+    <Grid Padding="16" RowDefinitions="Auto,*">
+
+        <HorizontalStackLayout Grid.Row="0" Spacing="12" Margin="0,0,0,12">
+            <Label Text="Cotizaciones vigentes" FontSize="22" FontAttributes="Bold" VerticalOptions="Center" />
+            <Button Text="Nueva cotización" Command="{Binding MostrarFormularioCommand}"
+                    IsVisible="{Binding MostrarFormularioNuevaCotizacion, Converter={StaticResource InversoConverter}}" />
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+        </HorizontalStackLayout>
+
+        <!-- Lista de cotizaciones vigentes -->
+        <CollectionView Grid.Row="1" ItemsSource="{Binding Cotizaciones}"
+                         IsVisible="{Binding MostrarFormularioNuevaCotizacion, Converter={StaticResource InversoConverter}}">
+            <CollectionView.EmptyView>
+                <Label Text="No hay cotizaciones vigentes." Opacity="0.6" Margin="8" />
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="dtos:CotizacionDto">
+                    <Border Padding="12" Margin="0,4" StrokeShape="RoundRectangle 8">
+                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
+                            <Label Grid.Row="0" Grid.Column="0" Text="{Binding Folio}" FontAttributes="Bold" FontSize="16" />
+                            <Label Grid.Row="1" Grid.Column="0" Text="{Binding ClienteNombre}" Opacity="0.7" />
+                            <Label Grid.Row="2" Grid.Column="0" Text="{Binding FechaVigencia, StringFormat='Vigente hasta: {0:d}'}" Opacity="0.7" />
+
+                            <Label Grid.Row="0" Grid.Column="1" Text="{Binding Total, StringFormat='{0:C2}'}" FontAttributes="Bold" FontSize="16" />
+                            <Button Grid.Row="2" Grid.Column="1" Text="Convertir a venta"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ConvertirAVentaCommand}"
+                                    CommandParameter="{Binding .}" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Formulario de nueva cotización -->
+        <ScrollView Grid.Row="1" IsVisible="{Binding MostrarFormularioNuevaCotizacion}">
+            <VerticalStackLayout Spacing="12" MaximumWidthRequest="600">
+                <Label Text="Nueva cotización" FontSize="20" FontAttributes="Bold" />
+
+                <Entry Placeholder="Nombre del cliente" Text="{Binding ClienteNombre}" />
+                <Entry Placeholder="Teléfono / correo del cliente" Text="{Binding ClienteContacto}" />
+
+                <HorizontalStackLayout Spacing="12">
+                    <Label Text="Vigente hasta:" VerticalOptions="Center" />
+                    <DatePicker Date="{Binding FechaVigencia}" MinimumDate="{x:Static sys:DateTime.Today}" />
+                </HorizontalStackLayout>
+
+                <controls:EntradaCodigoBarras ComandoEscaneo="{Binding AgregarPorCodigoCommand}" />
+
+                <CollectionView ItemsSource="{Binding NuevaCotizacionCarrito}" HeightRequest="220">
+                    <CollectionView.EmptyView>
+                        <Label Text="Agrega productos a la cotización." Opacity="0.6" />
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:LineaCotizacionItem">
+                            <Grid Padding="6" ColumnSpacing="8" ColumnDefinitions="3*,Auto,Auto,Auto">
+                                <Label Text="{Binding ProductoNombre}" VerticalOptions="Center" LineBreakMode="TailTruncation" />
+                                <Stepper Grid.Column="1" Minimum="1" Maximum="9999" Value="{Binding Cantidad}" />
+                                <Label Grid.Column="2" Text="{Binding Importe, StringFormat='{0:C2}'}" VerticalOptions="Center" WidthRequest="90" />
+                                <Button Grid.Column="3" Text="✕" WidthRequest="40"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.QuitarLineaCommand}"
+                                        CommandParameter="{Binding .}" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                    <Label Text="Descuento global:" VerticalOptions="Center" />
+                    <Entry Text="{Binding DescuentoGlobal}" Keyboard="Numeric" WidthRequest="100" />
+                </HorizontalStackLayout>
+
+                <HorizontalStackLayout Spacing="12">
+                    <Button Text="Guardar cotización" Command="{Binding GuardarCotizacionCommand}" BackgroundColor="ForestGreen" TextColor="White" />
+                    <Button Text="Cancelar" Command="{Binding CancelarFormularioCommand}" />
+                </HorizontalStackLayout>
+
+                <Label Text="{Binding MensajeError}"
+                       IsVisible="{Binding MensajeError, Converter={StaticResource StringNoVacioConverter}}"
+                       TextColor="Red" />
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
+
+</ContentPage>

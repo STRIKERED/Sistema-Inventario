@@ -2,6 +2,7 @@
 <Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:Inventario.Desktop"
+             xmlns:conv="clr-namespace:Inventario.Desktop.Converters"
              x:Class="Inventario.Desktop.App">
     <Application.Resources>
         <ResourceDictionary>
@@ -9,6 +10,12 @@
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <conv:StringNoVacioABoolConverter x:Key="StringNoVacioConverter" />
+            <conv:BoolInversoConverter x:Key="InversoConverter" />
+            <conv:ColeccionVaciaABoolConverter x:Key="ColeccionVaciaConverter" />
+            <conv:NoEsNuloABoolConverter x:Key="NoEsNuloConverter" />
+            <conv:EsNuloABoolConverter x:Key="EsNuloConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

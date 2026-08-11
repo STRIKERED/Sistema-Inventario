@@ -47,4 +47,6 @@ public class UsuarioRepository : IUsuarioRepository
         _context.Usuarios.Update(usuario);
         await _context.SaveChangesAsync();
     }
+
+    public async Task<bool> ExisteAlgunoAsync() => await _context.Usuarios.AnyAsync();
 }

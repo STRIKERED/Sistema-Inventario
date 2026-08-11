@@ -1,0 +1,44 @@
+using Inventario.Core.Dtos;
+using Inventario.Desktop.Services.Http;
+
+namespace Inventario.Desktop.Services.Api;
+
+public interface ICotizacionApiService
+{
+    Task<CotizacionDto> CrearAsync(CrearCotizacionRequest request, CancellationToken ct = default);
+    Task<CotizacionDto?> ObtenerPorIdAsync(int id, CancellationToken ct = default);
+    Task<IReadOnlyList<CotizacionDto>> ObtenerVigentesAsync(int sucursalId, CancellationToken ct = default);
+    Task<VentaDto> ConvertirAVentaAsync(int id, ConvertirAVentaRequest request, CancellationToken ct = default);
+    Task<byte[]> ObtenerPdfAsync(int id, CancellationToken ct = default);
+}
+
+public class CotizacionApiService : ApiServiceBase, ICotizacionApiService
+{
+    public CotizacionApiService(HttpClient httpClient) : base(httpClient)
+    {
+    }
+
+    public Task<CotizacionDto> CrearAsync(CrearCotizacionRequest request, CancellationToken ct = default) =>
+        PostAsync<CrearCotizacionRequest, CotizacionDto>("api/cotizaciones", request, ct);
+
+    public async Task<CotizacionDto?> ObtenerPorIdAsync(int id, CancellationToken ct = default)
+    {
+        try
+        {
+            return await GetAsync<CotizacionDto>($"api/cotizaciones/{id}", ct);
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            return null;
+        }
+    }
+
+    public async Task<IReadOnlyList<CotizacionDto>> ObtenerVigentesAsync(int sucursalId, CancellationToken ct = default) =>
+        await GetAsync<List<CotizacionDto>>($"api/cotizaciones/vigentes/{sucursalId}", ct);
+
+    public Task<VentaDto> ConvertirAVentaAsync(int id, ConvertirAVentaRequest request, CancellationToken ct = default) =>
+        PostAsync<ConvertirAVentaRequest, VentaDto>($"api/cotizaciones/{id}/convertir-a-venta", request, ct);
+
+    public Task<byte[]> ObtenerPdfAsync(int id, CancellationToken ct = default) =>
+        GetBytesAsync($"api/cotizaciones/{id}/pdf", ct);
+}

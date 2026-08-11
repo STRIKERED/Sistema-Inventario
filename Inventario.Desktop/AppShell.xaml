@@ -3,12 +3,43 @@
     x:Class="Inventario.Desktop.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:Inventario.Desktop"
-    Title="Inventario.Desktop">
+    xmlns:views="clr-namespace:Inventario.Desktop.Views"
+    FlyoutBehavior="Flyout"
+    Title="Inventario POS">
 
+    <Shell.FlyoutHeader>
+        <Grid Padding="16" HeightRequest="80" BackgroundColor="{AppThemeBinding Light=#512BD4, Dark=#2B0B98}">
+            <Label x:Name="EncabezadoUsuarioLabel" Text="Inventario POS" TextColor="White" FontAttributes="Bold" FontSize="18" VerticalOptions="Center" />
+        </Grid>
+    </Shell.FlyoutHeader>
+
+    <Shell.FlyoutFooter>
+        <Button Text="Cerrar sesión" Margin="12" Clicked="OnCerrarSesionClicked" />
+    </Shell.FlyoutFooter>
+
+    <!-- Pantalla de login: sin flyout ni barra de navegación, para que se vea a pantalla completa. -->
     <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+        Title="Login"
+        Route="login"
+        ContentTemplate="{DataTemplate views:LoginPage}"
+        Shell.FlyoutBehavior="Disabled"
+        Shell.NavBarIsVisible="False" />
+
+    <FlyoutItem Title="Punto de venta" Route="venta">
+        <ShellContent ContentTemplate="{DataTemplate views:VentaPage}" Route="ventaContenido" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Cotizaciones" Route="cotizaciones">
+        <ShellContent ContentTemplate="{DataTemplate views:CotizacionesPage}" Route="cotizacionesContenido" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Caja" Route="caja">
+        <ShellContent ContentTemplate="{DataTemplate views:CajaPage}" Route="cajaContenido" />
+    </FlyoutItem>
+
+    <!-- IsVisible se controla desde AppShell.xaml.cs: solo Administrador puede dar de alta usuarios. -->
+    <FlyoutItem x:Name="UsuariosFlyoutItem" Title="Usuarios" Route="usuarios" IsVisible="False">
+        <ShellContent ContentTemplate="{DataTemplate views:UsuariosPage}" Route="usuariosContenido" />
+    </FlyoutItem>
 
 </Shell>
