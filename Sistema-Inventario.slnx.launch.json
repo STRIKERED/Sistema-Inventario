@@ -1,0 +1,30 @@
+{
+  "profiles": {
+    "Multiple startup projects": {
+      "commandName": "MultiProject",
+      "projects": {
+        "Inventario.Api\\Inventario.Api.csproj": {
+          "action": "Start"
+        },
+        "Inventario.Web\\Inventario.Web.csproj": {
+          "action": "Start"
+        },
+        "Inventario.Desktop\\Inventario.Desktop.csproj": {
+          "action": "Start"
+        },
+        "Inventario.Core\\Inventario.Core.csproj": {
+          "action": "None"
+        },
+        "Inventario.Infrastructure\\Inventario.Infrastructure.csproj": {
+          "action": "None"
+        },
+        "Inventario.UnitTests\\Inventario.UnitTests.csproj": {
+          "action": "None"
+        },
+        "Inventario.IntegrationTests\\Inventario.IntegrationTests.csproj": {
+          "action": "None"
+        }
+      }
+    }
+  }
+}
