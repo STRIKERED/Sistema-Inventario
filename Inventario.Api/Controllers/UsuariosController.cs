@@ -10,10 +10,12 @@ namespace Inventario.Api.Controllers;
 public class UsuariosController : ControllerBase
 {
     private readonly IUsuarioRepository _usuarioRepository;
+    private readonly IPasswordHasher _passwordHasher;
 
-    public UsuariosController(IUsuarioRepository usuarioRepository)
+    public UsuariosController(IUsuarioRepository usuarioRepository, IPasswordHasher passwordHasher)
     {
         _usuarioRepository = usuarioRepository;
+        _passwordHasher = passwordHasher;
     }
 
     [HttpGet]
@@ -36,31 +38,47 @@ public class UsuariosController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<UsuarioResponse>> Crear(Usuario usuario)
+    public async Task<ActionResult<UsuarioResponse>> Crear(CrearUsuarioRequest request)
     {
-        // TODO: cuando se implemente autenticación (JWT, ver README), hashear la contraseña aquí
-        // en vez de recibir PasswordHash tal cual desde el cliente.
+        var usuario = new Usuario
+        {
+            NombreUsuario = request.NombreUsuario,
+            PasswordHash = _passwordHasher.Hashear(request.Password),
+            NombreCompleto = request.NombreCompleto,
+            Rol = request.Rol,
+            SucursalId = request.SucursalId,
+            Activo = true
+        };
+
         await _usuarioRepository.AgregarAsync(usuario);
         return CreatedAtAction(nameof(ObtenerPorId), new { id = usuario.Id }, UsuarioResponse.DesdeEntidad(usuario));
     }
 
+    // No incluye la contraseña: para cambiarla haría falta un endpoint dedicado que la vuelva a hashear.
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Actualizar(int id, Usuario usuario)
+    public async Task<IActionResult> Actualizar(int id, ActualizarUsuarioRequest request)
     {
-        if (id != usuario.Id)
-        {
-            return BadRequest("El id de la ruta no coincide con el id del usuario.");
-        }
-
         var existente = await _usuarioRepository.ObtenerPorIdAsync(id);
         if (existente is null)
         {
             return NotFound();
         }
 
-        await _usuarioRepository.ActualizarAsync(usuario);
+        existente.NombreUsuario = request.NombreUsuario;
+        existente.NombreCompleto = request.NombreCompleto;
+        existente.Rol = request.Rol;
+        existente.Activo = request.Activo;
+        existente.SucursalId = request.SucursalId;
+
+        await _usuarioRepository.ActualizarAsync(existente);
         return NoContent();
     }
+
+    public record CrearUsuarioRequest(
+        string NombreUsuario, string Password, string? NombreCompleto, RolUsuario Rol, int? SucursalId);
+
+    public record ActualizarUsuarioRequest(
+        string NombreUsuario, string? NombreCompleto, RolUsuario Rol, bool Activo, int? SucursalId);
 
     // Excluye PasswordHash de las respuestas: nunca debe exponerse vía API, ni siquiera hasheado.
     public record UsuarioResponse(int Id, string NombreUsuario, string? NombreCompleto, RolUsuario Rol, bool Activo, int? SucursalId)

@@ -7,4 +7,5 @@ public interface ICotizacionRepository
     Task<Cotizacion?> ObtenerPorIdAsync(int id);
     Task<Cotizacion> CrearAsync(Cotizacion cotizacion);
     Task<IEnumerable<Cotizacion>> ObtenerVigentesAsync(int sucursalId);
+    Task ActualizarAsync(Cotizacion cotizacion);
 }

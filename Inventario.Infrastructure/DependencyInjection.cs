@@ -30,6 +30,8 @@ public static class DependencyInjection
         services.AddScoped<IInventarioService, InventarioService>();
         services.AddScoped<ITicketPrintService, TicketPrintService>();
         services.AddScoped<ICotizacionPdfService, CotizacionPdfService>();
+        services.AddSingleton<IPasswordHasher, PasswordHasher>();
+        services.AddScoped<IJwtTokenService, JwtTokenService>();
 
         return services;
     }

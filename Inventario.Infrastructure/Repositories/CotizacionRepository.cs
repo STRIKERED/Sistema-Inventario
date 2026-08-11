@@ -42,4 +42,10 @@ public class CotizacionRepository : ICotizacionRepository
             .OrderByDescending(c => c.FechaCreacion)
             .ToListAsync();
     }
+
+    public async Task ActualizarAsync(Cotizacion cotizacion)
+    {
+        _context.Cotizaciones.Update(cotizacion);
+        await _context.SaveChangesAsync();
+    }
 }
