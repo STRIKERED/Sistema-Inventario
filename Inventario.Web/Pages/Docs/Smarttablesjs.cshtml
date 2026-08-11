@@ -1,0 +1,2371 @@
+@page "/docs-smarttablesjs"
+@model Inventario.Web.Pages.Docs.SmarttablesjsModel
+
+@{
+ViewBag.Title = "Smarttablesjs";
+}
+
+@section styles
+{
+<link href="~/plugins/highlightjs/night-owl.css" rel="stylesheet" />
+}
+
+@await Html.PartialAsync("~/Pages/Shared/Partials/_PageTitle.cshtml", new {
+pageTitle = "smartTables.js",
+pageSubTitle1 = "Config",
+pageSubTitle2 = "Documentation",
+pageSubText = (string?)null
+})
+
+<div class="main-content">
+    <div class="row">
+        <div class="order-2 order-xl-1 col-lg-12 col-xl-9">
+            <section class="concept-section" id="smarttables">
+                <h2 class="concept-title with-lead">Smarter Tables, Less Hassle!</h2>
+                <p>SmartTables.js is a powerful, feature-rich JavaScript plugin designed to enhance
+                    HTML tables with advanced
+                    functionality such as sorting, searching, pagination, responsive behavior, and
+                    data export capabilities.
+                    It is built with modern web development practices in mind, offering a flexible
+                    and extensible API for developers
+                    to customize and extend its functionality.</p>
+                <p>
+                    This plugin is ideal for developers who need to manage large datasets in a
+                    user-friendly way, providing a seamless
+                    experience for end-users while maintaining a high level of customization and
+                    control.
+                </p>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> SmartTables works with your existing HTML tables and
+                    automatically adapts to different screen sizes by hiding less important columns
+                    on smaller screens.
+                </div>
+            </section>
+            <section class="concept-section" id="smarttables-installation">
+                <h2 class="concept-title">Installation</h2>
+                <p>SmartTables.js is now available as an ES6 module. You can include it in your
+                    project in several ways:</p>
+                <h4>1. Using ES6 Modules (Recommended)</h4>
+                <div class="code-example">
+                    <pre><code>// Import the SmartTables class
+import { SmartTables } from './optional/smartTables/smartTables.bundle.js';
+
+// Initialize with empty options object (required)
+const myTable = new SmartTables('tableId', {});
+
+// Or with custom options
+const myTable = new SmartTables('tableId', {
+    perPage: 15,
+    search: true,
+    sort: true,
+    pagination: true,
+    export: true
+});</code></pre>
+                </div>
+                <div class="warning">
+                    <strong>Important:</strong>
+                    <ul class="mb-0">
+                        <li>You must pass an empty options object (<code>{}</code>) as the second
+                            parameter when initializing SmartTables, even if you don't need any
+                            custom options.</li>
+                        <li>This is required because the constructor expects an options object to
+                            properly initialize default values.</li>
+                        <li>If you don't pass the options object, you'll get an error:
+                            <code>Cannot read properties of undefined (reading 'responsive')</code>.
+                        </li>
+                    </ul>
+                </div>
+                <h4>2. Using NPM (for modern build systems)</h4>
+                <div class="code-example">
+                    <pre><code>// Install via npm
+npm install smarttables
+
+// Import in your JavaScript/TypeScript file
+import { SmartTables } from 'smarttables';
+
+// Use in your component
+const myTable = new SmartTables('tableId', {
+    data: {
+        type: 'json',
+        source: myData,
+        columns: [
+            { data: 'id', title: 'ID' },
+            { data: 'name', title: 'Name' },
+            { data: 'position', title: 'Position' }
+        ]
+    }
+});</code></pre>
+                </div>
+                <h4>3. Using with TypeScript</h4>
+                <div class="code-example">
+                    <pre><code>import { SmartTables, SmartTablesOptions } from 'smarttables';
+
+interface CustomOptions extends SmartTablesOptions {
+    customFeature?: boolean;
+}
+
+const options: CustomOptions = {
+    perPage: 10,
+    search: true,
+    customFeature: true
+};
+
+const myTable = new SmartTables('tableId', options);</code></pre>
+                </div>
+                <h4>HTML Structure</h4>
+                <div class="code-example">
+                    <pre><code>&lt;table id="myTable" class="table"&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;
+            &lt;th data-priority="1"&gt;ID&lt;/th&gt;
+            &lt;th data-priority="2"&gt;Name&lt;/th&gt;
+            &lt;th data-priority="3"&gt;Position&lt;/th&gt;
+            &lt;th data-priority="4"&gt;Office&lt;/th&gt;
+            &lt;th data-priority="5"&gt;Age&lt;/th&gt;
+        &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        &lt;tr&gt;
+            &lt;td&gt;1&lt;/td&gt;
+            &lt;td&gt;John Doe&lt;/td&gt;
+            &lt;td&gt;Developer&lt;/td&gt;
+            &lt;td&gt;New York&lt;/td&gt;
+            &lt;td&gt;32&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;!-- More rows... --&gt;
+    &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+                </div>
+                <div class="warning">
+                    <strong>Important:</strong>
+                    <ul class="mb-0">
+                        <li>Use the <code>data-priority</code> attribute on table headers to control
+                            which columns are hidden first when the table becomes too narrow for the
+                            viewport.</li>
+                        <li>When using ES6 modules, make sure your server is configured to serve
+                            JavaScript files with the correct MIME type
+                            (<code>application/javascript</code>).</li>
+                        <li>For older browsers, you'll need to use a bundler like Webpack, Rollup,
+                            or Parcel to transpile the ES6 code.</li>
+                    </ul>
+                </div>
+            </section>
+            <section class="concept-section" id="smarttables-configuration">
+                <h2 class="concept-title">Configuration Options</h2>
+                <p>SmartTables.js provides extensive configuration options to customize its
+                    behavior. All options are optional and will fall back to sensible defaults.</p>
+                <div class="code-example">
+                    <pre><code>// Basic configuration
+const table = new SmartTables('myTable', {
+    perPage: 10,
+    search: true,
+    sort: true
+});
+
+// Advanced configuration with TypeScript
+interface CustomOptions extends SmartTablesOptions {
+    customFeature?: boolean;
+}
+
+const options: CustomOptions = {
+    perPage: 25,
+    search: true,
+    sort: true,
+    pagination: true,
+    export: true,
+    loading: {
+        enabled: true,
+        duration: 500,
+        minDuration: 300
+    },
+    responsive: {
+        enabled: true,
+        breakpoint: 992,
+        columnPriorities: {
+            0: 1,  // ID column - highest priority
+            1: 2,  // Name column - second highest priority
+            2: 3,  // Position
+            3: 4,  // Office
+            4: 5   // Age - lowest priority
+        }
+    },
+    debug: false,
+    fuzzyMatch: {
+        threshold: 0.6,
+        minMatchLength: 2,
+        multiWordThreshold: 0.5,
+        maxDistance: 3
+    },
+    customFeature: true
+};
+
+const table = new SmartTables('myTable', options);</code></pre>
+                </div>
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-striped table-clean">
+                        <thead>
+                            <tr>
+                                <th>Option</th>
+                                <th>Default Value</th>
+                                <th>Description</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Top-Level Options -->
+                            <tr>
+                                <td><code>perPage</code></td>
+                                <td><strong>10</strong></td>
+                                <td>Number of rows to display per page in pagination.</td>
+                                <td><strong class="text-success">number</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>search</code></td>
+                                <td><strong class="text-primary">true</strong></td>
+                                <td>Enables or disables the search functionality for the table.</td>
+                                <td><strong class="text-primary">boolean</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>sort</code></td>
+                                <td><strong class="text-primary">true</strong></td>
+                                <td>Enables or disables sorting functionality for table columns.
+                                </td>
+                                <td><strong class="text-primary">boolean</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>pagination</code></td>
+                                <td><strong class="text-primary">true</strong></td>
+                                <td>Enables or disables pagination controls for the table.</td>
+                                <td><strong class="text-primary">boolean</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>export</code></td>
+                                <td><strong class="text-primary">true</strong></td>
+                                <td>Enables or disables export functionality (e.g., Excel, CSV,
+                                    Copy).</td>
+                                <td><strong class="text-primary">boolean</strong></td>
+                            </tr>
+                            <!-- Loading Configuration -->
+                            <tr>
+                                <td><code>loading.enabled</code></td>
+                                <td><strong class="text-primary">true</strong></td>
+                                <td>Enables or disables the loading spinner/indicator during data
+                                    loading or processing.</td>
+                                <td><strong class="text-primary">boolean</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>loading.duration</code></td>
+                                <td><strong>0</strong></td>
+                                <td>Duration (in milliseconds) of an artificial delay for the
+                                    loading indicator.</td>
+                                <td><strong class="text-success">number</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>loading.minDuration</code></td>
+                                <td><strong>300</strong></td>
+                                <td>Minimum duration (in milliseconds) to display the loading
+                                    indicator.</td>
+                                <td><strong class="text-success">number</strong></td>
+                            </tr>
+                            <!-- Responsive Configuration -->
+                            <tr>
+                                <td><code>responsive.enabled</code></td>
+                                <td><strong class="text-primary">true</strong></td>
+                                <td>Enables or disables responsive behavior (e.g., hiding columns on
+                                    small screens).</td>
+                                <td><strong class="text-primary">boolean</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>responsive.breakpoint</code></td>
+                                <td><strong>768</strong></td>
+                                <td>Breakpoint (in pixels) at which responsive behavior starts.</td>
+                                <td><strong class="text-success">number</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>responsive.columnPriorities</code></td>
+                                <td><strong>{}</strong></td>
+                                <td>Object mapping column indices to their priority (1 being
+                                    highest).</td>
+                                <td><strong class="text-dark">Object&lt;number, number&gt;</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><code>responsive.details.type</code></td>
+                                <td><strong>'column'</strong></td>
+                                <td>Type of detail display for hidden columns.</td>
+                                <td><strong class="text-danger">string</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>responsive.details.target</code></td>
+                                <td><strong>0</strong></td>
+                                <td>Target column index for the detail control.</td>
+                                <td><strong class="text-success">number</strong></td>
+                            </tr>
+                            <!-- Debug Option -->
+                            <tr>
+                                <td><code>debug</code></td>
+                                <td><strong class="text-primary">false</strong></td>
+                                <td>Enables or disables debug logging for development and
+                                    troubleshooting.</td>
+                                <td><strong class="text-primary">boolean</strong></td>
+                            </tr>
+                            <!-- Fuzzy Match Configuration -->
+                            <tr>
+                                <td><code>fuzzyMatch.threshold</code></td>
+                                <td><strong>0.7</strong></td>
+                                <td>Threshold for fuzzy matching (0.0–1.0).</td>
+                                <td><strong class="text-success">number</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>fuzzyMatch.minMatchLength</code></td>
+                                <td><strong>2</strong></td>
+                                <td>Minimum number of characters required for fuzzy matching.</td>
+                                <td><strong class="text-success">number</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>fuzzyMatch.multiWordThreshold</code></td>
+                                <td><strong>0.5</strong></td>
+                                <td>Threshold for multi-word search matches.</td>
+                                <td><strong class="text-success">number</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>fuzzyMatch.maxDistance</code></td>
+                                <td><strong>2</strong></td>
+                                <td>Maximum Levenshtein distance allowed for typo tolerance.</td>
+                                <td><strong class="text-success">number</strong></td>
+                            </tr>
+                            <!-- Classes Configuration -->
+                            <tr>
+                                <td><code>classes.wrapper</code></td>
+                                <td><strong>'st-wrapper'</strong></td>
+                                <td>Class for the wrapper div containing the table.</td>
+                                <td><strong class="text-danger">string</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>classes.table</code></td>
+                                <td><strong>'st-table table table-striped table-hover'</strong></td>
+                                <td>Class for the table element.</td>
+                                <td><strong class="text-danger">string</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>classes.toolbar</code></td>
+                                <td><strong>'st-toolbar d-flex justify-content-between
+                                        mb-3'</strong></td>
+                                <td>Class for the toolbar containing controls.</td>
+                                <td><strong class="text-danger">string</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>classes.search</code></td>
+                                <td><strong>'st-search form-control'</strong></td>
+                                <td>Class for the search input field.</td>
+                                <td><strong class="text-danger">string</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>classes.pagination</code></td>
+                                <td><strong>'st-pagination pagination
+                                        justify-content-center'</strong></td>
+                                <td>Class for the pagination controls.</td>
+                                <td><strong class="text-danger">string</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>classes.export</code></td>
+                                <td><strong>'st-export btn-group'</strong></td>
+                                <td>Class for the export button group.</td>
+                                <td><strong class="text-danger">string</strong></td>
+                            </tr>
+                            <!-- Data Configuration -->
+                            <tr>
+                                <td><code>data.type</code></td>
+                                <td><strong class="text-danger">null</strong></td>
+                                <td>Type of data source ('json', 'csv', 'ajax', or null for
+                                    DOM-based tables).</td>
+                                <td><strong class="text-danger">string|null</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>data.source</code></td>
+                                <td><strong class="text-danger">null</strong></td>
+                                <td>Source of the data (URL, string, or object depending on type).
+                                </td>
+                                <td><strong class="text-danger">string|null|Object</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>data.columns</code></td>
+                                <td><strong>[]</strong></td>
+                                <td>Array of column definitions.</td>
+                                <td><strong class="text-info">Array</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>data.processing</code></td>
+                                <td><strong class="text-primary">false</strong></td>
+                                <td>Enables or disables a processing indicator during data
+                                    operations.</td>
+                                <td><strong class="text-primary">boolean</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>data.serverSide</code></td>
+                                <td><strong class="text-primary">false</strong></td>
+                                <td>Enables or disables server-side processing for large datasets.
+                                </td>
+                                <td><strong class="text-primary">boolean</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>data.method</code></td>
+                                <td><strong>'GET'</strong></td>
+                                <td>HTTP method for AJAX requests.</td>
+                                <td><strong class="text-danger">string</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>data.headers</code></td>
+                                <td><strong>{}</strong></td>
+                                <td>Custom headers for AJAX requests.</td>
+                                <td><strong class="text-dark">Object</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>data.params</code></td>
+                                <td><strong>{}</strong></td>
+                                <td>Additional parameters for AJAX requests.</td>
+                                <td><strong class="text-dark">Object</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>data.parser</code></td>
+                                <td><strong class="text-danger">null</strong></td>
+                                <td>Custom parser function for transforming raw data.</td>
+                                <td><strong class="text-dark">Function|null</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>data.prefetch</code></td>
+                                <td><strong class="text-primary">true</strong></td>
+                                <td>Enables prefetching of the next page data for smoother
+                                    pagination.</td>
+                                <td><strong class="text-primary">boolean</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>data.cacheDuration</code></td>
+                                <td><strong>300000</strong></td>
+                                <td>Duration in milliseconds to keep cached data (default: 5
+                                    minutes).</td>
+                                <td><strong class="text-success">number</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>data.withCredentials</code></td>
+                                <td><strong class="text-primary">false</strong></td>
+                                <td>Whether to include credentials in cross-domain requests.</td>
+                                <td><strong class="text-primary">boolean</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>data.url</code></td>
+                                <td><strong class="text-danger">null</strong></td>
+                                <td>The URL to fetch data from (aliased with source for
+                                    compatibility).</td>
+                                <td><strong class="text-danger">string|null</strong></td>
+                            </tr>
+                            <!-- Hooks Configuration -->
+                            <tr>
+                                <td><code>hooks</code></td>
+                                <td><strong>{}</strong></td>
+                                <td>Object containing various lifecycle and event hooks.</td>
+                                <td><strong class="text-dark">Object</strong></td>
+                            </tr>
+                            <!-- Plugins Configuration -->
+                            <tr>
+                                <td><code>plugins</code></td>
+                                <td><strong>[]</strong></td>
+                                <td>Array of plugin objects to extend functionality.</td>
+                                <td><strong class="text-info">Array</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> You can extend the default options by creating a
+                    custom interface that extends <code>SmartTablesOptions</code> when using
+                    TypeScript. This provides better type safety and autocompletion.
+                </div>
+            </section>
+            <section class="concept-section" id="smarttables-advanced-configuration">
+                <h2 class="concept-title">Advanced Configuration Example</h2>
+                <p>Here's an example of how to configure SmartTables with advanced options:</p>
+                <div class="code-example">
+                    <pre><code>var myTable = new SmartTables('tableId', {
+    perPage: 25,
+    search: true,
+    sort: true,
+    pagination: true,
+    export: true,
+    loading: {
+        enabled: true,
+        duration: 500, // Show loading for at least 500ms
+        minDuration: 300
+    },
+    responsive: {
+        enabled: true,
+        breakpoint: 992,
+        columnPriorities: {
+            0: 1,  // ID column - highest priority
+            1: 2,  // Name column - second highest priority
+            2: 3,  // Position
+            3: 4,  // Office
+            4: 5   // Age - lowest priority
+        }
+    },
+    debug: false,
+    fuzzyMatch: {
+        threshold: 0.6,      // Lower threshold = more matches
+        minMatchLength: 2,   // Minimum characters to match
+        multiWordThreshold: 0.5,
+        maxDistance: 3       // Higher distance = more tolerance for typos
+    }
+});</code></pre>
+                </div>
+            </section>
+            <section class="concept-section" id="smarttables-data-loading">
+                <h2 class="concept-title">Data Loading Methods</h2>
+                <p>SmartTables supports various data loading methods:</p>
+                <div class="code-example">
+                    <pre><code>// Load from JSON data
+var myTable = new SmartTables('tableId', {
+    data: {
+        type: 'json',
+        source: [
+            { id: 1, name: 'John Doe', position: 'Developer', office: 'New York', age: 32 },
+            { id: 2, name: 'Jane Smith', position: 'Designer', office: 'London', age: 28 }
+        ],
+        columns: [
+            { data: 'id', title: 'ID' },
+            { data: 'name', title: 'Name' },
+            { data: 'position', title: 'Position' },
+            { data: 'office', title: 'Office' },
+            { data: 'age', title: 'Age' }
+        ]
+    }
+});
+
+// Load from AJAX
+var myTable = new SmartTables('tableId', {
+    data: {
+        type: 'ajax',
+        source: 'api/users',
+        method: 'GET',
+        headers: { 'Authorization': 'Bearer token123' },
+        params: { limit: 100 }
+    }
+});
+
+// Load from CSV
+var myTable = new SmartTables('tableId', {
+    data: {
+        type: 'csv',
+        source: 'data/employees.csv'
+    }
+});</code></pre>
+                </div>
+            </section>
+            <section class="concept-section" id="smarttables-data-import">
+                <h2 class="concept-title">Data Import Functionality</h2>
+                <p>SmartTables provides built-in data import capabilities that allow users to import
+                    data from various file formats directly into the table. This feature can be
+                    enabled by setting the <code>import: true</code> option.</p>
+                <div class="code-example">
+                    <pre><code>// Initialize table with import enabled
+var myTable = new SmartTables('tableId', {
+    import: true,  // Enable import functionality
+    data: {
+        type: 'json',
+        source: initialData,
+        columns: [
+            { data: 'id', title: 'ID' },
+            { data: 'name', title: 'Name' },
+            { data: 'position', title: 'Position' }
+        ]
+    }
+});</code></pre>
+                </div>
+                <h4>Supported Import Formats</h4>
+                <ul class="list-spaced">
+                    <li><strong>CSV Files:</strong> Import data from comma-separated value files
+                    </li>
+                    <li><strong>JSON Files:</strong> Import data from JSON format files</li>
+                    <li><strong>Excel Files:</strong> Import data from Excel spreadsheets (.xlsx)
+                    </li>
+                    <li><strong>Text Files:</strong> Import data from plain text files with custom
+                        delimiters</li>
+                </ul>
+                <h4>Import Options</h4>
+                <div class="code-example">
+                    <pre><code>var myTable = new SmartTables('tableId', {
+    import: {
+        enabled: true,
+        formats: ['csv', 'json', 'xlsx'],  // Specify allowed formats
+        maxFileSize: 5 * 1024 * 1024,      // 5MB max file size
+        onImportStart: function() {
+            console.log('Import started');
+        },
+        onImportComplete: function(data) {
+            console.log('Import completed', data);
+        },
+        onImportError: function(error) {
+            console.error('Import failed', error);
+        }
+    }
+});</code></pre>
+                </div>
+                <h4>Example Usage</h4>
+                <div class="code-example">
+                    <pre><code>&lt;!-- HTML Structure --&gt;
+&lt;table id="myTable" class="table"&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;
+            &lt;th data-priority="1"&gt;ID&lt;/th&gt;
+            &lt;th data-priority="2"&gt;Name&lt;/th&gt;
+            &lt;th data-priority="3"&gt;Position&lt;/th&gt;
+        &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        &lt;!-- Data will be populated by SmartTables --&gt;
+    &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;!-- JavaScript --&gt;
+import { SmartTables } from 'smarttables';
+
+const table = new SmartTables('myTable', {
+    import: true,
+    data: {
+        type: 'json',
+        source: [],  // Start with empty data
+        columns: [
+            { data: 'id', title: 'ID' },
+            { data: 'name', title: 'Name' },
+            { data: 'position', title: 'Position' }
+        ]
+    }
+});</code></pre>
+                </div>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> When importing data, SmartTables automatically detects
+                    the column structure and maps the imported data to the appropriate columns. You
+                    can also provide custom column mappings for more control over the import
+                    process.
+                </div>
+                <div class="warning">
+                    <strong>Important:</strong>
+                    <ul class="mb-0">
+                        <li>Make sure your server is configured to handle file uploads if you're
+                            using the file import feature</li>
+                        <li>Consider implementing file size limits and format validation on both
+                            client and server side</li>
+                        <li>For large files, consider implementing chunked uploads or progress
+                            indicators</li>
+                        <li>Always validate imported data before processing to prevent security
+                            issues</li>
+                    </ul>
+                </div>
+            </section>
+            <section class="concept-section" id="smarttables-event-hooks">
+                <h2 class="concept-title">Event Hooks</h2>
+                <p>SmartTables provides hooks for various events in the table lifecycle:</p>
+                <div class="code-example">
+                    <pre><code>var myTable = new SmartTables('tableId', {
+    hooks: {
+        // Table lifecycle hooks
+        beforeInit: function(instance) {
+            console.log('Before table initialization');
+        },
+        afterInit: function(instance) {
+            console.log('Table initialized!');
+        },
+        
+        // Data hooks
+        beforeDataLoad: function(data, instance) {
+            console.log('About to load data');
+        },
+        afterDataLoad: function(data, instance) {
+            console.log('Data loaded successfully');
+        },
+        
+        // Action hooks
+        onSort: function(column, direction, instance) {
+            console.log('Table sorted by column', column, 'in', direction, 'direction');
+        },
+        onFilter: function(searchTerm, filteredRows, instance) {
+            console.log('Table filtered with term:', searchTerm);
+        },
+        onPaginate: function(pageNumber, instance) {
+            console.log('Page changed to', pageNumber);
+        }
+    }
+});</code></pre>
+                </div>
+            </section>
+            <section class="concept-section" id="smarttables-search-capabilities">
+                <h2 class="concept-title">Search Capabilities</h2>
+                <p>SmartTables includes powerful search capabilities with support for:</p>
+                <ul class="list-spaced">
+                    <li><strong>Fuzzy matching:</strong> Finds results even with typos or partial
+                        matches</li>
+                    <li><strong>Special data types:</strong> Intelligently searches dates, numbers,
+                        emails, phone numbers</li>
+                    <li><strong>Comparison operators:</strong> Support for <code>&gt;</code>,
+                        <code>&lt;</code>, <code>=</code> with numeric values</li>
+                    <li><strong>Multi-word search:</strong> Matches records containing any or all
+                        search terms</li>
+                </ul>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> Users can search with operators like
+                    "<code>&gt;30</code>" to find all numeric values greater than 30, or use
+                    "<code>@@gmail.com</code>" to find all Gmail addresses.
+                </div>
+            </section>
+            <section class="concept-section" id="smarttables-responsive-behavior">
+                <h2 class="concept-title">Responsive Behavior</h2>
+                <p>SmartTables automatically adapts to different screen sizes by:</p>
+                <ul class="list-spaced">
+                    <li>Hiding less important columns on smaller screens based on priority</li>
+                    <li>Providing an expand/collapse interface to view hidden column data</li>
+                    <li>Automatically measuring and optimizing column widths</li>
+                </ul>
+                <div class="code-example">
+                    <pre><code>&lt;!-- Set column priorities with data attributes --&gt;
+&lt;th data-priority="1"&gt;ID&lt;/th&gt; &lt;!-- Highest priority (last to hide) --&gt;
+&lt;th data-priority="2"&gt;Name&lt;/th&gt;
+&lt;th data-priority="3"&gt;Position&lt;/th&gt;
+&lt;th data-priority="4"&gt;Office&lt;/th&gt;
+&lt;th data-priority="5"&gt;Age&lt;/th&gt; &lt;!-- Lowest priority (first to hide) --&gt;
+
+&lt;!-- Force columns to always remain visible --&gt;
+&lt;th class="always-visible"&gt;Actions&lt;/th&gt;</code></pre>
+                </div>
+            </section>
+            <section class="concept-section" id="smarttables-export-options">
+                <h2 class="concept-title">Export Options</h2>
+                <p>SmartTables provides built-in export functionality:</p>
+                <ul class="list-spaced">
+                    <li><strong>Excel:</strong> Export to XLSX format</li>
+                    <li><strong>CSV:</strong> Export to CSV format</li>
+                    <li><strong>Copy:</strong> Copy table data to clipboard</li>
+                </ul>
+                <div class="code-example">
+                    <pre><code>// Get table instance
+var table = document.getElementById('myTable').__smartTable;
+
+// Export to different formats
+table.exportData('excel');
+table.exportData('csv');
+table.exportData('copy');</code></pre>
+                </div>
+            </section>
+            <section class="concept-section" id="smarttables-api-methods">
+                <h2 class="concept-title">API Methods</h2>
+                <p>SmartTables exposes several methods for programmatic control:</p>
+                <div class="code-example">
+                    <pre><code>// Get table instance
+var table = document.getElementById('myTable').__smartTable;
+
+// Redraw the table
+table.draw();
+
+// Sort by column
+table.sortBy(2, 'asc'); // Sort by 3rd column ascending
+
+// Filter the table
+table.handleSearch('developer');
+
+// Export data
+table.exportData('excel');
+
+// Hide/show columns
+table.hideColumn(3);
+table.showColumn(3);
+
+// Clear AJAX cache for server-side tables
+table.clearAjaxCache();
+
+// Manually trigger prefetch of next page
+table.prefetchNextPage();
+
+// Generate a unique cache key for current parameters
+const cacheKey = table.generateCacheKey();
+
+// Destroy the instance
+table.destroy();</code></pre>
+                </div>
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-striped table-clean">
+                        <thead>
+                            <tr>
+                                <th>Method</th>
+                                <th>Description</th>
+                                <th>Parameters</th>
+                                <th>Return Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>draw()</code></td>
+                                <td>Redraws the table with current settings</td>
+                                <td>None</td>
+                                <td>void</td>
+                            </tr>
+                            <tr>
+                                <td><code>sortBy(columnIndex, direction)</code></td>
+                                <td>Sorts the table by specified column</td>
+                                <td>columnIndex: number, direction: 'asc'|'desc'</td>
+                                <td>void</td>
+                            </tr>
+                            <tr>
+                                <td><code>handleSearch(query)</code></td>
+                                <td>Filters the table using the search query</td>
+                                <td>query: string</td>
+                                <td>void</td>
+                            </tr>
+                            <tr>
+                                <td><code>exportData(format)</code></td>
+                                <td>Exports table data in the specified format</td>
+                                <td>format: 'excel'|'csv'|'copy'</td>
+                                <td>void</td>
+                            </tr>
+                            <tr>
+                                <td><code>hideColumn(index)</code></td>
+                                <td>Hides the specified column</td>
+                                <td>index: number</td>
+                                <td>void</td>
+                            </tr>
+                            <tr>
+                                <td><code>showColumn(index)</code></td>
+                                <td>Shows the specified column</td>
+                                <td>index: number</td>
+                                <td>void</td>
+                            </tr>
+                            <tr>
+                                <td><code>clearAjaxCache()</code></td>
+                                <td>Clears all cached AJAX responses</td>
+                                <td>None</td>
+                                <td>void</td>
+                            </tr>
+                            <tr>
+                                <td><code>prefetchNextPage()</code></td>
+                                <td>Manually fetches and caches the next page data</td>
+                                <td>None</td>
+                                <td>void</td>
+                            </tr>
+                            <tr>
+                                <td><code>generateCacheKey()</code></td>
+                                <td>Generates a unique cache key for current parameters</td>
+                                <td>None</td>
+                                <td>string</td>
+                            </tr>
+                            <tr>
+                                <td><code>destroy()</code></td>
+                                <td>Destroys the table instance and removes event listeners</td>
+                                <td>None</td>
+                                <td>void</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <section class="concept-section" id="smarttables-plugin-system">
+                <h2 class="concept-title">Plugin System</h2>
+                <p>SmartTables supports plugins to extend its functionality:</p>
+                <div class="code-example">
+                    <pre><code>// Define a plugin
+var myPlugin = {
+    name: 'myPlugin',
+    init: function() {
+        console.log('Plugin initialized for table:', this.instance.table.id);
+    },
+    afterDraw: function() {
+        console.log('Table was redrawn');
+    }
+};
+
+// Initialize table with the plugin
+var myTable = new SmartTables('tableId', {
+    plugins: [myPlugin]
+});</code></pre>
+                </div>
+            </section>
+            <section class="concept-section" id="smarttables-performance-tips">
+                <h2 class="concept-title">Performance Tips</h2>
+                <ul class="list-spaced">
+                    <li>For large datasets (1000+ rows), consider using server-side processing</li>
+                    <li>Set appropriate <code>perPage</code> values to limit the number of rows
+                        rendered at once</li>
+                    <li>Use the <code>loading.duration</code> option to show a loading indicator for
+                        long operations</li>
+                    <li>Disable features you don't need (search, sort, pagination) for simpler
+                        tables</li>
+                </ul>
+            </section>
+            <section class="concept-section" id="smarttables-framework-integrations">
+                <h2 class="concept-title">Framework Integrations</h2>
+                <p>SmartTables.js can be seamlessly integrated with various modern frameworks and
+                    backend technologies. Here's how to implement it in different environments:</p>
+                <div class="accordion" id="frameworkAccordion">
+                    <!-- Frontend Frameworks -->
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" data-bs-target="#reactIntegration"
+                                data-bs-toggle="collapse" type="button">
+                                React Integration
+                            </button>
+                        </h3>
+                        <div class="accordion-collapse collapse" data-bs-parent="#frameworkAccordion"
+                            id="reactIntegration">
+                            <div class="accordion-body">
+                                <!-- React Integration -->
+                                <div class="mb-4">
+                                    <h4>React Integration</h4>
+                                    <div class="code-example">
+                                        <pre><code>import { useEffect, useRef } from 'react';
+import { SmartTables } from 'smarttables';
+
+const DataTable = ({ data, columns }) =&gt; {
+    const tableRef = useRef(null);
+    const tableInstance = useRef(null);
+
+    useEffect(() =&gt; {
+        if (tableRef.current) {
+            // Initialize table
+            tableInstance.current = new SmartTables(tableRef.current, {
+                data: {
+                    type: 'json',
+                    source: data,
+                    columns
+                },
+                hooks: {
+                    afterDraw: () =&gt; {
+                        console.log('Table redrawn');
+                    }
+                }
+            });
+
+            // Cleanup on unmount
+            return () =&gt; {
+                if (tableInstance.current) {
+                    tableInstance.current.destroy();
+        }
+            };
+        }
+    }, [data, columns]);
+
+    return (
+        '<table classname="table" ref="{tableRef}">' +
+            '<thead>' +
+                '<tr>' +
+                    '{columns.map(column =&gt; (' +
+                        '<th data-priority="{column.priority}" key="{column.data}">' +
+                            '{column.title}' +
+                        '</th>' +
+                    '))}' +
+                '</tr>' +
+            '</thead>' +
+            '<tbody>' +
+                '{/* Data will be populated by SmartTables */}' +
+            '</tbody>' +
+        '</table>'
+    );
+};
+
+// Usage example
+const App = () =&gt; {
+    const columns = [
+        { data: 'id', title: 'ID', priority: 1 },
+        { data: 'name', title: 'Name', priority: 2 },
+        { data: 'position', title: 'Position', priority: 3 }
+    ];
+
+    const data = [
+        { id: 1, name: 'John Doe', position: 'Developer' },
+        { id: 2, name: 'Jane Smith', position: 'Designer' }
+    ];
+
+    return <datatable columns="{columns}" data="{data}"></datatable>
+};</code></pre>
+                                    </div>
+                                    <div class="info mt-3">
+                                        <strong>React-Specific Tips:</strong>
+                                        <ul>
+                                            <li>Use <code>useRef</code> to maintain a stable
+                                                reference to both the table element and instance
+                                            </li>
+                                            <li>Initialize the table in <code>useEffect</code> to
+                                                ensure the DOM is ready</li>
+                                            <li>Clean up the table instance in the effect's cleanup
+                                                function</li>
+                                            <li>Consider using React's Context API for global table
+                                                state management</li>
+                                            <li>Use TypeScript for better type safety</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" data-bs-target="#vueIntegration"
+                                data-bs-toggle="collapse" type="button">
+                                Vue.js Integration
+                            </button>
+                        </h3>
+                        <div class="accordion-collapse collapse" data-bs-parent="#frameworkAccordion"
+                            id="vueIntegration">
+                            <div class="accordion-body">
+                                <!-- Vue.js Integration -->
+                                <div class="mb-4">
+                                    <h4>Vue.js Integration (Composition API)</h4>
+                                    <div class="code-example">
+                                        <pre><code>import { onMounted, onBeforeUnmount, ref } from 'vue';
+import { SmartTables } from 'smarttables';
+
+export default {
+    setup(props) {
+        const tableRef = ref(null);
+        const tableInstance = ref(null);
+
+        onMounted(() =&gt; {
+            if (tableRef.value) {
+                tableInstance.value = new SmartTables(tableRef.value, {
+                    data: {
+                        type: 'json',
+                        source: props.data,
+                        columns: props.columns
+                    },
+                    hooks: {
+                        afterDraw: () =&gt; {
+                            console.log('Table redrawn');
+                        }
+                    }
+                });
+            }
+        });
+
+        onBeforeUnmount(() =&gt; {
+            if (tableInstance.value) {
+                tableInstance.value.destroy();
+            }
+        });
+
+        return {
+            tableRef
+        };
+    }
+}
+
+// Usage example
+const App = {
+    template: '<datatable :columns="columns" :data="tableData" ref="tableRef"></datatable>',
+    setup() {
+        const columns = [
+            { data: 'id', title: 'ID', priority: 1 },
+            { data: 'name', title: 'Name', priority: 2 },
+            { data: 'position', title: 'Position', priority: 3 }
+        ];
+
+        const tableData = ref([
+            { id: 1, name: 'John Doe', position: 'Developer' },
+            { id: 2, name: 'Jane Smith', position: 'Designer' }
+        ]);
+
+        return {
+            columns,
+            tableData
+        };
+    }
+};</code></pre>
+                                    </div>
+                                    <div class="info mt-3">
+                                        <strong>Vue.js-Specific Tips:</strong>
+                                        <ul>
+                                            <li>Use <code>ref</code> for template references and
+                                                instance management</li>
+                                            <li>Initialize in <code>onMounted</code> hook</li>
+                                            <li>Clean up in <code>onBeforeUnmount</code> hook</li>
+                                            <li>Consider using Pinia for state management</li>
+                                            <li>Use TypeScript for better type safety</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" data-bs-target="#angularIntegration"
+                                data-bs-toggle="collapse" type="button">
+                                Angular Integration
+                            </button>
+                        </h3>
+                        <div class="accordion-collapse collapse" data-bs-parent="#frameworkAccordion"
+                            id="angularIntegration">
+                            <div class="accordion-body">
+                                <!-- Angular Integration -->
+                                <div class="mb-4">
+                                    <h4>Angular Integration</h4>
+                                    <div class="code-example">
+                                        <pre><code>import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@@angular/core';
+import { SmartTables } from 'smarttables';
+
+@@Component({
+    selector: 'app-data-table',
+    template: '<table #datatable="" class="table"><thead><tr><th *ngfor="let column of columns" [attr.data-priority]="column.priority">{{column.title}}</th></tr></thead><tbody><!-- Data will be populated by SmartTables --></tbody></table>'
+})
+export class DataTableComponent implements OnInit, OnDestroy {
+    @@ViewChild('dataTable') tableRef: ElementRef;
+    private tableInstance: SmartTables;
+
+    columns = [
+        { data: 'id', title: 'ID', priority: 1 },
+        { data: 'name', title: 'Name', priority: 2 },
+        { data: 'position', title: 'Position', priority: 3 }
+    ];
+
+    tableData = [
+        { id: 1, name: 'John Doe', position: 'Developer' },
+        { id: 2, name: 'Jane Smith', position: 'Designer' }
+    ];
+
+    ngOnInit() {
+        if (this.tableRef.nativeElement) {
+            this.tableInstance = new SmartTables(this.tableRef.nativeElement, {
+                data: {
+                    type: 'json',
+                    source: this.tableData,
+                    columns: this.columns
+                },
+                hooks: {
+                    afterDraw: () =&gt; {
+                        console.log('Table redrawn');
+                    }
+                }
+            });
+        }
+    }
+
+    ngOnDestroy() {
+        if (this.tableInstance) {
+            this.tableInstance.destroy();
+        }
+    }
+}</code></pre>
+                                    </div>
+                                    <div class="info mt-3">
+                                        <strong>Angular-Specific Tips:</strong>
+                                        <ul>
+                                            <li>Use <code>@@ViewChild</code> for template references
+                                            </li>
+                                            <li>Initialize in <code>ngOnInit</code> lifecycle hook
+                                            </li>
+                                            <li>Clean up in <code>ngOnDestroy</code> lifecycle hook
+                                            </li>
+                                            <li>Consider using NgRx for state management</li>
+                                            <li>Use TypeScript for better type safety</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Backend Frameworks -->
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" data-bs-target="#aspNetCoreIntegration"
+                                data-bs-toggle="collapse" type="button">
+                                ASP.NET Core Integration
+                            </button>
+                        </h3>
+                        <div class="accordion-collapse collapse" data-bs-parent="#frameworkAccordion"
+                            id="aspNetCoreIntegration">
+                            <div class="accordion-body">
+                                <!-- ASP.NET Core Integration -->
+                                <div class="mb-4">
+                                    <h4>ASP.NET Core Integration</h4>
+                                    <div class="code-example">
+                                        <pre><code>// Controller
+[ApiController]
+[Route("api/[controller]")]
+public class DataController : ControllerBase
+{
+    private readonly IDataService _service;
+
+    public DataController(IDataService service)
+    {
+        _service = service;
+    }
+
+    [HttpGet]
+    public async Task<iactionresult> GetData([FromQuery] DataTableRequest request)
+    {
+        var data = await _service.GetDataAsync();
+        
+        // Apply server-side processing
+        var result = data
+            .Skip(request.Start)
+            .Take(request.Length)
+            .ToList();
+
+        return Ok(new {
+            draw = request.Draw,
+            recordsTotal = data.Count,
+            recordsFiltered = data.Count,
+            data = result
+        });
+    }
+}
+
+// JavaScript/TypeScript
+import { SmartTables } from 'smarttables';
+
+const table = new SmartTables('myTable', {
+    data: {
+        type: 'ajax',
+        source: '/api/data',
+        serverSide: true,
+        method: 'GET',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        }
+    }
+});</iactionresult></code></pre>
+                                    </div>
+                                    <div class="info mt-3">
+                                        <strong>ASP.NET Core-Specific Tips:</strong>
+                                        <ul>
+                                            <li>Use dependency injection for services</li>
+                                            <li>Implement proper error handling and logging</li>
+                                            <li>Consider using Entity Framework Core for data access
+                                            </li>
+                                            <li>Use middleware for authentication and authorization
+                                            </li>
+                                            <li>Consider using SignalR for real-time updates</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- General Integration Tips -->
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" data-bs-target="#generalTips"
+                                data-bs-toggle="collapse" type="button">
+                                General Integration Tips
+                            </button>
+                        </h3>
+                        <div class="accordion-collapse collapse" data-bs-parent="#frameworkAccordion" id="generalTips">
+                            <div class="accordion-body">
+                                <div class="pro-tip">
+                                    <strong>Pro Tip:</strong> When integrating with any framework,
+                                    always ensure proper cleanup by calling the
+                                    <code>destroy()</code> method when the component is unmounted or
+                                    the table is no longer needed. This prevents memory leaks and
+                                    ensures proper event cleanup.
+                                </div>
+                                <div class="info">
+                                    <p>Framework-Specific Considerations:</p>
+                                    <ul class="list-spaced">
+                                        <li><strong>Modern JavaScript:</strong> Use ES6+ features
+                                            like arrow functions, destructuring, and async/await for
+                                            cleaner code.</li>
+                                        <li><strong>TypeScript:</strong> Leverage TypeScript for
+                                            better type safety and developer experience.</li>
+                                        <li><strong>State Management:</strong> Consider using your
+                                            framework's state management solution (Redux, Vuex,
+                                            etc.) to handle table data and state.</li>
+                                        <li><strong>CSRF Protection:</strong> Include appropriate
+                                            CSRF tokens in AJAX requests when required by your
+                                            backend framework.</li>
+                                        <li><strong>Error Handling:</strong> Implement proper error
+                                            handling both on the frontend and backend.</li>
+                                        <li><strong>Performance:</strong> Use appropriate caching
+                                            strategies and optimize database queries.</li>
+                                        <li><strong>Security:</strong> Implement proper
+                                            authentication and authorization mechanisms.</li>
+                                        <li><strong>Testing:</strong> Write unit tests for both
+                                            frontend and backend components.</li>
+                                        <li><strong>Real-time Updates:</strong> Consider using
+                                            WebSocket or similar technologies for real-time data
+                                            updates.</li>
+                                        <li><strong>Accessibility:</strong> Ensure your table
+                                            implementation follows WCAG guidelines for
+                                            accessibility.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="concept-section" id="smarttables-server-side">
+                <h2 class="concept-title">Server-side Processing</h2>
+                <p>SmartTables provides robust server-side processing for handling large datasets
+                    efficiently. By enabling <code>data.serverSide: true</code>, data filtering,
+                    sorting, and pagination are offloaded to the server, ideal for datasets with
+                    thousands or millions of records. The server processes requests and returns only
+                    the necessary data for display, ensuring fast performance.</p>
+                <h4>Server-side Configuration</h4>
+                <p>Configure SmartTables to fetch data from a server endpoint using AJAX with
+                    server-side processing enabled:</p>
+                <div class="code-example">
+                    <pre><code>import { SmartTables } from 'smarttables';
+const serverTable = new SmartTables('serverTable', {
+    data: {
+        type: 'ajax',
+        source: '/api/employees',
+        serverSide: true,
+        method: 'GET',
+        prefetch: true,
+        cacheDuration: 300000, // 5 minutes cache duration
+        columns: [
+            { data: 'id', title: 'ID' },
+            { data: 'name', title: 'Name' },
+            { data: 'department', title: 'Department' },
+            { data: 'age', title: 'Age' },
+            { data: 'salary', title: 'Salary' },
+            { data: 'bonus', title: 'Bonus' }
+        ]
+    }
+});
+</code></pre>
+                </div>
+                <h4>Server Response Format</h4>
+                <p>The server must return data in the following JSON format, compatible with
+                    SmartTables' expectations:</p>
+                <div class="code-example">
+                    <pre><code>{
+    "data": [
+        { "id": 1, "name": "John Doe", "department": "Finance", "age": 32, "salary": 85000, "bonus": 5000 },
+        { "id": 2, "name": "Jane Smith", "department": "HR", "age": 28, "salary": 65000, "bonus": 3000 }
+        // ... more records
+    ],
+    "total": 1000 // Total records after filtering
+}
+</code></pre>
+                </div>
+                <div class="warning">
+                    <strong>Important:</strong> Unlike some table libraries, SmartTables expects
+                    <code>total</code> instead of <code>recordsTotal</code> or
+                    <code>recordsFiltered</code>. Ensure your server returns the correct field to
+                    avoid pagination issues.
+                </div>
+                <h4>Request Parameters</h4>
+                <p>SmartTables sends the following query parameters in GET requests to the server:
+                </p>
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-striped table-clean">
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Description</th>
+                                <th>Example</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>page</code></td>
+                                <td>Current page number (1-based)</td>
+                                <td><code>2</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>perPage</code></td>
+                                <td>Number of records per page</td>
+                                <td><code>10</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>search</code></td>
+                                <td>Global search value</td>
+                                <td><code>Finance</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>sortColumn</code></td>
+                                <td>Name of the column being sorted</td>
+                                <td><code>department</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>sortDirection</code></td>
+                                <td>Direction of sort</td>
+                                <td><code>asc</code> or <code>desc</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> Use the <code>data.params</code> option to customize
+                    parameter names if your server expects different ones (e.g., <code>limit</code>
+                    instead of <code>perPage</code>):
+                </div>
+                <pre><code>data: {
+    type: 'ajax',
+    source: '/api/employees',
+    serverSide: true,
+    params: {
+        limit: function() { return this.perPage; },
+        offset: function() { return (this.currentPage - 1) * this.perPage; },
+        query: 'search'
+    }
+}</code></pre>
+                <h4 class="mt-4">Advanced Caching for Server-side Data</h4>
+                <p>SmartTables enhances performance with client-side caching and prefetching:</p>
+                <ul class="list-spaced">
+                    <li><strong>Cache Keys:</strong> Unique keys are generated based on
+                        <code>page</code>, <code>search</code>, <code>sortColumn</code>, and
+                        <code>sortDirection</code>.</li>
+                    <li><strong>Prefetching:</strong> Automatically loads the next page when
+                        <code>prefetch: true</code>, reducing wait times.</li>
+                    <li><strong>Cache Invalidation:</strong> Clears cache on parameter changes
+                        (e.g., new search term).</li>
+                    <li><strong>Cache Duration:</strong> Configurable via <code>cacheDuration</code>
+                        (default: 5 minutes).</li>
+                </ul>
+                <div class="code-example">
+                    <pre><code>const serverTable = new SmartTables('serverTable', {
+    data: {
+        type: 'ajax',
+        source: '/api/employees',
+        serverSide: true,
+        prefetch: true,
+        cacheDuration: 600000, // 10 minutes
+        withCredentials: true,
+        headers: { 'X-API-Key': 'your-api-key' }
+    },
+    debug: true // Log cache operations
+});</code></pre>
+                </div>
+                <h4 class="mt-4">Implementing a Server-side Endpoint</h4>
+                <p>Below are example implementations in multiple languages to demonstrate
+                    flexibility. Your server should handle pagination, filtering, and sorting based
+                    on the request parameters and return the expected response format.</p>
+                <div class="accordion" id="backendIntegrationsAccordion">
+                    <!-- ASP.NET Core -->
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" data-bs-target="#aspNetCoreIntegration"
+                                data-bs-toggle="collapse" type="button">
+                                ASP.NET Core (C#)
+                            </button>
+                        </h3>
+                        <div class="accordion-collapse collapse" data-bs-parent="#backendIntegrationsAccordion"
+                            id="aspNetCoreIntegration">
+                            <div class="accordion-body">
+                                <p>This example uses ASP.NET Core with Entity Framework Core for
+                                    database access, implementing server-side processing with
+                                    caching.</p>
+                                <div class="code-example">
+                                    <pre><code>using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+
+public class Employee
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string Department { get; set; }
+    public int Age { get; set; }
+    public decimal Salary { get; set; }
+    public decimal Bonus { get; set; }
+}
+
+public class PaginatedResponse&lt;T&gt;
+{
+    public T[] Data { get; set; }
+    public int Total { get; set; }
+}
+
+[ApiController]
+[Route("api/[controller]")]
+public class EmployeesController : ControllerBase
+{
+    private readonly AppDbContext _context;
+    private readonly IMemoryCache _cache;
+
+    public EmployeesController(AppDbContext context, IMemoryCache cache)
+    {
+        _context = context;
+        _cache = cache;
+    }
+
+    [HttpGet]
+    public async Task&lt;IActionResult&gt; GetEmployees(
+        [FromQuery] int page = 1,
+        [FromQuery] int perPage = 10,
+        [FromQuery] string search = "",
+        [FromQuery] string sortColumn = "",
+        [FromQuery] string sortDirection = "asc")
+    {
+        try
+        {
+            // Generate cache key
+            string cacheKey = $"employees_{page}_{perPage}_{search}_{sortColumn}_{sortDirection}";
+
+            // Try to get from cache
+            if (!_cache.TryGetValue(cacheKey, out PaginatedResponse&lt;Employee&gt; response))
+            {
+                // Base query
+                var query = _context.Employees.AsQueryable();
+
+                // Apply search
+                if (!string.IsNullOrEmpty(search))
+                {
+                    query = query.Where(e =&gt;
+                        e.Name.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                        e.Department.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                        e.Age.ToString().Contains(search) ||
+                        e.Salary.ToString().Contains(search) ||
+                        e.Bonus.ToString().Contains(search));
+                }
+
+                // Get total count
+                int total = await query.CountAsync();
+
+                // Apply sorting
+                if (!string.IsNullOrEmpty(sortColumn))
+                {
+                    query = sortDirection.ToLower() == "asc"
+                        ? query.OrderBy(e =&gt; EF.Property&lt;object&gt;(e, sortColumn))
+                        : query.OrderByDescending(e =&gt; EF.Property&lt;object&gt;(e, sortColumn));
+                }
+
+                // Apply pagination
+                query = query.Skip((page - 1) * perPage).Take(perPage);
+
+                // Execute query
+                var data = await query.ToArrayAsync();
+
+                response = new PaginatedResponse&lt;Employee&gt;
+                {
+                    Data = data,
+                    Total = total
+                };
+
+                // Cache the result
+                _cache.Set(cacheKey, response, TimeSpan.FromMinutes(5));
+            }
+
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { data = Array.Empty&lt;Employee&gt;(), total = 0, error = "Internal server error" });
+        }
+    }
+}
+</code></pre>
+                                </div>
+                                <div class="info mt-3">
+                                    <strong>ASP.NET Core Tips:</strong>
+                                    <ul>
+                                        <li>Use <code>IMemoryCache</code> or
+                                            <code>IDistributedCache</code> for caching responses.
+                                        </li>
+                                        <li>Validate <code>sortColumn</code> to prevent SQL
+                                            injection when using dynamic sorting.</li>
+                                        <li>Consider using dependency injection for database context
+                                            and logging.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Node.js -->
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" data-bs-target="#nodeJSIntegration"
+                                data-bs-toggle="collapse" type="button">
+                                Node.js (Express.js)
+                            </button>
+                        </h3>
+                        <div class="accordion-collapse collapse" data-bs-parent="#backendIntegrationsAccordion"
+                            id="nodeJSIntegration">
+                            <div class="accordion-body">
+                                <p>A simple Express.js implementation with in-memory data, adaptable
+                                    to any database.</p>
+                                <div class="code-example">
+                                    <pre><code>const express = require('express');
+const cors = require('cors');
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+// Mock data (replace with database)
+const employees = [
+    { id: 1, name: 'John Doe', department: 'Engineering', age: 32, salary: 85000, bonus: 5000 },
+    { id: 2, name: 'Jane Smith', department: 'Marketing', age: 28, salary: 65000, bonus: 3000 }
+    // ... more records
+];
+
+app.get('/api/employees', async (req, res) =&gt; {
+    try {
+        const { page = 1, perPage = 10, search = '', sortColumn = '', sortDirection = 'asc' } = req.query;
+        const pageNum = parseInt(page);
+        const perPageNum = parseInt(perPage);
+
+        // Filter data
+        let filteredData = employees;
+        if (search) {
+            const searchLower = search.toLowerCase();
+            filteredData = employees.filter(item =&gt;
+                Object.values(item).some(val =&gt;
+                    String(val).toLowerCase().includes(searchLower)
+                )
+            );
+        }
+
+        // Get total
+        const total = filteredData.length;
+
+        // Sort data
+        if (sortColumn) {
+            filteredData.sort((a, b) =&gt; {
+                const aVal = a[sortColumn];
+                const bVal = b[sortColumn];
+                if (typeof aVal === 'number' &amp;&amp; typeof bVal === 'number') {
+                    return sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
+                }
+                const aStr = String(aVal).toLowerCase();
+                const bStr = String(bVal).toLowerCase();
+                return sortDirection === 'asc' ? aStr.localeCompare(bStr) : bStr.localeCompare(aStr);
+            });
+        }
+
+        // Paginate
+        const offset = (pageNum - 1) * perPageNum;
+        const paginatedData = filteredData.slice(offset, offset + perPageNum);
+
+        res.json({
+            data: paginatedData,
+            total
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ data: [], total: 0, error: 'Internal server error' });
+    }
+});
+
+app.listen(3000, () =&gt; console.log('Server running on port 3000'));
+</code></pre>
+                                </div>
+                                <div class="info mt-3">
+                                    <strong>Node.js Tips:</strong>
+                                    <ul>
+                                        <li>Integrate with a database like MongoDB or PostgreSQL for
+                                            production.</li>
+                                        <li>Use a caching layer like Redis for better performance.
+                                        </li>
+                                        <li>Add middleware for authentication if needed.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Python -->
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" data-bs-target="#pythonIntegration"
+                                data-bs-toggle="collapse" type="button">
+                                Python (FastAPI)
+                            </button>
+                        </h3>
+                        <div class="accordion-collapse collapse" data-bs-parent="#backendIntegrationsAccordion"
+                            id="pythonIntegration">
+                            <div class="accordion-body">
+                                <p>A FastAPI implementation using SQLAlchemy for database
+                                    operations.</p>
+                                <div class="code-example">
+                                    <pre><code>from fastapi import FastAPI, Depends
+from sqlalchemy.orm import Session
+from sqlalchemy import or_, desc, asc
+from typing import Optional
+from pydantic import BaseModel
+import models
+from database import SessionLocal
+
+app = FastAPI()
+
+# Pydantic model for response
+class PaginatedResponse(BaseModel):
+    data: list
+    total: int
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+@@app.get("/api/employees", response_model=PaginatedResponse)
+async def get_employees(
+    page: int = 1,
+    perPage: int = 10,
+    search: Optional[str] = None,
+    sortColumn: Optional[str] = None,
+    sortDirection: str = "asc",
+    db: Session = Depends(get_db)
+):
+    try:
+        # Base query
+        query = db.query(models.Employee)
+
+        # Apply search
+        if search:
+            query = query.filter(
+                or_(
+                    models.Employee.name.ilike(f"%{search}%"),
+                    models.Employee.department.ilike(f"%{search}%"),
+                    models.Employee.age.cast(str).ilike(f"%{search}%"),
+                    models.Employee.salary.cast(str).ilike(f"%{search}%"),
+                    models.Employee.bonus.cast(str).ilike(f"%{search}%")
+                )
+            )
+
+        # Get total
+        total = query.count()
+
+        # Apply sorting
+        if sortColumn:
+            column = getattr(models.Employee, sortColumn, None)
+            if column:
+                query = query.order_by(asc(column) if sortDirection == "asc" else desc(column))
+
+        # Apply pagination
+        offset = (page - 1) * perPage
+        query = query.offset(offset).limit(perPage)
+
+        # Execute
+        data = query.all()
+
+        return {
+            "data": data,
+            "total": total
+        }
+    except Exception as e:
+        return {"data": [], "total": 0, "error": str(e)}
+</code></pre>
+                                </div>
+                                <div class="info mt-3">
+                                    <strong>Python Tips:</strong>
+                                    <ul>
+                                        <li>Use Pydantic models for response validation.</li>
+                                        <li>Implement caching with libraries like
+                                            <code>cachetools</code>.</li>
+                                        <li>Secure endpoints with FastAPI's security utilities.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h4 class="mt-4">Handling Pagination with Search</h4>
+                <p>Ensure consistent total counts across requests to prevent pagination issues:</p>
+                <div class="code-example">
+                    <pre><code>const table = new SmartTables('myTable', {
+    data: {
+        serverSide: true,
+        source: '/api/employees',
+        method: 'GET'
+    },
+    hooks: {
+        afterDataLoad: function(response) {
+            console.log('Total records:', response.total);
+        }
+    }
+});
+</code></pre>
+                </div>
+                <div class="warning">
+                    <strong>Important Considerations:</strong>
+                    <ul class="mb-0">
+                        <li>Calculate <code>total</code> after applying filters but before
+                            pagination.</li>
+                        <li>Reset to page 1 when search changes to avoid invalid page requests.</li>
+                        <li>Validate <code>sortColumn</code> to ensure it matches valid fields.</li>
+                        <li>Use logging to debug inconsistencies in counts or data.</li>
+                    </ul>
+                </div>
+                <h4>Real-time Debugging</h4>
+                <p>Enable <code>debug: true</code> to log AJAX requests, responses, and cache
+                    operations:</p>
+                <ul class="list-spaced">
+                    <li>Request parameters sent to the server.</li>
+                    <li>Cache hits, misses, and key generation.</li>
+                    <li>Prefetching status and errors.</li>
+                    <li>Total counts and pagination calculations.</li>
+                </ul>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> Combine client-side debug logs with server-side
+                    logging to troubleshoot issues. Check that <code>total</code> remains consistent
+                    across pages for the same search query.
+                </div>
+            </section>
+            <section class="concept-section" id="smarttables-troubleshooting">
+                <h2 class="concept-title">Troubleshooting</h2>
+                <div class="warning">
+                    <strong>Common Issues:</strong>
+                    <ul class="mb-0">
+                        <li><strong>Table not responsive?</strong> Make sure you've set
+                            <code>data-priority</code> attributes on your table headers.</li>
+                        <li><strong>Search not working as expected?</strong> Check your
+                            <code>fuzzyMatch</code> settings and try adjusting the threshold.</li>
+                        <li><strong>Export not working?</strong> Ensure you have the required
+                            dependencies for Excel export.</li>
+                        <li><strong>Performance issues?</strong> Try reducing the number of rows per
+                            page or use server-side processing.</li>
+                    </ul>
+                </div>
+                <h4>Server-side Processing Issues</h4>
+                <p>When working with server-side processing, you might encounter these common
+                    challenges:</p>
+                <div class="accordion" id="troubleshootingAccordion">
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" data-bs-target="#inconsistentCounts"
+                                data-bs-toggle="collapse" type="button">
+                                Inconsistent Row Counts in Pagination
+                            </button>
+                        </h3>
+                        <div class="accordion-collapse collapse" data-bs-parent="#troubleshootingAccordion"
+                            id="inconsistentCounts">
+                            <div class="accordion-body">
+                                <p><strong>Symptoms:</strong> The table shows different total counts
+                                    when navigating between pages. For example, page 1 shows
+                                    "Showing 1 to 10 of 25 entries" but page 2 shows "Showing 11 to
+                                    20 of 13 entries".</p>
+                                <p><strong>Solutions:</strong></p>
+                                <ul>
+                                    <li><strong>Server-side:</strong> Ensure the search filter is
+                                        applied consistently before calculating the total count.
+                                        Apply the search once to the entire dataset before
+                                        pagination.</li>
+                                    <li><strong>Client-side:</strong> Clear the cache when search
+                                        parameters change using <code>clearAjaxCache()</code>, and
+                                        ensure the total from the server response is stored
+                                        consistently.</li>
+                                    <li><strong>Debug:</strong> Add logging on both server and
+                                        client to track the search term, filtered count, and total
+                                        count across requests.</li>
+                                </ul>
+                                <div class="code-example">
+                                    <pre><code>// Server-side fix (PHP example)
+// Apply search filter once to get consistent count
+$filteredData = [];
+$totalRecords = count($data);
+
+if (!empty($search)) {
+    $searchLower = strtolower($search);
+    foreach ($data as $item) {
+        $found = false;
+        foreach ($item as $key =&gt; $value) {
+            $strValue = strtolower((string)$value);
+            if (strpos($strValue, $searchLower) !== false) {
+                $found = true;
+                break;
+            }
+        }
+        if ($found) {
+            $filteredData[] = $item;
+        }
+    }
+} else {
+    $filteredData = $data;
+}
+
+// Get TOTAL filtered count BEFORE pagination
+$totalFiltered = count($filteredData);
+
+// Now apply pagination
+$offset = ($page - 1) * $perPage;
+$paginatedData = array_slice($filteredData, $offset, $perPage);
+
+// Return consistent counts
+return [
+    'recordsTotal' =&gt; $totalRecords,
+    'recordsFiltered' =&gt; $totalFiltered,
+    'data' =&gt; $paginatedData
+];</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" data-bs-target="#cachingIssues"
+                                data-bs-toggle="collapse" type="button">
+                                Caching and Prefetch Issues
+                            </button>
+                        </h3>
+                        <div class="accordion-collapse collapse" data-bs-parent="#troubleshootingAccordion"
+                            id="cachingIssues">
+                            <div class="accordion-body">
+                                <p><strong>Symptoms:</strong> Stale data appears after changing
+                                    search parameters, or prefetching doesn't seem to work.</p>
+                                <p><strong>Solutions:</strong></p>
+                                <ul>
+                                    <li><strong>Cache keys:</strong> Ensure cache keys include all
+                                        relevant parameters (search term, sort column, sort
+                                        direction)</li>
+                                    <li><strong>Cache invalidation:</strong> Clear the cache when
+                                        search or sort parameters change</li>
+                                    <li><strong>Cache debugging:</strong> Enable debug mode to see
+                                        cache operations in the console</li>
+                                </ul>
+                                <div class="code-example">
+                                    <pre><code>// Client-side cache key generation
+generateCacheKey() {
+    // Include ALL parameters that affect the results in the key
+    const params = {
+        url: this.options.data.url,
+        page: this.currentPage,
+        perPage: this.options.perPage,
+        search: this.searchQuery || '',
+        sort: this.currentSort
+    };
+    
+    this.log('Generating cache key with params:', JSON.stringify(params));
+    return JSON.stringify(params);
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" data-bs-target="#sortingIssues"
+                                data-bs-toggle="collapse" type="button">
+                                Incorrect Sorting
+                            </button>
+                        </h3>
+                        <div class="accordion-collapse collapse" data-bs-parent="#troubleshootingAccordion"
+                            id="sortingIssues">
+                            <div class="accordion-body">
+                                <p><strong>Symptoms:</strong> Columns sort incorrectly, especially
+                                    numeric, date, or special format columns.</p>
+                                <p><strong>Solutions:</strong></p>
+                                <ul>
+                                    <li><strong>Column mapping:</strong> Implement direct column
+                                        mapping between column indices and field names</li>
+                                    <li><strong>Data type detection:</strong> Sort different data
+                                        types appropriately (numbers, dates, strings)</li>
+                                    <li><strong>Normalization:</strong> Normalize values before
+                                        comparison for consistent sorting</li>
+                                </ul>
+                                <div class="code-example">
+                                    <pre><code>// Server-side sorting solution (PHP)
+// Define column map for sorting
+$columnMap = [
+    0 =&gt; 'id',
+    1 =&gt; 'name',
+    2 =&gt; 'position',
+    3 =&gt; 'office',
+    4 =&gt; 'age',
+    5 =&gt; 'startDate',
+    6 =&gt; 'salary'
+];
+
+// Identify data types for special handling
+$numericFields = ['id', 'age', 'salary', 'bonus', 'progress'];
+$dateFields = ['startDate', 'hireDate'];
+
+// Apply sorting with data type awareness
+if ($order) {
+    $columnIndex = $order['column'];
+    $columnKey = isset($columnMap[$columnIndex]) ? $columnMap[$columnIndex] : null;
+    $direction = $order['dir'];
+    
+    if ($columnKey) {
+        usort($filteredData, function($a, $b) use ($columnKey, $direction, $numericFields, $dateFields) {
+            // Handle numeric fields
+            if (in_array($columnKey, $numericFields)) {
+                $aVal = (float)$a[$columnKey];
+                $bVal = (float)$b[$columnKey];
+                return $direction === 'asc' ? $aVal - $bVal : $bVal - $aVal;
+            }
+            // Handle date fields
+            else if (in_array($columnKey, $dateFields)) {
+                $aDate = strtotime($a[$columnKey]);
+                $bDate = strtotime($b[$columnKey]);
+                return $direction === 'asc' ? $aDate - $bDate : $bDate - $aDate;
+            }
+            // Default string comparison
+            else {
+                $aVal = strtolower($a[$columnKey]);
+                $bVal = strtolower($b[$columnKey]);
+                $result = strcmp($aVal, $bVal);
+                return $direction === 'asc' ? $result : -$result;
+            }
+        });
+    }
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" data-bs-target="#emptyResultsIssues"
+                                data-bs-toggle="collapse" type="button">
+                                Empty Results or Navigation Issues
+                            </button>
+                        </h3>
+                        <div class="accordion-collapse collapse" data-bs-parent="#troubleshootingAccordion"
+                            id="emptyResultsIssues">
+                            <div class="accordion-body">
+                                <p><strong>Symptoms:</strong> Empty results when navigating to a
+                                    page, or "No matching records found" errors when searching.</p>
+                                <p><strong>Solutions:</strong></p>
+                                <ul>
+                                    <li><strong>Max page calculation:</strong> Ensure the max page
+                                        is calculated based on filtered results</li>
+                                    <li><strong>Page clamping:</strong> If requested page exceeds
+                                        max page, clamp to max page</li>
+                                    <li><strong>Search resets:</strong> Reset to page 1 when search
+                                        query changes</li>
+                                </ul>
+                                <div class="code-example">
+                                    <pre><code>// Server-side page validation (PHP)
+// Calculate maximum page based on filtered count
+$maxPage = ceil($totalFiltered / $perPage);
+
+// Ensure page is valid
+if ($page &lt; 1) {
+    $page = 1;
+} else if ($page &gt; $maxPage &amp;&amp; $maxPage &gt; 0) {
+    $page = $maxPage;
+}
+
+// Calculate offset based on validated page
+$offset = ($page - 1) * $perPage;
+
+// Client-side search reset
+handleSearch(value) {
+    this.searchQuery = value;
+
+    if (this.options.data.serverSide) {
+        // Reset the cache when search changes
+        this.clearAjaxCache();
+        
+        this.currentPage = 1; // Reset to first page on new search
+        this.loadAjax(); // Fetch new data with search query
+    } else {
+        // Client-side search logic
+    }
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="concept-section" id="smarttables-manage-records">
+                <h2 class="concept-title">Managing Records with SmartTables</h2>
+                <p>SmartTables provides powerful functionality for managing records with full CRUD
+                    (Create, Read, Update, Delete) operations. This allows you to build interactive
+                    data management interfaces with minimal effort.</p>
+                <h4>Basic Setup for Record Management</h4>
+                <div class="code-example">
+                    <pre><code>// Import the SmartTables module
+import { SmartTables } from './optional/smartTables/smartTables.bundle.js';
+
+document.addEventListener('DOMContentLoaded', () =&gt; {
+    // Initialize SmartTables with data management options
+    const clientTable = new SmartTables('clientTable', {
+        // Data configuration
+        data: {
+            type: 'json',
+            source: sampleData,  // Your data array
+            idField: 'id',       // Field that uniquely identifies each record
+            columns: [
+                { data: 'id', title: 'ID', editable: false },
+                { data: 'name', title: 'Name', required: true },
+                { data: 'email', title: 'Email', type: 'email', required: true },
+                { data: 'phone', title: 'Phone', type: 'tel' },
+                { data: 'active', title: 'Active', type: 'boolean' },
+                { 
+                    data: 'actions',
+                    title: 'Actions',
+                    sortable: false,
+                    editable: false,
+                    render: (data, row) =&gt; 
+                        '&lt;button type="button" class="btn btn-primary btn-xs edit-btn" data-id="' + row.id + '"&gt;Edit&lt;/button&gt; ' + 
+                        '&lt;button type="button" class="btn btn-danger btn-xs delete-btn" data-id="' + row.id + '"&gt;Del&lt;/button&gt;'
+                }
+            ]
+        },
+        // Enable record management features
+        addRecord: true,  // Shows an Add Record button
+        // Other options...
+    });
+
+    // Handle edit and delete button clicks with event delegation
+    clientTable.table.addEventListener('click', e =&gt; {
+        if (e.target.classList.contains('edit-btn')) {
+            const rowId = e.target.getAttribute('data-id');
+            clientTable.edit(rowId);
+        } else if (e.target.classList.contains('delete-btn')) {
+            const rowId = e.target.getAttribute('data-id');
+            clientTable.delete(rowId);
+        }
+    });
+});</code></pre>
+                </div>
+                <h4>Advanced Record Management with Hooks</h4>
+                <p>SmartTables provides a comprehensive hooks system to customize the behavior of
+                    record management operations:</p>
+                <div class="code-example">
+                    <pre><code>const table = new SmartTables('myTable', {
+    // ... other options
+    hooks: {
+        // Edit operation hooks
+        beforeEdit(rowId) {
+            // Called before edit mode is entered
+            console.log('Editing row: ' + rowId);
+            return true; // Return false to prevent editing
+        },
+        afterEdit(rowId, rowData, success) {
+            // Called after edit is completed
+            console.log('Edit completed: ' + success);
+        },
+        onEditModalCreated(modalHTML, rowId, rowData) {
+            // Customize the edit modal HTML
+            return modalHTML;
+        },
+        onEditModalBeforeShow(modalElement, rowId, rowData) {
+            // Access the modal DOM before it's shown
+        },
+        onEditDataCollected(updatedData, rowId, originalData) {
+            // Process and validate form data
+            return updatedData;
+        },
+        onEditSuccess(rowId, updatedRecord, submittedData) {
+            // Handle successful update
+            console.log('Record updated successfully');
+        },
+        onEditError(rowId, error, attemptedData) {
+            // Handle update errors
+            console.error('Update failed', error);
+        },
+
+        // Delete operation hooks
+        beforeDelete(rowId) {
+            // Called before deletion
+            return confirm('Are you sure you want to delete this record?');
+        },
+        afterDelete(rowId, data, success) {
+            // Called after deletion attempt
+            if (success) console.log('Deletion successful');
+        },
+        onDeleteModalCreated(modalHtml, rowId) {
+            // Customize deletion confirmation modal
+            return modalHtml;
+        },
+        onDeleteSuccess(rowId, deletedRecord) {
+            // Handle successful deletion
+        },
+
+        // Add record operation hooks
+        beforeAddRecord(initialData, options) {
+            // Called before add form is shown
+            return initialData; // Return modified initial data
+        },
+        afterAddRecord(newRecordData, success) {
+            // Called after add operation completes
+            if (success) console.log('Record added');
+        },
+        onAddModalCreated(modalHTML, initialData, options) {
+            // Customize add record modal
+            return modalHTML;
+        },
+        onAddModalBeforeShow(modalElement, initialData, options) {
+            // DOM access before modal shows
+        },
+        onAddDataCollected(newRecordData, options) {
+            // Process and validate new record data
+            return newRecordData;
+        },
+        onAddRecordSuccess(newRecord) {
+            // Handle successful addition
+        },
+        onAddRecordError(error, attemptedData) {
+            // Handle addition errors
+        },
+        onAddCancelled(options) {
+            // Called when add is cancelled
+        }
+    }
+});</code></pre>
+                </div>
+                <h4>Column Type Configuration</h4>
+                <p>SmartTables supports various input types for different data fields:</p>
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-striped table-clean">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Description</th>
+                                <th>Additional Options</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>text</code></td>
+                                <td>Default text input</td>
+                                <td>maxlength, pattern</td>
+                            </tr>
+                            <tr>
+                                <td><code>number</code></td>
+                                <td>Numeric input</td>
+                                <td>min, max, step</td>
+                            </tr>
+                            <tr>
+                                <td><code>email</code></td>
+                                <td>Email input with validation</td>
+                                <td>pattern</td>
+                            </tr>
+                            <tr>
+                                <td><code>tel</code></td>
+                                <td>Telephone input</td>
+                                <td>format, placeholder</td>
+                            </tr>
+                            <tr>
+                                <td><code>date</code></td>
+                                <td>Date picker</td>
+                                <td>min, max</td>
+                            </tr>
+                            <tr>
+                                <td><code>select</code></td>
+                                <td>Dropdown selection</td>
+                                <td>options (array)</td>
+                            </tr>
+                            <tr>
+                                <td><code>boolean</code></td>
+                                <td>Checkbox</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <td><code>password</code></td>
+                                <td>Password input</td>
+                                <td>minlength</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="code-example">
+                    <pre><code>// Column configuration examples for different types
+columns: [
+    { 
+        data: 'salary', 
+        title: 'Salary', 
+        type: 'number',     // Numeric input
+        min: 0,             // Minimum value
+        step: 500,          // Increment by 500
+        render: data =&gt; '$' + data.toLocaleString() // Format with $ and commas
+    },
+    { 
+        data: 'department', 
+        title: 'Department', 
+        type: 'select',     // Dropdown select input
+        options: [          // Available options
+            'Engineering',
+            'Sales',
+            'Marketing',
+            'Human Resources'
+        ]
+    },
+    { 
+        data: 'joinDate', 
+        title: 'Join Date',  
+        type: 'date',       // Date input
+        render: data =&gt; new Date(data).toLocaleDateString() // Format date
+    },
+    { 
+        data: 'active', 
+        title: 'Active', 
+        type: 'boolean',    // Boolean/checkbox
+        render: data =&gt; data ? 
+            '&lt;span class="badge bg-success"&gt;Yes&lt;/span&gt;' : 
+            '&lt;span class="badge bg-danger"&gt;No&lt;/span&gt;'
+    }
+]</code></pre>
+                </div>
+                <h4>Visual Feedback for Row States</h4>
+                <p>Implement visual feedback for different row states during CRUD operations:</p>
+                <div class="code-example">
+                    <pre><code>// Track row states
+const rowStates = {
+    editing: null,     // ID of the row being edited
+    saved: new Set(),  // Set of recently saved row IDs
+    adding: false      // Flag for adding operation
+};
+
+// Apply classes in hooks
+hooks: {
+    beforeEdit(rowId) {
+        rowStates.editing = rowId;
+        const rowElement = this.table.querySelector('tbody tr[data-id="' + rowId + '"]');
+        if (rowElement) {
+            rowElement.classList.add('editing');
+        }
+        return true;
+    },
+    
+    afterEdit(rowId, rowData, success) {
+        rowStates.editing = null;
+        if (success) {
+            rowStates.saved.add(rowId);
+            setTimeout(() =&gt; {
+                rowStates.saved.delete(rowId);
+                const row = this.table.querySelector('tbody tr[data-id="' + rowId + '"]');
+                if (row) row.classList.remove('saved');
+            }, 3000);
+        }
+        this.draw();
+    }
+}</code></pre>
+                </div>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> When implementing CRUD operations, consider using a
+                    custom modal system for consistency across the application. SmartTables hooks
+                    make it easy to integrate with custom UI components.
+                </div>
+            </section>
+        </div>
+        <div class="order-1 order-xl-2 col-lg-12 col-xl-3 position-relative">
+            <!-- Sidebar (Right Side) - Sticky Navigation -->
+            <h5 class="mb-3 ps-lg-3">On This Page</h5>
+            <ul class="list-unstyled ps-lg-3">
+                <li class="py-1"><a href="#smarttables">Introduction</a></li>
+                <li class="py-1"><a href="#smarttables-installation">Installation</a></li>
+                <li class="py-1"><a href="#smarttables-configuration">Configuration</a></li>
+                <li class="py-1"><a href="#smarttables-advanced-configuration">Advanced
+                        Configuration</a></li>
+                <li class="py-1"><a href="#smarttables-data-loading">Data Loading</a></li>
+                <li class="py-1"><a href="#smarttables-data-import">Data Import</a></li>
+                <li class="py-1"><a href="#smarttables-event-hooks">Event Hooks</a></li>
+                <li class="py-1"><a href="#smarttables-search-capabilities">Search Capabilities</a>
+                </li>
+                <li class="py-1"><a href="#smarttables-responsive-behavior">Responsive Behavior</a>
+                </li>
+                <li class="py-1"><a href="#smarttables-export-options">Export Options</a></li>
+                <li class="py-1"><a href="#smarttables-api-methods">API Methods</a></li>
+                <li class="py-1"><a href="#smarttables-plugin-system">Plugin System</a></li>
+                <li class="py-1"><a href="#smarttables-performance-tips">Performance Tips</a></li>
+                <li class="py-1"><a href="#smarttables-framework-integrations">Framework
+                        Integrations</a></li>
+                <li class="py-1"><a href="#smarttables-server-side">Server-side Processing</a></li>
+                <li class="py-1"><a href="#smarttables-troubleshooting">Troubleshooting</a></li>
+                <li class="py-1"><a href="#smarttables-manage-records">Managing Records</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+<script src="~/plugins/highlightjs/highlight.min.js"></script>
+<script src="~/plugins/highlightjs/go.min.js"></script>
+<script src="~/scripts/pages/code-highlight.js"></script>
+}

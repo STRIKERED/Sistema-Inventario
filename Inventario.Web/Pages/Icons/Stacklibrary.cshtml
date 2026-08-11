@@ -1,0 +1,42 @@
+@page "/icons-stacklibrary"
+@model Inventario.Web.Pages.Icons.StacklibraryModel
+
+@{
+    ViewBag.Title = "Stacklibrary";
+}
+
+@section styles
+{
+
+}
+
+@await Html.PartialAsync("~/Pages/Shared/Partials/_PageTitle.cshtml", new {
+pageTitle = "Stack Library",
+pageSubTitle1 = "Icons",
+pageSubTitle2 = "SmartAdmin",
+pageSubText = "Your saved stacked icons collection"
+})
+
+<div class="main-content">
+    <div class="card">
+        <div class="card-body" style="min-height: calc(100vh - 340px);">
+            <div class="mb-3">
+                <input autocomplete="off" class="form-control form-control-lg" id="searchIcons"
+                    placeholder="Search saved icons..." type="text" />
+            </div>
+            <div id="stack-library-container">
+                <!-- Icons will be dynamically loaded here -->
+                <ul class="list-unstyled row g-4" id="iconList"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script src="~/scripts/pages/stacklibrary.js"></script>
+    <script>
+        /* Inject additional scripts dynamically */
+        console.log('Stack Library page initialized');
+    </script>
+}

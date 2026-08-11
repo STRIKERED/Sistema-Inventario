@@ -5,4 +5,5 @@
   <Project Path="Inventario.Infrastructure/Inventario.Infrastructure.csproj" />
   <Project Path="Inventario.IntegrationTests/Inventario.IntegrationTests.csproj" />
   <Project Path="Inventario.UnitTests/Inventario.UnitTests.csproj" />
+  <Project Path="Inventario.Web/Inventario.Web.csproj" />
 </Solution>

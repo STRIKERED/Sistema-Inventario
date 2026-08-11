@@ -1,0 +1,706 @@
+@page "/docs-apexbarchartjs"
+@model Inventario.Web.Pages.Docs.ApexbarchartjsModel
+
+@{
+    ViewBag.Title = "Apexbarchartjs";
+}
+
+@section styles
+{
+    <link href="~/plugins/highlightjs/night-owl.css" rel="stylesheet" />
+}
+
+@await Html.PartialAsync("~/Pages/Shared/Partials/_PageTitle.cshtml", new {
+pageTitle = "ApexCharts.js",
+pageSubTitle1 = "Config",
+pageSubTitle2 = "Documentation",
+pageSubText = "Modern, Interactive Charts for Your Data Visualization Needs"
+})
+
+<div class="main-content">
+    <div class="row">
+        <div class="order-2 order-xl-1 col-lg-12 col-xl-9">
+            <section class="concept-section" id="apexcharts">
+                <h2 class="concept-title with-lead">Modern, Interactive Charts for Your Data
+                    Visualization Needs</h2>
+                <p>ApexCharts is a modern JavaScript charting library that helps developers create
+                    beautiful, interactive visualizations for web pages. With a focus on smooth
+                    animations, responsive design, and advanced features, ApexCharts makes data
+                    visualization both powerful and accessible.</p>
+                <p>
+                    In SmartAdmin, ApexCharts is integrated with a custom wrapper
+                    (<code>apexchartsWrapper.js</code>) that ensures visual consistency with the
+                    rest of the application and enhances the library with SmartAdmin-specific
+                    features.
+                </p>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> SmartAdmin's ApexCharts wrapper prevents CSS injection
+                    from the original library, ensuring that only your theme's styles are used, and
+                    adds custom icon support using the SmartAdmin icon system.
+                </div>
+            </section>
+            <section class="concept-section" id="apexcharts-installation">
+                <h2 class="concept-title">Installation</h2>
+                <p>ApexCharts is included in the SmartAdmin theme with a custom wrapper. Here's how
+                    to set it up:</p>
+                <h4>1. Basic Setup (Already Included)</h4>
+                <div class="code-example">
+                    <pre><code>// The following files are already included in the SmartAdmin theme:
+// - apexcharts.esm.js (Original ApexCharts library)
+// - apexchartsWrapper.js (SmartAdmin wrapper)</code></pre>
+                </div>
+                <h4>2. Initialize a Chart</h4>
+                <div class="code-example">
+                    <pre><code>// Import the SmartAdmin ApexCharts wrapper
+import SmartApexCharts from './thirdparty/apexchartsWrapper.js';
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Create a basic bar chart
+    const options = {
+        chart: {
+            type: 'bar',
+            height: 350
+        },
+        series: [{
+            name: 'Sales',
+            data: [30, 40, 45, 50, 49, 60, 70, 91, 125]
+        }],
+        xaxis: {
+            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep']
+        }
+    };
+    
+    const chart = new SmartApexCharts(
+        document.querySelector('#my-chart'), 
+        options
+    );
+    
+    chart.render();
+});</code></pre>
+                </div>
+                <h4>HTML Structure</h4>
+                <div class="code-example">
+                    <pre><code>&lt;!-- Basic Chart Container --&gt;
+&lt;div id="my-chart"&gt;&lt;/div&gt;
+
+&lt;!-- Panel-Based Chart Container (Recommended) --&gt;
+&lt;div id="panel-1" class="panel"&gt;
+    &lt;div class="panel-hdr"&gt;
+        &lt;h2&gt;Sales &lt;span class="fw-300"&gt;&lt;i&gt;Overview&lt;/i&gt;&lt;/span&gt;&lt;/h2&gt;
+        &lt;div class="panel-toolbar"&gt;
+            &lt;button class="btn btn-panel" data-action="panel-collapse"&gt;
+                &lt;!-- Panel controls --&gt;
+            &lt;/button&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="panel-container show"&gt;
+        &lt;div class="panel-content"&gt;
+            &lt;div id="my-chart"&gt;&lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                </div>
+                <div class="warning">
+                    <strong>Important:</strong>
+                    <ul class="mb-0">
+                        <li>Always use the <code>SmartApexCharts</code> class from the wrapper
+                            instead of the original <code>ApexCharts</code> to ensure proper
+                            integration with SmartAdmin.</li>
+                        <li>The wrapper automatically applies SmartAdmin styling and prevents CSS
+                            injection from the original library.</li>
+                        <li>For more advanced documentation, refer to the <a
+                                href="https://apexcharts.com/docs/installation/" target="_blank">official ApexCharts
+                                documentation</a>.</li>
+                    </ul>
+                </div>
+            </section>
+            <section class="concept-section" id="apexcharts-wrapper">
+                <h2 class="concept-title">SmartAdmin Wrapper</h2>
+                <p>SmartAdmin includes a custom wrapper for ApexCharts that enhances the library
+                    with theme-specific features. The wrapper is defined in
+                    <code>apexchartsWrapper.js</code>.
+                </p>
+                <div class="code-example">
+                    <pre><code>// Excerpt from the ApexCharts wrapper
+class SmartApexCharts extends OriginalApexCharts {
+    // Icon mapping for toolbar
+    static iconMap = {
+        'apexcharts-zoomin-icon': 'plus-circle',
+        'apexcharts-zoomout-icon': 'minus-circle',
+        'apexcharts-zoom-icon': 'plus',
+        'apexcharts-pan-icon': 'move',
+        'apexcharts-reset-icon': 'refresh-ccw',
+        'apexcharts-menu-icon': 'menu'
+    };
+
+    constructor(el, options) {
+        // Ensure options object exists
+        options = options || {};
+        options.chart = options.chart || {};
+        
+        // Global styling defaults
+        const defaults = {
+            chart: {
+                fontFamily: 'inherit',
+                disableCssInjection: true
+            },
+            title: {
+                style: {
+                    color: window.colorMap.bootstrapVars.bodyColor.hex
+                }
+            },
+            // ... additional defaults
+        };
+
+        // Merge options with defaults
+        options = SmartApexCharts.deepMerge(defaults, options);
+        
+        // Call parent constructor with merged options
+        super(el, options);
+        
+        // Style observer and other enhancements
+        // ...
+    }
+    
+    // Replace toolbar icons with custom sprite system icons
+    _replaceToolbarIcons(toolbar) {
+        // ... icon replacement code
+    }
+}</code></pre>
+                </div>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> The SmartAdmin wrapper ensures that charts
+                    automatically adapt to your theme's color scheme and maintains a consistent UI
+                    across your application.
+                </div>
+            </section>
+            <section class="concept-section" id="apexcharts-configuration">
+                <h2 class="concept-title">Chart Configuration</h2>
+                <p>ApexCharts offers extensive configuration options. Here are some common chart
+                    types and configurations:</p>
+                <h4>Bar Chart</h4>
+                <div class="code-example">
+                    <pre><code>const barOptions = {
+    chart: {
+        type: 'bar',
+        height: 350
+    },
+    plotOptions: {
+        bar: {
+            horizontal: false,
+            columnWidth: '55%',
+            borderRadius: 4
+        }
+    },
+    dataLabels: {
+        enabled: false
+    },
+    stroke: {
+        show: true,
+        width: 2,
+        colors: ['transparent']
+    },
+    series: [{
+        name: 'Net Profit',
+        data: [44, 55, 57, 56, 61, 58, 63]
+    }, {
+        name: 'Revenue',
+        data: [76, 85, 101, 98, 87, 105, 91]
+    }],
+    xaxis: {
+        categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    },
+    fill: {
+        opacity: 1
+    },
+    tooltip: {
+        y: {
+            formatter: function (val) {
+                return "$ " + val + " thousands"
+            }
+        }
+    }
+};
+
+const barChart = new SmartApexCharts(
+    document.querySelector('#bar-chart'), 
+    barOptions
+);
+barChart.render();</code></pre>
+                </div>
+                <h4>Line Chart</h4>
+                <div class="code-example">
+                    <pre><code>const lineOptions = {
+    chart: {
+        type: 'line',
+        height: 350,
+        zoom: {
+            enabled: true
+        }
+    },
+    series: [{
+        name: "Desktops",
+        data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
+    }],
+    title: {
+        text: 'Product Trends by Month',
+        align: 'left'
+    },
+    grid: {
+        row: {
+            colors: ['#f3f3f3', 'transparent'],
+            opacity: 0.5
+        }
+    },
+    xaxis: {
+        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep']
+    }
+};
+
+const lineChart = new SmartApexCharts(
+    document.querySelector('#line-chart'), 
+    lineOptions
+);
+lineChart.render();</code></pre>
+                </div>
+                <h4>Area Chart</h4>
+                <div class="code-example">
+                    <pre><code>const areaOptions = {
+    chart: {
+        type: 'area',
+        height: 350,
+        stacked: true
+    },
+    dataLabels: {
+        enabled: false
+    },
+    stroke: {
+        curve: 'smooth'
+    },
+    series: [{
+        name: 'South',
+        data: [31, 40, 28, 51, 42, 109, 100]
+    }, {
+        name: 'North',
+        data: [11, 32, 45, 32, 34, 52, 41]
+    }],
+    xaxis: {
+        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul']
+    },
+    tooltip: {
+        x: {
+            format: 'dd/MM/yy HH:mm'
+        }
+    },
+    fill: {
+        type: 'gradient',
+        gradient: {
+            shadeIntensity: 1,
+            opacityFrom: 0.7,
+            opacityTo: 0.9,
+            stops: [0, 90, 100]
+        }
+    }
+};
+
+const areaChart = new SmartApexCharts(
+    document.querySelector('#area-chart'), 
+    areaOptions
+);
+areaChart.render();</code></pre>
+                </div>
+                <h4>Pie Chart</h4>
+                <div class="code-example">
+                    <pre><code>const pieOptions = {
+    chart: {
+        type: 'pie',
+        height: 350
+    },
+    series: [44, 55, 13, 43, 22],
+    labels: ['Team A', 'Team B', 'Team C', 'Team D', 'Team E'],
+    responsive: [{
+        breakpoint: 480,
+        options: {
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }]
+};
+
+const pieChart = new SmartApexCharts(
+    document.querySelector('#pie-chart'), 
+    pieOptions
+);
+pieChart.render();</code></pre>
+                </div>
+            </section>
+            <section class="concept-section" id="apexcharts-smartadmin">
+                <h2 class="concept-title">SmartAdmin Integration</h2>
+                <p>For optimal integration with SmartAdmin, consider these tips:</p>
+                <h4>Using Theme Colors</h4>
+                <p>Use SmartAdmin color variables for consistent styling:</p>
+                <div class="code-example">
+                    <pre><code>// Use SmartAdmin color variables
+const options = {
+    // ... other options
+    colors: [
+        'var(--primary-500)',
+        'var(--success-500)',
+        'var(--warning-500)',
+        'var(--danger-500)',
+        'var(--info-500)'
+    ],
+    fill: {
+        colors: [
+            'var(--primary-300)',
+            'var(--success-300)',
+            'var(--warning-300)',
+            'var(--danger-300)',
+            'var(--info-300)'
+        ]
+    }
+};</code></pre>
+                </div>
+                <h4>Responsive Configuration</h4>
+                <p>Configure charts to be responsive based on screen size:</p>
+                <div class="code-example">
+                    <pre><code>const options = {
+    // ... other options
+    chart: {
+        height: 350,
+        type: 'line',
+        animations: {
+            enabled: true,
+            easing: 'easeinout',
+            speed: 800
+        },
+        toolbar: {
+            show: true
+        },
+        zoom: {
+            enabled: true
+        },
+        responsive: [{
+            breakpoint: 576,
+            options: {
+                chart: {
+                    height: 250,
+                    toolbar: {
+                        show: false
+                    }
+                },
+                legend: {
+                    position: 'bottom',
+                    offsetY: 0
+                }
+            }
+        }]
+    }
+};</code></pre>
+                </div>
+                <h4>Dark Mode Compatibility</h4>
+                <p>Make your charts compatible with both light and dark themes:</p>
+                <div class="code-example">
+                    <pre><code>// Check if dark mode is active
+const isDarkMode = document.documentElement.classList.contains('theme-dark');
+
+const options = {
+    // ... other options
+    chart: {
+        foreColor: isDarkMode ? '#ffffff' : '#373a3c'
+    },
+    theme: {
+        mode: isDarkMode ? 'dark' : 'light'
+    },
+    tooltip: {
+        theme: isDarkMode ? 'dark' : 'light'
+    }
+};
+
+// Listen for theme changes if needed
+document.addEventListener('themeChanged', function(e) {
+    const isDark = e.detail.isDark;
+    chart.updateOptions({
+        chart: {
+            foreColor: isDark ? '#ffffff' : '#373a3c'
+        },
+        theme: {
+            mode: isDark ? 'dark' : 'light'
+        },
+        tooltip: {
+            theme: isDark ? 'dark' : 'light'
+        }
+    });
+});</code></pre>
+                </div>
+            </section>
+            <section class="concept-section" id="apexcharts-advanced">
+                <h2 class="concept-title">Advanced Features</h2>
+                <h4>API Methods</h4>
+                <div class="code-example">
+                    <pre><code>// Get a reference to the chart
+const chart = new SmartApexCharts(element, options);
+chart.render();
+
+// Update series data
+chart.updateSeries([{
+    name: 'Sales',
+    data: [40, 55, 65, 11, 23, 44, 55, 75, 88]
+}]);
+
+// Update options
+chart.updateOptions({
+    title: {
+        text: 'Updated Title'
+    },
+    colors: ['var(--danger-500)']
+});
+
+// Add data point
+chart.appendData([{
+    data: [20]
+}]);
+
+// Toggle series visibility
+chart.toggleSeries('Series Name');
+
+// Show/hide specific data point's tooltip
+chart.toggleDataPointSelection(2, 0);
+
+// Reset zoom
+chart.resetSeries();
+
+// Destroy the chart
+chart.destroy();</code></pre>
+                </div>
+                <h4>Dynamic Data Updates</h4>
+                <div class="code-example">
+                    <pre><code>// Create a chart with real-time data updates
+const options = {
+    chart: {
+        type: 'line',
+        height: 350,
+        animations: {
+            enabled: true,
+            easing: 'linear',
+            dynamicAnimation: {
+                speed: 1000
+            }
+        },
+        toolbar: {
+            show: false
+        },
+        zoom: {
+            enabled: false
+        }
+    },
+    series: [{
+        name: 'Server Load',
+        data: [10, 15, 12, 14, 16, 18, 15, 17, 14, 13]
+    }],
+    stroke: {
+        curve: 'smooth',
+        width: 3
+    },
+    xaxis: {
+        categories: ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00']
+    },
+    markers: {
+        size: 0
+    }
+};
+
+const chart = new SmartApexCharts(
+    document.querySelector('#real-time-chart'), 
+    options
+);
+chart.render();
+
+// Update data every 1 second
+setInterval(function() {
+    // Generate new data point
+    const newValue = Math.floor(Math.random() * 10) + 10;
+    
+    // Get current time for x-axis label
+    const now = new Date();
+    const timeLabel = now.getHours() + ':' + (now.getMinutes() &lt; 10 ? '0' : '') + now.getMinutes();
+    
+    // Update chart
+    chart.updateSeries([{
+        data: [...chart.w.globals.series[0].slice(1), newValue]
+    }]);
+    
+    chart.updateOptions({
+        xaxis: {
+            categories: [...chart.w.globals.xaxis.categories.slice(1), timeLabel]
+        }
+    });
+}, 1000);</code></pre>
+                </div>
+                <h4>Mixed Chart Types</h4>
+                <div class="code-example">
+                    <pre><code>const mixedOptions = {
+    chart: {
+        height: 350,
+        type: 'line'
+    },
+    series: [{
+        name: 'Website',
+        type: 'column',
+        data: [440, 505, 414, 671, 227, 413, 201, 352, 752, 320, 257, 160]
+    }, {
+        name: 'Social Media',
+        type: 'line',
+        data: [23, 42, 35, 27, 43, 22, 17, 31, 22, 22, 12, 16]
+    }],
+    stroke: {
+        width: [0, 4]
+    },
+    title: {
+        text: 'Traffic Sources'
+    },
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    xaxis: {
+        type: 'category'
+    },
+    yaxis: [{
+        title: {
+            text: 'Website Visits'
+        }
+    }, {
+        opposite: true,
+        title: {
+            text: 'Social Media'
+        }
+    }]
+};
+
+const mixedChart = new SmartApexCharts(
+    document.querySelector('#mixed-chart'), 
+    mixedOptions
+);
+mixedChart.render();</code></pre>
+                </div>
+            </section>
+            <section class="concept-section" id="apexcharts-troubleshooting">
+                <h2 class="concept-title">Troubleshooting</h2>
+                <div class="warning">
+                    <strong>Common Issues:</strong>
+                    <ul class="mb-0">
+                        <li><strong>Chart not rendering?</strong> Ensure the container element
+                            exists in the DOM before initializing.</li>
+                        <li><strong>Colors not applying?</strong> Make sure CSS variables are
+                            properly defined and accessible.</li>
+                        <li><strong>Icons missing in toolbar?</strong> Verify the SmartApexCharts
+                            wrapper is being used instead of the original library.</li>
+                        <li><strong>Custom styles not working?</strong> Check that you're not
+                            overriding the wrapper's style management.</li>
+                    </ul>
+                </div>
+                <h4>Debugging Techniques</h4>
+                <div class="code-example">
+                    <pre><code>// Debug chart initialization
+try {
+    const chart = new SmartApexCharts(
+        document.querySelector('#chart'), 
+        options
+    );
+    chart.render();
+} catch (error) {
+    console.error('Chart initialization error:', error);
+}
+
+// Check if container exists
+const container = document.querySelector('#chart');
+if (!container) {
+    console.error('Chart container not found');
+    return;
+}
+
+// Verify series data
+console.log('Chart series data:', options.series);
+
+// Force explicit dimensions if auto-sizing issues
+const options = {
+    chart: {
+        height: 350,
+        width: '100%',
+        background: '#f8f9fa', // Visible background to check rendering
+    },
+    // ...other options
+};</code></pre>
+                </div>
+                <h4>Common Error Fixes</h4>
+                <div class="code-example">
+                    <pre><code>// Fix for empty or null data
+const validateData = (data) =&gt; {
+    if (!data || !Array.isArray(data)) {
+        return [0]; // Default fallback value
+    }
+    
+    // Replace null/undefined values with 0
+    return data.map(val =&gt; val === null || val === undefined ? 0 : val);
+};
+
+const options = {
+    // ...other options
+    series: [{
+        name: 'Sales',
+        data: validateData(salesData)
+    }]
+};
+
+// Fix for charts in hidden elements (tabs, modals)
+document.querySelector('.nav-tabs').addEventListener('shown.bs.tab', function (e) {
+    // Redraw charts in newly visible tab
+    const tabId = e.target.getAttribute('href');
+    const charts = document.querySelectorAll(tabId + ' .apexchart');
+    
+    charts.forEach(chart =&gt; {
+        if (chart.__smartChart) {
+            chart.__smartChart.render();
+        }
+    });
+});</code></pre>
+                </div>
+            </section>
+            <section class="concept-section" id="apexcharts-resources">
+                <h2 class="concept-title">Further Resources</h2>
+                <p>For more advanced usage and detailed API documentation, refer to these resources:
+                </p>
+                <ul class="list-spaced">
+                    <li><a href="https://apexcharts.com/docs/installation/" target="_blank">Official
+                            ApexCharts Documentation</a></li>
+                    <li><a href="https://apexcharts.com/javascript-chart-demos/" target="_blank">ApexCharts Demo
+                            Gallery</a></li>
+                    <li><a href="https://github.com/apexcharts/apexcharts.js" target="_blank">ApexCharts GitHub
+                            Repository</a></li>
+                    <li><a href="https://apexcharts.com/docs/options/responsive/" target="_blank">ApexCharts Responsive
+                            Configuration</a></li>
+                </ul>
+            </section>
+        </div>
+        <div class="order-1 order-xl-2 col-lg-12 col-xl-3 position-relative">
+            <!-- Sidebar (Right Side) - Sticky Navigation -->
+            <h5 class="mb-3 ps-lg-3">On This Page</h5>
+            <ul class="list-unstyled ps-lg-3">
+                <li class="py-1"><a href="#apexcharts">Introduction</a></li>
+                <li class="py-1"><a href="#apexcharts-installation">Installation</a></li>
+                <li class="py-1"><a href="#apexcharts-wrapper">SmartAdmin Wrapper</a></li>
+                <li class="py-1"><a href="#apexcharts-configuration">Chart Configuration</a></li>
+                <li class="py-1"><a href="#apexcharts-smartadmin">SmartAdmin Integration</a></li>
+                <li class="py-1"><a href="#apexcharts-advanced">Advanced Features</a></li>
+                <li class="py-1"><a href="#apexcharts-troubleshooting">Troubleshooting</a></li>
+                <li class="py-1"><a href="#apexcharts-resources">Further Resources</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script src="~/plugins/highlightjs/highlight.min.js"></script>
+    <script src="~/plugins/highlightjs/go.min.js"></script>
+    <script src="~/scripts/pages/code-highlight.js"></script>
+}

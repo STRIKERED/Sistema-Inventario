@@ -1,0 +1,556 @@
+@page "/docs-peitychartsjs"
+@model Inventario.Web.Pages.Docs.PeitychartsjsModel
+
+@{
+    ViewBag.Title = "Peitychartsjs";
+}
+
+@section styles
+{
+    <link href="~/plugins/highlightjs/night-owl.css" rel="stylesheet" />
+}
+
+@await Html.PartialAsync("~/Pages/Shared/Partials/_PageTitle.cshtml", new {
+pageTitle = "PeityCharts.js",
+pageSubTitle1 = "Config",
+pageSubTitle2 = "Documentation",
+pageSubText = (string?)null
+})
+
+<div class="main-content">
+    <div class="row">
+        <div class="order-2 order-xl-1 col-lg-12 col-xl-9">
+            <section class="concept-section" id="peitycharts">
+                <h2 class="concept-title with-lead">Elegant Inline Data Visualization</h2>
+                <p>Peity (pronounced "pie-ty") is a simple jQuery plugin that converts element text
+                    like "5/10" or "2,5,3,9" into small inline charts. These charts are perfect for
+                    showing trends or simple metrics directly alongside text or in tables.</p>
+                <p>
+                    With minimal footprint and easy implementation, Peity charts are ideal for
+                    dashboards, reports, and anywhere you need to display data visualizations in a
+                    compact format.
+                </p>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> Peity charts work seamlessly with SmartAdmin's color
+                    system and can be placed directly inline with text, in tables, or within other
+                    UI components for at-a-glance data visualization.
+                </div>
+            </section>
+            <section class="concept-section" id="peitycharts-installation">
+                <h2 class="concept-title">Installation</h2>
+                <p>Peity is included in the SmartAdmin theme with an ES6 implementation that doesn't
+                    require jQuery. Here's how to use it:</p>
+                <h4>1. Including the Script</h4>
+                <div class="code-example">
+                    <pre><code>// Add the script as a module in your HTML
+&lt;script type="module" src="./thirdparty/peitycharts.js"&gt;&lt;/script&gt;
+
+// Or import it in your JavaScript module
+import './thirdparty/peitycharts.js';</code></pre>
+                </div>
+                <h4>2. Automatic Implementation with Data Attributes</h4>
+                <div class="code-example">
+                    <pre><code>// Once the module is loaded, it will automatically initialize charts with these classes:
+// - .peity-pie
+// - .peity-donut
+// - .peity-line
+// - .peity-bar
+// - Any element with a [data-peity] attribute
+
+// Simply add elements with the appropriate class:
+&lt;span class="peity-pie"&gt;4/7&lt;/span&gt;
+&lt;span class="peity-donut"&gt;5/8&lt;/span&gt;
+&lt;span class="peity-line"&gt;5,3,9,6,5,9,7,3,5,2&lt;/span&gt;
+&lt;span class="peity-bar"&gt;5,3,9,6,5,9,7,3,5,2&lt;/span&gt;
+
+// You can also use the data-peity attribute for custom options:
+&lt;span class="peity-donut" data-peity='{"fill":["var(--success-500)","var(--bs-border-color)"],"innerRadius":20,"radius":40}'&gt;5/8&lt;/span&gt;</code></pre>
+                </div>
+                <h4>3. Manual Implementation with Direct API</h4>
+                <div class="code-example">
+                    <pre><code>// Import the PeityAPI directly in your module
+import { PeityAPI } from './thirdparty/peity.es6.js';
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Create a chart manually
+    const element = document.querySelector('.my-custom-chart');
+    PeityAPI.create(element, 'pie', {
+        fill: ['var(--primary-500)', 'var(--bs-border-color)'],
+        radius: 30
+    });
+    
+    // Create multiple charts with the same options
+    document.querySelectorAll('.line-charts').forEach(element =&gt; {
+        PeityAPI.create(element, 'line', {
+            fill: 'var(--info-200)',
+            stroke: 'var(--info-500)',
+            width: 100,
+            height: 30
+        });
+    });
+});</code></pre>
+                </div>
+                <h4>HTML Structure</h4>
+                <div class="code-example">
+                    <pre><code>&lt;!-- For automatic initialization --&gt;
+&lt;span class="peity-pie"&gt;4/7&lt;/span&gt;
+&lt;span class="peity-donut"&gt;5/8&lt;/span&gt;
+&lt;span class="peity-line"&gt;5,3,9,6,5,9,7,3,5,2&lt;/span&gt;
+&lt;span class="peity-bar"&gt;5,3,9,6,5,9,7,3,5,2&lt;/span&gt;
+
+&lt;!-- With data attributes for custom options --&gt;
+&lt;span class="peity-pie" data-peity='{"fill":["var(--primary-500)","var(--bs-border-color)"],"radius":25}'&gt;4/7&lt;/span&gt;
+
+&lt;!-- For manual initialization --&gt;
+&lt;span class="my-custom-chart"&gt;4/7&lt;/span&gt;</code></pre>
+                </div>
+                <div class="pro-tip">
+                    <strong>When to use each approach:</strong>
+                    <ul class="mb-0">
+                        <li><strong>Automatic Implementation:</strong> Best for typical use cases.
+                            Just add HTML with the proper class and data attributes - minimal
+                            JavaScript needed.</li>
+                        <li><strong>Manual Implementation:</strong> Use when you need more control
+                            over initialization timing, want to update charts dynamically, or need
+                            custom behavior.</li>
+                    </ul>
+                </div>
+                <div class="warning">
+                    <strong>Important:</strong>
+                    <ul class="mb-0">
+                        <li>The SmartAdmin implementation of Peity <strong>does not require
+                                jQuery</strong> - it's a native ES6 module.</li>
+                        <li>Charts are rendered as SVG elements, which means they scale nicely for
+                            retina displays.</li>
+                        <li>The implementation automatically handles theming with SmartAdmin CSS
+                            variables.</li>
+                    </ul>
+                </div>
+            </section>
+            <section class="concept-section" id="peitycharts-types">
+                <h2 class="concept-title">Chart Types</h2>
+                <p>Peity supports four main chart types, each with its own configuration options:
+                </p>
+                <h4>Pie Charts</h4>
+                <p>Pie charts display a single value as a portion of a whole. They're ideal for
+                    showing percentages or proportions.</p>
+                <div class="code-example">
+                    <pre><code>// HTML
+&lt;span class="pie-chart"&gt;4/7&lt;/span&gt;
+
+// JavaScript
+\$(".pie-chart").peity("pie", {
+    fill: ["var(--primary-500)", "var(--gray-300)"],
+    radius: 30,
+    innerRadius: 0
+});</code></pre>
+                </div>
+                <h4>Donut Charts</h4>
+                <p>Donut charts are similar to pie charts but with a hole in the center. They
+                    provide the same information but with a different visual style.</p>
+                <div class="code-example">
+                    <pre><code>// HTML
+&lt;span class="donut-chart"&gt;5/8&lt;/span&gt;
+
+// JavaScript
+\$(".donut-chart").peity("donut", {
+    fill: ["var(--success-500)", "var(--gray-300)"],
+    radius: 30,
+    innerRadius: 15
+});</code></pre>
+                </div>
+                <h4>Line Charts</h4>
+                <p>Line charts display a series of values as a connected line. They're great for
+                    showing trends over time.</p>
+                <div class="code-example">
+                    <pre><code>// HTML
+&lt;span class="line-chart"&gt;5,3,9,6,5,9,7,3,5,2&lt;/span&gt;
+
+// JavaScript
+\$(".line-chart").peity("line", {
+    fill: "var(--primary-200)",
+    stroke: "var(--primary-500)",
+    width: 100,
+    height: 30
+});</code></pre>
+                </div>
+                <h4>Bar Charts</h4>
+                <p>Bar charts represent values as vertical bars. They're useful for comparing values
+                    across categories.</p>
+                <div class="code-example">
+                    <pre><code>// HTML
+&lt;span class="bar-chart"&gt;5,3,9,6,5,9,7,3,5,2&lt;/span&gt;
+
+// JavaScript
+\$(".bar-chart").peity("bar", {
+    fill: ["var(--primary-500)"],
+    width: 100,
+    height: 30
+});</code></pre>
+                </div>
+            </section>
+            <section class="concept-section" id="peitycharts-configuration">
+                <h2 class="concept-title">Configuration Options</h2>
+                <p>Each chart type has its own set of configuration options:</p>
+                <h4>Pie &amp; Donut Options</h4>
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-striped table-clean">
+                        <thead>
+                            <tr>
+                                <th>Option</th>
+                                <th>Type</th>
+                                <th>Default</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>fill</code></td>
+                                <td>Array</td>
+                                <td>["#ff9900", "#fff4dd", "#ffc66e"]</td>
+                                <td>The colors of the segments (first value's color, then second,
+                                    etc.)</td>
+                            </tr>
+                            <tr>
+                                <td><code>radius</code></td>
+                                <td>Number</td>
+                                <td>8</td>
+                                <td>The outer radius of the chart in pixels</td>
+                            </tr>
+                            <tr>
+                                <td><code>innerRadius</code></td>
+                                <td>Number</td>
+                                <td>0 (pie), radius/2 (donut)</td>
+                                <td>The inner radius of the chart in pixels (creates the "donut
+                                    hole")</td>
+                            </tr>
+                            <tr>
+                                <td><code>width</code></td>
+                                <td>Number</td>
+                                <td>null (element width)</td>
+                                <td>Override the width of the chart</td>
+                            </tr>
+                            <tr>
+                                <td><code>height</code></td>
+                                <td>Number</td>
+                                <td>null (element height)</td>
+                                <td>Override the height of the chart</td>
+                            </tr>
+                            <tr>
+                                <td><code>delimiter</code></td>
+                                <td>String</td>
+                                <td>"/"</td>
+                                <td>The delimiter between the values</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <h4>Line Chart Options</h4>
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-striped table-clean">
+                        <thead>
+                            <tr>
+                                <th>Option</th>
+                                <th>Type</th>
+                                <th>Default</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>delimiter</code></td>
+                                <td>String</td>
+                                <td>","</td>
+                                <td>The delimiter between the values</td>
+                            </tr>
+                            <tr>
+                                <td><code>fill</code></td>
+                                <td>String</td>
+                                <td>"#c6d9fd"</td>
+                                <td>The color of the area beneath the line</td>
+                            </tr>
+                            <tr>
+                                <td><code>height</code></td>
+                                <td>Number</td>
+                                <td>16</td>
+                                <td>The height of the chart in pixels</td>
+                            </tr>
+                            <tr>
+                                <td><code>max</code></td>
+                                <td>Number</td>
+                                <td>null (auto)</td>
+                                <td>The maximum value of the y-axis</td>
+                            </tr>
+                            <tr>
+                                <td><code>min</code></td>
+                                <td>Number</td>
+                                <td>0</td>
+                                <td>The minimum value of the y-axis</td>
+                            </tr>
+                            <tr>
+                                <td><code>stroke</code></td>
+                                <td>String</td>
+                                <td>"#4d89f9"</td>
+                                <td>The color of the line</td>
+                            </tr>
+                            <tr>
+                                <td><code>strokeWidth</code></td>
+                                <td>Number</td>
+                                <td>1</td>
+                                <td>The thickness of the line in pixels</td>
+                            </tr>
+                            <tr>
+                                <td><code>width</code></td>
+                                <td>Number</td>
+                                <td>32</td>
+                                <td>The width of the chart in pixels</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <h4>Bar Chart Options</h4>
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-striped table-clean">
+                        <thead>
+                            <tr>
+                                <th>Option</th>
+                                <th>Type</th>
+                                <th>Default</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>delimiter</code></td>
+                                <td>String</td>
+                                <td>","</td>
+                                <td>The delimiter between the values</td>
+                            </tr>
+                            <tr>
+                                <td><code>fill</code></td>
+                                <td>Array</td>
+                                <td>["#4d89f9"]</td>
+                                <td>The colors of the bars (positive, negative)</td>
+                            </tr>
+                            <tr>
+                                <td><code>height</code></td>
+                                <td>Number</td>
+                                <td>16</td>
+                                <td>The height of the chart in pixels</td>
+                            </tr>
+                            <tr>
+                                <td><code>max</code></td>
+                                <td>Number</td>
+                                <td>null (auto)</td>
+                                <td>The maximum value of the y-axis</td>
+                            </tr>
+                            <tr>
+                                <td><code>min</code></td>
+                                <td>Number</td>
+                                <td>0</td>
+                                <td>The minimum value of the y-axis</td>
+                            </tr>
+                            <tr>
+                                <td><code>padding</code></td>
+                                <td>Number</td>
+                                <td>0.1</td>
+                                <td>The padding between bars as a fraction of the bar width</td>
+                            </tr>
+                            <tr>
+                                <td><code>width</code></td>
+                                <td>Number</td>
+                                <td>32</td>
+                                <td>The width of the chart in pixels</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> When using Peity with SmartAdmin, leverage CSS
+                    variables in your chart colors for consistent theming across light and dark
+                    modes.
+                </div>
+            </section>
+            <section class="concept-section" id="peitycharts-examples">
+                <h2 class="concept-title">Advanced Usage</h2>
+                <h4>Custom Colors with SmartAdmin Theme</h4>
+                <div class="code-example">
+                    <pre><code>// Use SmartAdmin CSS variables for consistent colors
+import { PeityAPI } from './thirdparty/peity/peity.es6.js';
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Create pie charts with primary colors
+    document.querySelectorAll('.peity-pie-primary').forEach(element =&gt; {
+        PeityAPI.create(element, 'pie', {
+            fill: ['var(--primary-500)', 'var(--primary-200)'],
+            radius: 20
+        });
+    });
+    
+    // Create donut charts with success colors
+    document.querySelectorAll('.peity-donut-success').forEach(element =&gt; {
+        PeityAPI.create(element, 'donut', {
+            fill: ['var(--success-500)', 'var(--gray-300)'],
+            innerRadius: 15,
+            radius: 30
+        });
+    });
+    
+    // Create line charts with info colors
+    document.querySelectorAll('.peity-line-info').forEach(element =&gt; {
+        PeityAPI.create(element, 'line', {
+            fill: 'var(--info-200)',
+            stroke: 'var(--info-500)',
+            width: 100,
+            height: 30
+        });
+    });
+});</code></pre>
+                </div>
+                <h4>Data Updates</h4>
+                <p>Peity charts can be updated dynamically to reflect new data:</p>
+                <div class="code-example">
+                    <pre><code>// Get the chart element
+const updatingElement = document.querySelector('.updating-chart');
+const values = updatingElement.textContent.split(',').map(Number);
+
+// Create the chart
+const chart = PeityAPI.create(updatingElement, 'line', {
+    width: 100,
+    height: 30,
+    stroke: 'var(--info-500)',
+    fill: 'var(--info-200)'
+});
+
+// Update the chart with new data
+setInterval(function() {
+    const random = Math.round(Math.random() * 10);
+    values.shift();
+    values.push(random);
+    
+    updatingElement.textContent = values.join(',');
+    chart.draw(); // Redraw the chart with new data
+}, 1000);</code></pre>
+                </div>
+                <h4>Using in Tables</h4>
+                <div class="code-example">
+                    <pre><code>&lt;table class="table table-striped"&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;
+            &lt;th&gt;Project&lt;/th&gt;
+            &lt;th&gt;Progress&lt;/th&gt;
+            &lt;th&gt;Trend&lt;/th&gt;
+            &lt;th&gt;Status&lt;/th&gt;
+        &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        &lt;tr&gt;
+            &lt;td&gt;Website Redesign&lt;/td&gt;
+            &lt;td&gt;&lt;span class="peity-pie"&gt;3/8&lt;/span&gt;&lt;/td&gt;
+            &lt;td&gt;&lt;span class="peity-line"&gt;5,3,9,6,5,9,7&lt;/span&gt;&lt;/td&gt;
+            &lt;td&gt;&lt;span class="badge bg-success"&gt;Active&lt;/span&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td&gt;Mobile App&lt;/td&gt;
+            &lt;td&gt;&lt;span class="peity-pie"&gt;7/8&lt;/span&gt;&lt;/td&gt;
+            &lt;td&gt;&lt;span class="peity-line"&gt;3,5,6,8,2,5,9&lt;/span&gt;&lt;/td&gt;
+            &lt;td&gt;&lt;span class="badge bg-warning"&gt;Pending&lt;/span&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+    &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;script type="module"&gt;
+    // The charts will be automatically initialized by peitycharts.js
+    // No additional code needed if using the built-in classes
+&lt;/script&gt;</code></pre>
+                </div>
+                <h4>Global Defaults</h4>
+                <p>Set global defaults for all Peity charts of a specific type:</p>
+                <div class="code-example">
+                    <pre><code>// Import the PeityAPI
+import { PeityAPI } from './thirdparty/peity/peity.es6.js';
+
+// Set defaults for all pie charts
+PeityAPI.defaults.pie = {
+    delimiter: "/",
+    fill: ["var(--primary-500)", "var(--gray-300)"],
+    radius: 20
+};
+
+// Set defaults for all line charts
+PeityAPI.defaults.line = {
+    delimiter: ",",
+    fill: "var(--primary-200)",
+    height: 20,
+    min: 0,
+    stroke: "var(--primary-500)",
+    strokeWidth: 1,
+    width: 80
+};
+
+// Now initialize charts (they'll use the new defaults)
+document.querySelectorAll('.peity-pie').forEach(element =&gt; {
+    PeityAPI.create(element, 'pie');
+});
+
+document.querySelectorAll('.peity-line').forEach(element =&gt; {
+    PeityAPI.create(element, 'line');
+});</code></pre>
+                </div>
+            </section>
+            <section class="concept-section" id="peitycharts-resources">
+                <h2 class="concept-title">Further Resources</h2>
+                <p>For more information about Peity charts in SmartAdmin:</p>
+                <ul class="list-spaced">
+                    <li><strong>SmartAdmin ES6 Implementation:</strong> See the source files:
+                        <ul>
+                            <li><code>src/scripts/pages/peitycharts.js</code> - Auto-initialization
+                                logic</li>
+                            <li><code>src/scripts/core/thirdparty/peity/peity.es6.js</code> - Core
+                                Peity implementation</li>
+                        </ul>
+                    </li>
+                    <li><strong>Original Peity Project (reference only):</strong> <a
+                            href="https://github.com/benpickles/peity" target="_blank">GitHub
+                            Repository</a></li>
+                </ul>
+                <div class="warning mt-4">
+                    <strong>Note:</strong>
+                    <p>The SmartAdmin implementation is a custom ES6 version without jQuery
+                        dependency. The original jQuery-based Peity project is provided only as a
+                        reference.
+                        If you're looking for more complex charts and dashboards, consider other
+                        libraries included in SmartAdmin like ApexCharts or EasyPieChart.</p>
+                </div>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> The SmartAdmin implementation adds extra features:
+                    <ul>
+                        <li>Automatic chart type detection based on data format</li>
+                        <li>Smart color defaults that work with the theme system</li>
+                        <li>Support for CSS variables in all color properties</li>
+                        <li>Zero jQuery dependency for modern web applications</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+        <div class="order-1 order-xl-2 col-lg-12 col-xl-3 position-relative">
+            <!-- Sidebar (Right Side) - Sticky Navigation -->
+            <h5 class="mb-3 ps-lg-3">On This Page</h5>
+            <ul class="list-unstyled ps-lg-3">
+                <li class="py-1"><a href="#peitycharts">Introduction</a></li>
+                <li class="py-1"><a href="#peitycharts-installation">Installation</a></li>
+                <li class="py-1"><a href="#peitycharts-types">Chart Types</a></li>
+                <li class="py-1"><a href="#peitycharts-configuration">Configuration Options</a></li>
+                <li class="py-1"><a href="#peitycharts-examples">Advanced Usage</a></li>
+                <li class="py-1"><a href="#peitycharts-resources">Further Resources</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script src="~/plugins/highlightjs/highlight.min.js"></script>
+    <script src="~/plugins/highlightjs/go.min.js"></script>
+    <script src="~/scripts/pages/code-highlight.js"></script>
+}

@@ -1,0 +1,461 @@
+@page "/docs-wavesjs"
+@model Inventario.Web.Pages.Docs.WavesjsModel
+
+@{
+    ViewBag.Title = "Wavesjs";
+}
+
+@section styles
+{
+    <link href="~/plugins/highlightjs/night-owl.css" rel="stylesheet" />
+}
+
+@await Html.PartialAsync("~/Pages/Shared/Partials/_PageTitle.cshtml", new {
+pageTitle = "Waves.js",
+pageSubTitle1 = "Config",
+pageSubTitle2 = "Documentation",
+pageSubText = (string?)null
+})
+
+<div class="main-content">
+    <div class="row">
+        <div class="order-2 order-xl-1 col-lg-12 col-xl-9">
+            <section class="concept-section" id="waves">
+                <h2 class="concept-title with-lead">Click. Splash. Repeat.</h2>
+                <p>Waves.js is a lightweight JavaScript library that adds a Material Design-inspired
+                    ripple effect to UI elements. It creates a subtle, tactile feedback animation
+                    when users interact with buttons, cards, and other clickable elements, enhancing
+                    the overall user experience with visual confirmation of touch interactions.</p>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> Waves.js works with both mouse and touch events,
+                    making it perfect for creating consistent interaction feedback across desktop
+                    and mobile interfaces.
+                </div>
+            </section>
+            <section class="concept-section" id="waves-installation">
+                <h2 class="concept-title">Installation</h2>
+                <p>Include the Waves.js script and CSS in your HTML file:</p>
+                <div class="code-example">
+                    <pre><code>&lt;!-- Include Waves CSS --&gt;
+&lt;link rel="stylesheet" href="~/plugins/waves/waves.min.css"&gt;
+
+&lt;!-- Include Waves JS --&gt;
+&lt;script src="~/plugins/waves/waves.min.js"&gt;&lt;/script&gt;</code></pre>
+                </div>
+                <h4>Basic initialization</h4>
+                <div class="code-example">
+                    <pre><code>// Initialize Waves with default options
+document.addEventListener('DOMContentLoaded', function() {
+    Waves.init();
+});
+
+// Or with custom options
+Waves.init({
+    duration: 500,
+    delay: 200
+});</code></pre>
+                </div>
+                <h4>HTML Structure</h4>
+                <div class="code-example">
+                    <pre><code>&lt;!-- Basic button with waves effect --&gt;
+&lt;button class="waves-effect"&gt;Click me&lt;/button&gt;
+
+&lt;!-- Button with waves effect and color --&gt;
+&lt;button class="waves-effect waves-light"&gt;Light Effect&lt;/button&gt;
+
+&lt;!-- Other elements with waves effect --&gt;
+&lt;div class="card waves-effect"&gt;Card with ripple&lt;/div&gt;
+&lt;a href="#" class="waves-effect waves-teal"&gt;Teal Ripple Link&lt;/a&gt;</code></pre>
+                </div>
+                <div class="warning">
+                    <strong>Important:</strong> The <code>waves-effect</code> class is required for
+                    any element you want to apply the ripple effect to. Additional classes like
+                    <code>waves-light</code> or <code>waves-teal</code> modify the appearance of the
+                    effect.
+                </div>
+            </section>
+            <section class="concept-section" id="waves-configuration">
+                <h2 class="concept-title">Configuration Options</h2>
+                <p>Waves.js offers several configuration options to customize the ripple effect:</p>
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-striped table-clean">
+                        <thead>
+                            <tr>
+                                <th>Option</th>
+                                <th>Default Value</th>
+                                <th>Description</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>duration</code></td>
+                                <td><strong>750</strong></td>
+                                <td>Duration of the ripple animation in milliseconds.</td>
+                                <td><strong class="text-success">number</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>delay</code></td>
+                                <td><strong>200</strong></td>
+                                <td>Delay before showing the ripple effect on touch devices, in
+                                    milliseconds.</td>
+                                <td><strong class="text-success">number</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <section class="concept-section" id="waves-classes">
+                <h2 class="concept-title">CSS Classes</h2>
+                <p>Waves.js uses several CSS classes to control the appearance of the ripple effect:
+                </p>
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-striped table-clean">
+                        <thead>
+                            <tr>
+                                <th>Class</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>waves-effect</code></td>
+                                <td>Base class required for any element to have the ripple effect.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><code>waves-light</code></td>
+                                <td>Creates a light-colored ripple (white), ideal for dark
+                                    backgrounds.</td>
+                            </tr>
+                            <tr>
+                                <td><code>waves-red</code>, <code>waves-yellow</code>,
+                                    <code>waves-orange</code>, <code>waves-purple</code>,
+                                    <code>waves-green</code>, <code>waves-teal</code>
+                                </td>
+                                <td>Colored ripple effects matching the specified color.</td>
+                            </tr>
+                            <tr>
+                                <td><code>waves-circle</code></td>
+                                <td>Creates a circular ripple effect, ideal for round buttons.</td>
+                            </tr>
+                            <tr>
+                                <td><code>waves-float</code></td>
+                                <td>Adds a subtle floating animation when hovering over the element.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><code>waves-block</code></td>
+                                <td>Makes the ripple effect fill the entire element (useful for
+                                    block elements).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> You can combine multiple classes for different
+                    effects. For example, <code>waves-effect waves-light waves-circle</code> creates
+                    a light circular ripple effect.
+                </div>
+            </section>
+            <section class="concept-section" id="waves-api-methods">
+                <h2 class="concept-title">API Methods</h2>
+                <p>Waves.js exposes several methods for programmatic control:</p>
+                <div class="code-example">
+                    <pre><code>// Initialize Waves with options
+Waves.init({
+    duration: 500,
+    delay: 200
+});
+
+// Attach Waves effect to elements
+Waves.attach('.my-button');
+Waves.attach('.my-card', ['waves-light', 'waves-block']);
+
+// Programmatically create a ripple
+Waves.ripple(document.querySelector('.my-button'), {
+    wait: 1000,                // Wait 1000ms before hiding the ripple
+    position: {x: 20, y: 20}   // Position of the ripple (default is center)
+});
+
+// Remove all ripples from elements
+Waves.calm('.my-button');</code></pre>
+                </div>
+                <h4>Method Details</h4>
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-striped table-clean">
+                        <thead>
+                            <tr>
+                                <th>Method</th>
+                                <th>Parameters</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>Waves.init(options)</code></td>
+                                <td><code>options</code>: Object with configuration options</td>
+                                <td>Initializes Waves.js with the specified options.</td>
+                            </tr>
+                            <tr>
+                                <td><code>Waves.attach(elements, classes)</code></td>
+                                <td>
+                                    <code>elements</code>: DOM element, selector, or array of
+                                    elements<br />
+                                    <code>classes</code>: String or array of additional classes
+                                </td>
+                                <td>Attaches the Waves effect to the specified elements with
+                                    optional additional classes.</td>
+                            </tr>
+                            <tr>
+                                <td><code>Waves.ripple(elements, options)</code></td>
+                                <td>
+                                    <code>elements</code>: DOM element, selector, or array of
+                                    elements<br />
+                                    <code>options</code>: Object with ripple options (wait,
+                                    position)
+                                </td>
+                                <td>Programmatically triggers a ripple effect on the specified
+                                    elements.</td>
+                            </tr>
+                            <tr>
+                                <td><code>Waves.calm(elements)</code></td>
+                                <td><code>elements</code>: DOM element, selector, or array of
+                                    elements</td>
+                                <td>Removes all ripples from the specified elements.</td>
+                            </tr>
+                            <tr>
+                                <td><code>Waves.displayEffect(options)</code></td>
+                                <td><code>options</code>: Object with configuration options</td>
+                                <td>Deprecated. Use <code>Waves.init()</code> instead.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <section class="concept-section" id="waves-special-elements">
+                <h2 class="concept-title">Special Elements Handling</h2>
+                <p>Waves.js includes special handling for certain HTML elements:</p>
+                <h4>Input Elements</h4>
+                <div class="code-example">
+                    <pre><code>&lt;!-- Input with waves effect --&gt;
+&lt;input type="button" class="waves-effect" value="Input Button"&gt;</code></pre>
+                </div>
+                <p>When applied to <code>&lt;input&gt;</code> elements, Waves.js automatically wraps
+                    the input in a container to properly display the ripple effect.</p>
+                <h4>Image Elements</h4>
+                <div class="code-example">
+                    <pre><code>&lt;!-- Image with waves effect --&gt;
+&lt;img src="image.jpg" class="waves-effect" alt="Image with ripple"&gt;</code></pre>
+                </div>
+                <p>Similar to inputs, images are wrapped in a container to properly display the
+                    ripple effect.</p>
+                <div class="warning">
+                    <strong>Note:</strong> For SVG elements, Waves.js has special handling to ensure
+                    the ripple effect works correctly.
+                </div>
+            </section>
+            <section class="concept-section" id="waves-touch-handling">
+                <h2 class="concept-title">Touch Device Handling</h2>
+                <p>Waves.js includes sophisticated touch event handling to ensure a smooth
+                    experience on mobile devices:</p>
+                <div class="code-example">
+                    <pre><code>// Touch handling in Waves.js
+var TouchHandler = {
+    touches: 0,
+    
+    allowEvent: function(e) {
+        var allow = true;
+        
+        if (/^(mousedown|mousemove)$/.test(e.type) &amp;&amp; TouchHandler.touches) {
+            allow = false;
+        }
+        
+        return allow;
+    },
+    
+    registerEvent: function(e) {
+        var eType = e.type;
+        
+        if (eType === 'touchstart') {
+            TouchHandler.touches += 1; // push
+        } else if (/^(touchend|touchcancel)$/.test(eType)) {
+            setTimeout(function() {
+                if (TouchHandler.touches) {
+                    TouchHandler.touches -= 1; // pop after 500ms
+                }
+            }, 500);
+        }
+    }
+};</code></pre>
+                </div>
+                <p>Key features of the touch handling include:</p>
+                <ul class="list-spaced">
+                    <li><strong>Touch and mouse event coordination:</strong> Prevents duplicate
+                        events when both touch and mouse events are triggered</li>
+                    <li><strong>Delay for touch devices:</strong> Adds a configurable delay before
+                        showing the ripple on touch devices</li>
+                    <li><strong>Touch movement detection:</strong> Cancels the ripple effect if the
+                        user moves their finger (for scrolling)</li>
+                    <li><strong>Multi-touch support:</strong> Properly handles multiple simultaneous
+                        touches</li>
+                </ul>
+            </section>
+            <section class="concept-section" id="waves-usage-examples">
+                <h2 class="concept-title">Usage Examples</h2>
+                <h4>Basic Buttons</h4>
+                <div class="code-example">
+                    <pre><code>&lt;!-- Default ripple effect --&gt;
+&lt;button class="btn waves-effect"&gt;Default&lt;/button&gt;
+
+&lt;!-- Light ripple effect (for dark backgrounds) --&gt;
+&lt;button class="btn btn-dark waves-effect waves-light"&gt;Light Effect&lt;/button&gt;
+
+&lt;!-- Colored ripple effects --&gt;
+&lt;button class="btn waves-effect waves-red"&gt;Red Effect&lt;/button&gt;
+&lt;button class="btn waves-effect waves-yellow"&gt;Yellow Effect&lt;/button&gt;
+&lt;button class="btn waves-effect waves-orange"&gt;Orange Effect&lt;/button&gt;
+&lt;button class="btn waves-effect waves-purple"&gt;Purple Effect&lt;/button&gt;
+&lt;button class="btn waves-effect waves-green"&gt;Green Effect&lt;/button&gt;
+&lt;button class="btn waves-effect waves-teal"&gt;Teal Effect&lt;/button&gt;</code></pre>
+                </div>
+                <h4>Cards and Panels</h4>
+                <div class="code-example">
+                    <pre><code>&lt;!-- Card with ripple effect --&gt;
+&lt;div class="card waves-effect"&gt;
+    &lt;div class="card-body"&gt;
+        This entire card has a ripple effect
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Panel with block ripple effect --&gt;
+&lt;div class="panel waves-effect waves-block"&gt;
+    &lt;div class="panel-heading"&gt;Panel Title&lt;/div&gt;
+    &lt;div class="panel-body"&gt;
+        This panel has a block ripple effect
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                </div>
+                <h4>Circular Buttons</h4>
+                <div class="code-example">
+                    <pre><code>&lt;!-- Circular button with ripple effect --&gt;
+&lt;button class="btn btn-circle waves-effect waves-circle"&gt;
+    &lt;i class="fa fa-plus"&gt;&lt;/i&gt;
+&lt;/button&gt;
+
+&lt;!-- Circular button with light ripple effect --&gt;
+&lt;button class="btn btn-dark btn-circle waves-effect waves-circle waves-light"&gt;
+    &lt;i class="fa fa-check"&gt;&lt;/i&gt;
+&lt;/button&gt;</code></pre>
+                </div>
+                <h4>Dynamic Attachment</h4>
+                <div class="code-example">
+                    <pre><code>// Dynamically add waves effect to elements created after page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Waves
+    Waves.init();
+    
+    // Create a new button
+    var button = document.createElement('button');
+    button.textContent = 'Dynamic Button';
+    document.body.appendChild(button);
+    
+    // Attach waves effect to the new button
+    Waves.attach(button, ['waves-light']);
+    
+    // Attach to multiple elements with additional classes
+    Waves.attach('.dynamic-elements', ['waves-green', 'waves-float']);
+});</code></pre>
+                </div>
+            </section>
+            <section class="concept-section" id="waves-best-practices">
+                <h2 class="concept-title">Best Practices</h2>
+                <ul class="list-spaced">
+                    <li>Apply the ripple effect only to interactive elements that users can click or
+                        tap</li>
+                    <li>Use appropriate colors for the ripple effect that complement your UI design
+                    </li>
+                    <li>For dark-colored elements, use the <code>waves-light</code> class for better
+                        visibility</li>
+                    <li>For circular buttons, use the <code>waves-circle</code> class for a more
+                        natural-looking effect</li>
+                    <li>Initialize Waves.js after the DOM is fully loaded to ensure all elements are
+                        properly processed</li>
+                    <li>For dynamically created elements, use <code>Waves.attach()</code> to add the
+                        ripple effect</li>
+                    <li>Consider using <code>waves-float</code> for elements that should have
+                        additional hover feedback</li>
+                </ul>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> For the best user experience, keep the ripple effect
+                    subtle and quick. A duration of 500-750ms is usually ideal for most interfaces.
+                </div>
+            </section>
+            <section class="concept-section" id="waves-browser-support">
+                <h2 class="concept-title">Browser Support</h2>
+                <p>Waves.js supports all modern browsers including:</p>
+                <ul class="list-spaced">
+                    <li>Chrome</li>
+                    <li>Firefox</li>
+                    <li>Safari</li>
+                    <li>Edge</li>
+                    <li>Opera</li>
+                    <li>Mobile browsers (iOS Safari, Android Chrome)</li>
+                </ul>
+                <p>For older browsers like IE11, Waves.js includes fallbacks to ensure basic
+                    functionality.</p>
+                <div class="warning">
+                    <strong>Note:</strong> For optimal performance on mobile devices, consider
+                    adjusting the <code>duration</code> and <code>delay</code> options to match the
+                    responsiveness of your target devices.
+                </div>
+            </section>
+            <section class="concept-section" id="waves-troubleshooting">
+                <h2 class="concept-title">Troubleshooting</h2>
+                <div class="warning">
+                    <strong>Common Issues:</strong>
+                    <ul class="mb-0">
+                        <li><strong>Ripple effect not showing?</strong> Ensure the element has the
+                            <code>waves-effect</code> class and is properly initialized.
+                        </li>
+                        <li><strong>Ripple effect not visible on dark elements?</strong> Add the
+                            <code>waves-light</code> class for better contrast.
+                        </li>
+                        <li><strong>Effect not working on dynamically created elements?</strong> Use
+                            <code>Waves.attach()</code> after creating the elements.
+                        </li>
+                        <li><strong>Ripple effect looks distorted?</strong> For non-rectangular
+                            elements, try adding the <code>waves-circle</code> class.</li>
+                        <li><strong>Performance issues on mobile?</strong> Reduce the
+                            <code>duration</code> value when initializing Waves.js.
+                        </li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+        <div class="order-1 order-xl-2 col-lg-12 col-xl-3 position-relative">
+            <!-- Sidebar (Right Side) - Sticky Navigation -->
+            <h5 class="mb-3 ps-lg-3">On This Page</h5>
+            <ul class="list-unstyled ps-lg-3">
+                <li class="py-1"><a href="#waves">Introduction</a></li>
+                <li class="py-1"><a href="#waves-installation">Installation</a></li>
+                <li class="py-1"><a href="#waves-configuration">Configuration</a></li>
+                <li class="py-1"><a href="#waves-classes">CSS Classes</a></li>
+                <li class="py-1"><a href="#waves-api-methods">API Methods</a></li>
+                <li class="py-1"><a href="#waves-special-elements">Special Elements</a></li>
+                <li class="py-1"><a href="#waves-touch-handling">Touch Handling</a></li>
+                <li class="py-1"><a href="#waves-usage-examples">Usage Examples</a></li>
+                <li class="py-1"><a href="#waves-best-practices">Best Practices</a></li>
+                <li class="py-1"><a href="#waves-browser-support">Browser Support</a></li>
+                <li class="py-1"><a href="#waves-troubleshooting">Troubleshooting</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script src="~/plugins/highlightjs/highlight.min.js"></script>
+    <script src="~/plugins/highlightjs/go.min.js"></script>
+    <script src="~/scripts/pages/code-highlight.js"></script>
+}
