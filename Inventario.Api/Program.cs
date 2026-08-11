@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json.Serialization;
+using Inventario.Api.Middleware;
 using Inventario.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -52,6 +53,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Primero en el pipeline (tras HTTPS redirection) para capturar cualquier excepción no manejada
+// que ocurra más adelante, incluida la de los middlewares de autenticación/autorización.
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();

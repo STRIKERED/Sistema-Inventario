@@ -32,6 +32,8 @@ public static class DependencyInjection
         services.AddScoped<ICotizacionPdfService, CotizacionPdfService>();
         services.AddSingleton<IPasswordHasher, PasswordHasher>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
+        services.AddSingleton<IFolioService, FolioService>();
+        services.AddSingleton<ICalculadoraTotalesService, CalculadoraTotalesService>();
 
         return services;
     }

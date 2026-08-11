@@ -24,6 +24,7 @@ public class CajaRepository : ICajaRepository
     public async Task<IEnumerable<Caja>> ObtenerPorSucursalAsync(int sucursalId)
     {
         return await _context.Cajas
+            .Include(c => c.Sucursal)
             .Where(c => c.SucursalId == sucursalId)
             .OrderBy(c => c.Nombre)
             .ToListAsync();
