@@ -1,0 +1,462 @@
+@page "/docs-smartappjs"
+@model Inventario.Web.Pages.Docs.SmartappjsModel
+
+@{
+    ViewBag.Title = "Smartappjs";
+}
+
+@section styles
+{
+    <link href="~/plugins/highlightjs/night-owl.css" rel="stylesheet" />
+}
+
+@await Html.PartialAsync("~/Pages/Shared/Partials/_PageTitle.cshtml", new {
+pageTitle = "SmartApp.js",
+pageSubTitle1 = "Core Plugins",
+pageSubTitle2 = "Documentation",
+pageSubText = (string?)null
+})
+
+<div class="main-content">
+    <div class="row">
+        <div class="order-2 order-xl-1 col-lg-12 col-xl-9">
+            <section class="concept-section" id="introduction">
+                <h4 class="my-4">DOM Magic, Simplified!</h4>
+                <p>SmartApp.js is an enhanced vanilla JavaScript plugin designed for DOM
+                    manipulation, UI controls, event handling, security features, and audio
+                    management. It provides efficient methods to interact with UI elements, handle
+                    class modifications, execute panel actions, play sounds, and more.</p>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> SmartApp.js is designed with security in mind,
+                    featuring built-in sanitization for class names, selectors, and data attributes.
+                </div>
+            </section>
+            <section class="concept-section" id="installation">
+                <h2 class="concept-title">Installation</h2>
+                <p>Include the SmartApp.js script in your HTML file:</p>
+                <div class="code-example">
+                    <pre><code>&lt;script src="~/scripts/core/smartApp.js"&gt;&lt;/script&gt;</code></pre>
+                </div>
+                <p>Initialize the plugin:</p>
+                <div class="code-example">
+                    <pre><code>document.addEventListener('DOMContentLoaded', function() {
+appDOM.checkActiveStyles().debug(true);
+});</code></pre>
+                </div>
+            </section>
+            <section class="concept-section" id="configuration">
+                <h2 class="concept-title">Configuration</h2>
+                <p>SmartApp.js comes with a flexible configuration system:</p>
+                <div class="code-example">
+                    <pre><code>const config = {
+debug: false,
+focusDelay: 200,
+defaultSoundPath: 'media/sound/',
+maxClassNameLength: 50,
+maxSelectorLength: 255,
+fullscreenConfirmMessage: 'Do you want to enter fullscreen mode?',
+selectors: {
+    actionButtons: '[data-action]'
+},
+sound: {
+    preload: false,
+    volume: 1.0,
+    fadeIn: false,
+    fadeInDuration: 500
+}
+};</code></pre>
+                </div>
+                <div class="warning">
+                    <strong>Important:</strong> Security limits like maxClassNameLength and
+                    maxSelectorLength help prevent DoS attacks.
+                </div>
+            </section>
+            <section class="concept-section" id="core-features">
+                <h2 class="concept-title">Core Features</h2>
+                <h6 class="text-uppercase fw-700">Style Management</h6>
+                <div class="code-example">
+                    <pre><code>// Reset all styles
+appDOM.resetStyle();
+
+// Check active styles
+appDOM.checkActiveStyles();</code></pre>
+                </div>
+                <h6 class="text-uppercase fw-700">Class Manipulation</h6>
+                <div class="code-example">
+                    <pre><code>// Programmatic Methods
+// Toggle class
+appDOM.toggleClass('html', 'nav-function-hidden');
+appDOM.toggleClass('.my-element', 'active');
+
+// Toggle Replace (swap one class for another)
+appDOM.toggleReplace('.my-element', 'btn-default', 'btn-primary');
+appDOM.toggleReplace('#myButton', null, 'active'); // Just add without removing
+
+// Toggle Swap (toggle class on specific target)
+appDOM.toggleSwap('html', 'nav-function-top');
+appDOM.toggleSwap('.drawer', 'active');
+
+// Chain multiple actions
+appDOM
+  .toggleClass('html', 'nav-function-hidden')
+  .toggleReplace('#myButton', 'btn-default', 'btn-primary')
+  .toggleSwap('.drawer', 'active');
+
+// Using data attributes
+&lt;button data-action="toggle" data-class="dark-mode"&gt;Toggle Dark Mode&lt;/button&gt;
+&lt;button data-action="toggle-replace" data-target=".btn" data-removeclass="btn-default" data-addclass="btn-primary"&gt;Update Button&lt;/button&gt;
+&lt;button data-action="toggle-swap" data-target=".drawer" data-toggleclass="active"&gt;Toggle Drawer&lt;/button&gt;</code></pre>
+                </div>
+            </section>
+            <section class="concept-section" id="security">
+                <h2 class="concept-title">Security Features</h2>
+                <h6 class="text-uppercase fw-700">Class Name Sanitization</h6>
+                <div class="code-example">
+                    <pre><code>// Sanitizes class names to prevent XSS
+const sanitizedClass = security.sanitizeClassName(className);
+
+// Only allows valid characters: a-z, A-Z, 0-9, -, _
+// Removes invalid characters
+// Enforces maximum length</code></pre>
+                </div>
+                <h6 class="text-uppercase fw-700">Selector Sanitization</h6>
+                <div class="code-example">
+                    <pre><code>// Prevents CSS injection attacks
+const sanitizedSelector = security.sanitizeSelector(selector);
+
+// Blocks dangerous patterns:
+// - HTML tags
+// - javascript: URLs
+// - data: URLs
+// - Expression functions
+// - Timing functions</code></pre>
+                </div>
+                <div class="warning">
+                    <strong>Important:</strong> All inputs are automatically sanitized to prevent
+                    XSS and injection attacks.
+                </div>
+            </section>
+            <section class="concept-section" id="theme">
+                <h2 class="concept-title">Theme Management</h2>
+                <p>SmartApp.js includes a built-in theme management system that handles light and
+                    dark themes:</p>
+                <h6 class="text-uppercase fw-700">Theme Controls</h6>
+                <div class="code-example">
+                    <pre><code>// Toggle theme programmatically
+appDOM.toggleTheme();
+
+// Using data attributes
+&lt;button data-action="toggle-theme"&gt;Toggle Theme&lt;/button&gt;
+
+// Check current theme
+const currentTheme = document.documentElement.getAttribute('data-bs-theme');
+
+// Theme is automatically saved to localStorage and restored on page load
+// Supports Bootstrap's data-bs-theme attribute
+// Toggles between 'light' and 'dark' modes</code></pre>
+                </div>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> Theme preferences are automatically persisted across
+                    sessions using localStorage.
+                </div>
+            </section>
+            <section class="concept-section" id="handlers">
+                <h2 class="concept-title">Event Handlers</h2>
+                <h6 class="text-uppercase fw-700">Available Actions</h6>
+                <div class="code-example">
+                    <pre><code>// Theme toggling
+&lt;button data-action="toggle-theme"&gt;Toggle Theme&lt;/button&gt;
+
+// Toggle class
+&lt;button data-action="toggle" data-class="active"&gt;Toggle&lt;/button&gt;
+
+// Replace class
+&lt;button data-action="toggle-replace" 
+    data-target="#element"
+    data-removeclass="hidden"
+    data-addclass="visible"&gt;Show Element&lt;/button&gt;
+
+// Swap class
+&lt;button data-action="toggle-swap"
+    data-target="#drawer"
+    data-toggleclass="open"&gt;Toggle Drawer&lt;/button&gt;
+
+// Programmatic usage
+// Theme
+appDOM.toggleTheme();
+
+// Class manipulation
+appDOM.toggleClass('html', 'nav-function-hidden');
+appDOM.toggleReplace('.button', 'btn-default', 'btn-primary');
+appDOM.toggleSwap('.drawer', 'active');
+
+// Method chaining
+appDOM
+    .toggleTheme()
+    .toggleClass('html', 'nav-function-hidden')
+    .toggleSwap('.drawer', 'active');</code></pre>
+                </div>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> All methods support chaining and include built-in
+                    error handling and logging.
+                </div>
+            </section>
+            <section class="concept-section" id="panel-actions">
+                <h2 class="concept-title">Panel Actions</h2>
+                <h6 class="text-uppercase fw-700">Available Panel Controls</h6>
+                <div class="code-example">
+                    <pre><code>// Panel action methods
+handlers.panelActions.collapse(element);
+handlers.panelActions.fullscreen(element);
+handlers.panelActions.close(element);
+
+// Example usage
+document.querySelector('.panel-collapse-btn').addEventListener('click', function() {
+handlers.panelActions.collapse(this);
+});
+
+// Using data attributes
+&lt;button data-action="panel-collapse"&gt;Collapse&lt;/button&gt;
+&lt;button data-action="panel-fullscreen"&gt;Fullscreen&lt;/button&gt;
+&lt;button data-action="panel-close"&gt;Close&lt;/button&gt;</code></pre>
+                </div>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> Panel actions automatically handle tooltips and
+                    transitions.
+                </div>
+            </section>
+            <section class="concept-section" id="fullscreen">
+                <h2 class="concept-title">Fullscreen Mode</h2>
+                <h6 class="text-uppercase fw-700">Fullscreen Controls</h6>
+                <div class="code-example">
+                    <pre><code>// Fullscreen methods
+fullscreenHandler.enter();
+fullscreenHandler.exit();
+fullscreenHandler.isFullscreen();
+
+// Example usage
+document.querySelector('.fullscreen-btn').addEventListener('click', function() {
+handlers.appFullscreen();
+});</code></pre>
+                </div>
+            </section>
+            <section class="concept-section" id="audio">
+                <h2 class="concept-title">Audio Features</h2>
+                <h6 class="text-uppercase fw-700">Sound Management</h6>
+                <div class="code-example">
+                    <pre><code>// Play sound
+&lt;button data-action="playsound" data-soundfile="click.mp3"&gt;Play Sound&lt;/button&gt;
+
+// Pause sound
+&lt;button data-action="pausesound"&gt;Pause Sound&lt;/button&gt;
+
+// Preload sound
+appDOM.preloadSound('background.mp3');
+
+// Play and pause sounds programmatically
+handlers.playSound(element);
+handlers.pauseSound(element);</code></pre>
+                </div>
+                <div class="warning">
+                    <strong>Note:</strong> Sound files are automatically cached for better
+                    performance.
+                </div>
+            </section>
+            <section class="concept-section" id="utilities">
+                <h2 class="concept-title">Utilities</h2>
+                <h6 class="text-uppercase fw-700">Debounce Function</h6>
+                <div class="code-example">
+                    <pre><code>const debouncedFunction = utils.debounce(() =&gt; {
+// Your code here
+}, 300);</code></pre>
+                </div>
+                <h6 class="text-uppercase fw-700">Element Validation</h6>
+                <div class="code-example">
+                    <pre><code>if (utils.validateElement(element, 'Button')) {
+// Element exists, proceed
+}</code></pre>
+                </div>
+            </section>
+            <section class="concept-section" id="color-extraction">
+                <h2 class="concept-title">Color Extraction</h2>
+                <p>SmartApp.js includes a powerful color extraction system that automatically
+                    extracts Bootstrap colors and theme variables. This feature is particularly
+                    useful for dynamic theme switching and color management.</p>
+                <h6 class="text-uppercase fw-700">Color Map Structure</h6>
+                <div class="code-example">
+                    <pre><code>window.colorMap = {
+    // Bootstrap category colors (primary, danger, success, warning, info)
+    primary: {
+        50: { 
+            hex: "#e6f1fe", 
+            rgb: "rgb(230, 241, 254)",
+            rgba: function(opacity) { return "rgba(230, 241, 254, " + opacity + ")"; },
+            values: "230, 241, 254"
+        },
+        100: { 
+            hex: "#cce3fd", 
+            rgb: "rgb(204, 227, 253)",
+            rgba: function(opacity) { return "rgba(204, 227, 253, " + opacity + ")"; },
+            values: "204, 227, 253"
+        },
+        // ... more shades up to 900
+    },
+    // ... other categories
+
+    // Bootstrap theme variables
+    bootstrapVars: {
+        bodyBg: { 
+            hex: "#ffffff", 
+            rgb: "rgb(255, 255, 255)",
+            rgba: function(opacity) { return "rgba(255, 255, 255, " + opacity + ")"; },
+            values: "255, 255, 255" 
+        },
+        bodyColor: { 
+            hex: "#212529", 
+            rgb: "rgb(33, 37, 41)",
+            rgba: function(opacity) { return "rgba(33, 37, 41, " + opacity + ")"; },
+            values: "33, 37, 41"
+        },
+        // ... other variables
+    }
+};</code></pre>
+                </div>
+                <h6 class="text-uppercase fw-700">Automatic Color Extraction</h6>
+                <p>Colors are automatically extracted in these scenarios:</p>
+                <ul>
+                    <li>On initial page load</li>
+                    <li>When theme is toggled between light and dark modes</li>
+                    <li>When manually calling the extraction function</li>
+                </ul>
+                <div class="code-example">
+                    <pre><code>// Manual color extraction
+utils.extractColors();
+
+// Listen for color extraction completion
+window.addEventListener('colorMapReady', () =&gt; {
+    console.log('Colors extracted:', window.colorMap);
+});</code></pre>
+                </div>
+                <h6 class="text-uppercase fw-700">Using Extracted Colors</h6>
+                <div class="code-example">
+                    <pre><code>// Access primary color at different shades
+const primaryLight = window.colorMap.primary[100].hex;
+const primaryMain = window.colorMap.primary[500].hex;
+const primaryDark = window.colorMap.primary[900].hex;
+
+// Access theme variables
+const bodyBg = window.colorMap.bootstrapVars.bodyBg.hex;
+const bodyColor = window.colorMap.bootstrapVars.bodyColor.hex;
+
+// Use colors with opacity (rgba)
+const primaryWithOpacity = window.colorMap.primary[500].rgba(0.7); // 70% opacity
+const bgWithOpacity = window.colorMap.bootstrapVars.bodyBg.rgba(0.3); // 30% opacity
+
+// Use in CSS properties
+element.style.backgroundColor = window.colorMap.primary[500].hex;
+element.style.color = window.colorMap.bootstrapVars.bodyColor.hex;
+element.style.boxShadow = "0 5px 15px " + window.colorMap.primary[500].rgba(0.5);</code></pre>
+                </div>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> Use the <code>rgba()</code> function for elements that
+                    need transparency. It accepts a single parameter for opacity between 0 and 1.
+                </div>
+                <h6 class="text-uppercase fw-700">Usage with Libraries like ApexCharts</h6>
+                <div class="code-example">
+                    <pre><code>// Example usage with chart libraries
+const chartOptions = {
+    colors: [window.colorMap.primary[500].hex],
+    grid: {
+        borderColor: window.colorMap.bootstrapVars.bodyColor.rgba(0.2) // 20% opacity
+    },
+    tooltip: {
+        style: {
+            backgroundColor: window.colorMap.bootstrapVars.bodyBg.rgba(0.9)
+        }
+    }
+};</code></pre>
+                </div>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> The color extraction system automatically updates when
+                    switching themes, ensuring your dynamic color applications stay in sync with the
+                    current theme.
+                </div>
+                <div class="warning">
+                    <strong>Note:</strong> Color extraction relies on Bootstrap classes being
+                    properly loaded. Ensure Bootstrap CSS is loaded before attempting to extract
+                    colors.
+                </div>
+            </section>
+            <section class="concept-section" id="debugging">
+                <h2 class="concept-title">Debugging</h2>
+                <h6 class="text-uppercase fw-700">Logger Functions</h6>
+                <div class="code-example">
+                    <pre><code>// Enable debug mode
+appDOM.debug(true);
+
+// Logger outputs
+logger.log('Info message');
+logger.error('Error message');
+logger.warn('Warning message');
+logger.group('Group name');
+logger.groupEnd();
+
+// Logging methods
+appDOM.log('This is a log message');
+appDOM.warn('This is a warning');
+appDOM.error('This is an error');</code></pre>
+                </div>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> Debug messages are prefixed with [AppDOM] for easy
+                    identification in the console.
+                </div>
+            </section>
+            <section class="concept-section" id="troubleshooting">
+                <h2 class="concept-title">Troubleshooting</h2>
+                <div class="warning">
+                    <strong>Common Issues:</strong>
+                    <ul>
+                        <li><strong>Class manipulation doesn't work?</strong><br />
+                            Ensure the target element exists before calling appDOM.addClass().</li>
+                        <li><strong>No sound is playing?</strong><br />
+                            Check if the file path is correct and ensure browser autoplay
+                            permissions allow playback.</li>
+                        <li><strong>Panel actions not responding?</strong><br />
+                            Verify that the data attributes are correctly set and the elements exist
+                            in the DOM.</li>
+                        <li><strong>Security restrictions blocking actions?</strong><br />
+                            Check the console for security warnings and ensure your selectors and
+                            class names meet the security requirements.</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+        <div class="order-1 order-xl-2 col-lg-12 col-xl-3 position-relative">
+            <!-- Sidebar (Right Side) - Sticky Navigation -->
+            <h5 class="mb-3 ps-lg-3">On This Page</h5>
+            <ul class="list-unstyled ps-lg-3">
+                <li class="py-1"><a href="#introduction">Introduction</a></li>
+                <li class="py-1"><a href="#installation">Installation</a></li>
+                <li class="py-1"><a href="#configuration">Configuration</a></li>
+                <li class="py-1"><a href="#core-features">Core Features</a></li>
+                <li class="py-1"><a href="#security">Security Features</a></li>
+                <li class="py-1"><a href="#theme">Theme Management</a></li>
+                <li class="py-1"><a href="#handlers">Event Handlers</a></li>
+                <li class="py-1"><a href="#panel-actions">Panel Actions</a></li>
+                <li class="py-1"><a href="#fullscreen">Fullscreen Mode</a></li>
+                <li class="py-1"><a href="#audio">Audio Features</a></li>
+                <li class="py-1"><a href="#utilities">Utilities</a></li>
+                <li class="py-1"><a href="#color-extraction">Color Extraction</a></li>
+                <li class="py-1"><a href="#debugging">Debugging</a></li>
+                <li class="py-1"><a href="#troubleshooting">Troubleshooting</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script src="~/plugins/highlightjs/highlight.min.js"></script>
+    <script src="~/plugins/highlightjs/go.min.js"></script>
+    <script src="~/scripts/pages/code-highlight.js"></script>
+}

@@ -1,0 +1,524 @@
+@page "/docs-smartnavigationjs"
+@model Inventario.Web.Pages.Docs.SmartnavigationjsModel
+
+@{
+    ViewBag.Title = "Smartnavigationjs";
+}
+
+@section styles
+{
+    <link href="~/plugins/highlightjs/night-owl.css" rel="stylesheet" />
+}
+
+<div class="mb-3">
+    @await Html.PartialAsync("~/Pages/Shared/Partials/_PageTitle.cshtml", new {
+    pageTitle = "SmartNavigation.js",
+        pageSubTitle1 = "Core Plugins",
+        pageSubTitle2 = "Documentation",
+        pageSubText = (string?)null
+        })
+
+</div>
+<div class="main-content">
+    <div class="row">
+        <div class="order-2 order-xl-1 col-lg-12 col-xl-9">
+            <!-- SmartNavigation.js -->
+            <section class="concept-section" id="smartnavigation">
+                <h2 class="concept-title with-lead">Your GPS, but cooler.</h2>
+                <p>SmartNavigation.js is a powerful, accessible, and secure JavaScript library for
+                    creating dynamic navigation menus. It provides a comprehensive set of tools for
+                    building interactive navigation systems with support for nested menus, accordion
+                    behavior, keyboard navigation, and more.</p>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> SmartNavigation.js is built with security in mind,
+                    featuring built-in sanitization for URLs and HTML content, making it resistant
+                    to XSS attacks.
+                </div>
+            </section>
+            <section class="concept-section" id="smartnavigation-installation">
+                <h2 class="concept-title">Installation</h2>
+                <p>Include the SmartNavigation.js script in your HTML file:</p>
+                <div class="code-example">
+                    <pre><code>&lt;script src="~/scripts/core/smartNavigation.js"&gt;&lt;/script&gt;</code></pre>
+                </div>
+                <h4>Basic initialization</h4>
+                <div class="code-example">
+                    <pre><code>// Initialize with default options
+const nav = new Navigation('#navigation');
+
+// Or with custom options
+const nav = new Navigation('#navigation', {
+    accordion: true,
+    slideUpSpeed: 300,
+    slideDownSpeed: 300,
+    debug: false,
+    maxDepth: 10
+});</code></pre>
+                </div>
+                <h4>HTML Structure</h4>
+                <div class="code-example">
+                    <pre><code>&lt;nav id="navigation"&gt;
+    &lt;ul&gt;
+        &lt;li&gt;
+            &lt;a href="#"&gt;Parent Item&lt;/a&gt;
+            &lt;ul&gt;
+                &lt;li&gt;&lt;a href="/page1"&gt;Child Item 1&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href="/page2"&gt;Child Item 2&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;
+                    &lt;a href="#"&gt;Child Item 3&lt;/a&gt;
+                    &lt;ul&gt;
+                        &lt;li&gt;&lt;a href="/subpage1"&gt;Grandchild Item 1&lt;/a&gt;&lt;/li&gt;
+                        &lt;li&gt;&lt;a href="/subpage2"&gt;Grandchild Item 2&lt;/a&gt;&lt;/li&gt;
+                    &lt;/ul&gt;
+                &lt;/li&gt;
+            &lt;/ul&gt;
+        &lt;/li&gt;
+        &lt;li&gt;&lt;a href="/about"&gt;About&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="/contact"&gt;Contact&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/nav&gt;</code></pre>
+                </div>
+                <div class="warning">
+                    <strong>Important:</strong> The navigation element must contain a
+                    <code>&lt;ul&gt;</code> element as its child. Each menu item should be an
+                    <code>&lt;li&gt;</code> element containing an <code>&lt;a&gt;</code> element.
+                </div>
+            </section>
+            <section class="concept-section" id="smartnavigation-configuration">
+                <h2 class="concept-title">Configuration Options</h2>
+                <p>SmartNavigation.js offers extensive configuration options to customize its
+                    behavior:</p>
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-striped table-clean">
+                        <thead>
+                            <tr>
+                                <th>Option</th>
+                                <th>Default Value</th>
+                                <th>Description</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>accordion</code></td>
+                                <td><strong class="text-primary">true</strong></td>
+                                <td>When enabled, only one submenu at the same level can be open at
+                                    a time.</td>
+                                <td><strong class="text-primary">boolean</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>slideUpSpeed</code></td>
+                                <td><strong>200</strong></td>
+                                <td>Duration in milliseconds for the submenu collapse animation.
+                                </td>
+                                <td><strong class="text-success">number</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>slideDownSpeed</code></td>
+                                <td><strong>200</strong></td>
+                                <td>Duration in milliseconds for the submenu expand animation.</td>
+                                <td><strong class="text-success">number</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>closedSign</code></td>
+                                <td><strong>'&lt;i class="sa
+                                        sa-chevron-down"&gt;&lt;/i&gt;'</strong></td>
+                                <td>HTML for the icon displayed next to closed submenus.</td>
+                                <td><strong class="text-danger">string</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>openedSign</code></td>
+                                <td><strong>'&lt;i class="sa sa-chevron-up"&gt;&lt;/i&gt;'</strong>
+                                </td>
+                                <td>HTML for the icon displayed next to opened submenus.</td>
+                                <td><strong class="text-danger">string</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>initClass</code></td>
+                                <td><strong>'js-nav-built'</strong></td>
+                                <td>CSS class added to the navigation element after initialization.
+                                </td>
+                                <td><strong class="text-danger">string</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>debug</code></td>
+                                <td><strong class="text-primary">false</strong></td>
+                                <td>When enabled, logs detailed information about the navigation's
+                                    operations to the console.</td>
+                                <td><strong class="text-primary">boolean</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>instanceId</code></td>
+                                <td><strong>auto-generated</strong></td>
+                                <td>Unique identifier for the navigation instance, used in debug
+                                    logs and data attributes.</td>
+                                <td><strong class="text-danger">string</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>maxDepth</code></td>
+                                <td><strong>10</strong></td>
+                                <td>Maximum nesting depth allowed for submenus to prevent excessive
+                                    nesting.</td>
+                                <td><strong class="text-success">number</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>sanitize</code></td>
+                                <td><strong class="text-primary">true</strong></td>
+                                <td>When enabled, sanitizes URLs and HTML content to prevent XSS
+                                    attacks.</td>
+                                <td><strong class="text-primary">boolean</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>animationTiming</code></td>
+                                <td><strong>'easeOutExpo'</strong></td>
+                                <td>Timing function for animations. Can be any valid CSS timing
+                                    function.</td>
+                                <td><strong class="text-danger">string</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>debounceTime</code></td>
+                                <td><strong>0</strong></td>
+                                <td>Time in milliseconds to debounce click events to prevent rapid
+                                    repeated clicks.</td>
+                                <td><strong class="text-success">number</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>onError</code></td>
+                                <td><strong class="text-danger">null</strong></td>
+                                <td>Callback function that is called when an error occurs.</td>
+                                <td><strong class="text-dark">Function|null</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>showMore.enabled</code></td>
+                                <td><strong class="text-primary">true</strong></td>
+                                <td>When enabled, adds a "Show more" toggle for submenus with many
+                                    items.</td>
+                                <td><strong class="text-primary">boolean</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>showMore.itemsToShow</code></td>
+                                <td><strong>4</strong></td>
+                                <td>Number of items to show before collapsing the rest behind a
+                                    "Show more" toggle.</td>
+                                <td><strong class="text-success">number</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>showMore.minItemsForToggle</code></td>
+                                <td><strong>2</strong></td>
+                                <td>Minimum number of hidden items required to show the "Show more"
+                                    toggle.</td>
+                                <td><strong class="text-success">number</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>showMore.moreText</code></td>
+                                <td><strong>'Show {count} more'</strong></td>
+                                <td>Text for the "Show more" toggle, where {count} is replaced with
+                                    the number of hidden items.</td>
+                                <td><strong class="text-danger">string</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>showMore.lessText</code></td>
+                                <td><strong>'Show less'</strong></td>
+                                <td>Text for the "Show less" toggle when hidden items are visible.
+                                </td>
+                                <td><strong class="text-danger">string</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <section class="concept-section" id="smartnavigation-advanced-configuration">
+                <h2 class="concept-title">Advanced Configuration Example</h2>
+                <p>Here's an example of how to configure SmartNavigation with advanced options:</p>
+                <div class="code-example">
+                    <pre><code>const nav = new Navigation('#navigation', {
+    accordion: true,
+    slideUpSpeed: 300,
+    slideDownSpeed: 300,
+    closedSign: '&lt;i class="fa fa-plus"&gt;&lt;/i&gt;',
+    openedSign: '&lt;i class="fa fa-minus"&gt;&lt;/i&gt;',
+    initClass: 'nav-initialized',
+    debug: true,
+    instanceId: 'main-navigation',
+    maxDepth: 5,
+    sanitize: true,
+    animationTiming: 'ease-in-out',
+    debounceTime: 100,
+    onError: function(error) {
+        console.error('Navigation error:', error);
+    },
+    showMore: {
+        enabled: true,
+        itemsToShow: 5,
+        minItemsForToggle: 3,
+        moreText: 'View {count} more items',
+        lessText: 'Collapse items'
+    }
+});</code></pre>
+                </div>
+            </section>
+            <section class="concept-section" id="smartnavigation-api-methods">
+                <h2 class="concept-title">API Methods</h2>
+                <p>SmartNavigation.js exposes several methods for programmatic control:</p>
+                <div class="code-example">
+                    <pre><code>// Get an existing navigation instance
+const nav = Navigation.getInstance('#navigation');
+
+// Initialize multiple navigation elements at once
+const navs = Navigation.initAll('.navigation', options);
+
+// Initialize navigation on DOM content loaded
+Navigation.initOnLoad(options);
+
+// Destroy all navigation instances
+Navigation.destroyAll();</code></pre>
+                </div>
+                <h4>Instance Methods</h4>
+                <div class="code-example">
+                    <pre><code>// Create a new menu item
+const parentItem = nav.createMenuItem({
+    text: 'Parent Menu',
+    url: '#',
+    hasSubmenu: true
+});
+
+// Create a child menu item
+const childItem = nav.createMenuItem({
+    text: 'Child Menu',
+    url: 'https://example.com',
+    parent: parentItem
+});
+
+// Update an existing menu item
+nav.updateMenuItem(childItem, {
+    text: 'Updated Text',
+    url: 'https://newurl.com'
+});
+
+// Move a menu item to a new parent
+nav.moveMenuItem(childItem, anotherParent);
+
+// Remove a menu item
+nav.removeMenuItem(childItem);
+
+// Toggle all submenus open or closed
+nav.toggleAll(true);  // Open all
+nav.toggleAll(false); // Close all
+
+// Close all open submenus
+nav.closeAllSubmenus();
+
+// Focus a specific menu item
+nav.focusItem(menuItem);
+
+// Destroy the navigation instance
+nav.destroy();</code></pre>
+                </div>
+            </section>
+            <section class="concept-section" id="smartnavigation-accessibility">
+                <h2 class="concept-title">Accessibility Features</h2>
+                <p>SmartNavigation.js is built with accessibility in mind, providing:</p>
+                <ul class="list-spaced">
+                    <li><strong>ARIA attributes:</strong> Automatically adds appropriate ARIA roles,
+                        states, and properties</li>
+                    <li><strong>Keyboard navigation:</strong> Full keyboard support for navigating
+                        the menu</li>
+                    <li><strong>Focus management:</strong> Proper focus handling for screen readers
+                    </li>
+                    <li><strong>Semantic markup:</strong> Uses proper HTML structure for navigation
+                    </li>
+                </ul>
+                <div class="code-example">
+                    <pre><code>// Keyboard navigation support
+// Enter/Space: Toggle submenu
+// Escape: Close submenu and return focus to parent
+// Arrow Down/Up: Navigate between menu items
+// Tab: Navigate through focusable elements</code></pre>
+                </div>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> The navigation automatically adds
+                    <code>aria-expanded</code> and <code>aria-haspopup</code> attributes to menu
+                    items with submenus, making them accessible to screen readers.
+                </div>
+            </section>
+            <section class="concept-section" id="smartnavigation-security">
+                <h2 class="concept-title">Security Features</h2>
+                <p>SmartNavigation.js includes several security features to protect against common
+                    vulnerabilities:</p>
+                <h4>HTML Sanitization</h4>
+                <div class="code-example">
+                    <pre><code>// Sanitizes HTML content to prevent XSS attacks
+const sanitizedHTML = Navigation.sanitizeHTML(htmlString);
+
+// Removes potentially dangerous attributes and scripts
+// Strips event handlers (onclick, onmouseover, etc.)
+// Prevents script injection</code></pre>
+                </div>
+                <h4>URL Validation</h4>
+                <div class="code-example">
+                    <pre><code>// Validates URLs to prevent javascript: protocol and other unsafe URLs
+const isValid = Navigation.isValidUrl(url);
+
+// Checks for:
+// - Valid URL format
+// - Prevents javascript: URLs
+// - Prevents data: URLs
+// - Prevents other potentially dangerous protocols</code></pre>
+                </div>
+                <div class="warning">
+                    <strong>Important:</strong> Always keep the <code>sanitize</code> option enabled
+                    in production environments to protect against XSS attacks.
+                </div>
+            </section>
+            <section class="concept-section" id="smartnavigation-show-more">
+                <h2 class="concept-title">Show More Feature</h2>
+                <p>The "Show More" feature helps manage large navigation menus by collapsing excess
+                    items:</p>
+                <div class="code-example">
+                    <pre><code>// Configure the Show More feature
+const nav = new Navigation('#navigation', {
+    showMore: {
+        enabled: true,           // Enable the feature
+        itemsToShow: 4,          // Show first 4 items
+        minItemsForToggle: 2,    // Only show toggle if at least 2 items are hidden
+        moreText: 'Show {count} more items',  // Text for the toggle (expanded)
+        lessText: 'Show fewer items'          // Text when collapsed
+    }
+});</code></pre>
+                </div>
+                <p>The Show More feature automatically:</p>
+                <ul class="list-spaced">
+                    <li>Identifies non-parent items (items without submenus) to collapse</li>
+                    <li>Keeps parent items (with submenus) always visible</li>
+                    <li>Adds a toggle button to show/hide the collapsed items</li>
+                    <li>Automatically expands if any hidden item is active</li>
+                </ul>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> The Show More feature is particularly useful for
+                    mobile navigation where space is limited, helping to keep the most important
+                    navigation items visible.
+                </div>
+            </section>
+            <section class="concept-section" id="smartnavigation-events">
+                <h2 class="concept-title">Event Handling</h2>
+                <p>SmartNavigation.js uses secure event handling to manage user interactions:</p>
+                <div class="code-example">
+                    <pre><code>// Click event handling
+element.addEventListener('mousedown', nav.handleClick, { passive: true });
+
+// Keyboard event handling
+element.addEventListener('keydown', nav.handleKeydown);
+
+// Debounced event handling to prevent rapid repeated clicks
+const debouncedHandler = nav.debounce(function() {
+    // Handler code
+}, 100);</code></pre>
+                </div>
+                <p>The navigation responds to the following events:</p>
+                <ul class="list-spaced">
+                    <li><strong>mousedown:</strong> Toggles submenus when clicking on parent items
+                    </li>
+                    <li><strong>keydown:</strong> Handles keyboard navigation and accessibility</li>
+                    <li><strong>transitionend:</strong> Manages animation completion for smooth
+                        transitions</li>
+                </ul>
+            </section>
+            <section class="concept-section" id="smartnavigation-animations">
+                <h2 class="concept-title">Animation System</h2>
+                <p>SmartNavigation.js includes a sophisticated animation system for smooth
+                    transitions:</p>
+                <div class="code-example">
+                    <pre><code>// Animate height of an element
+nav.animateHeight(element, 'down', callback);  // Expand
+nav.animateHeight(element, 'up', callback);    // Collapse
+
+// Animation options
+const nav = new Navigation('#navigation', {
+    slideUpSpeed: 300,           // Collapse animation duration
+    slideDownSpeed: 300,         // Expand animation duration
+    animationTiming: 'ease-in-out'  // CSS timing function
+});</code></pre>
+                </div>
+                <p>The animation system:</p>
+                <ul class="list-spaced">
+                    <li>Uses CSS transitions for smooth, hardware-accelerated animations</li>
+                    <li>Properly measures and animates content height</li>
+                    <li>Handles animation completion with callbacks</li>
+                    <li>Prevents animation conflicts with state tracking</li>
+                </ul>
+            </section>
+            <section class="concept-section" id="smartnavigation-best-practices">
+                <h2 class="concept-title">Best Practices</h2>
+                <ul class="list-spaced">
+                    <li>Keep your navigation structure reasonably flat (avoid excessive nesting)
+                    </li>
+                    <li>Use the <code>maxDepth</code> option to prevent performance issues from deep
+                        nesting</li>
+                    <li>Enable the <code>showMore</code> feature for large menus to improve
+                        usability</li>
+                    <li>Use the <code>debug</code> option during development to troubleshoot issues
+                    </li>
+                    <li>Always keep the <code>sanitize</code> option enabled in production</li>
+                    <li>Use semantic HTML structure for your navigation</li>
+                </ul>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> For large applications, use
+                    <code>Navigation.initAll()</code> to initialize multiple navigation components
+                    with the same configuration.
+                </div>
+            </section>
+            <section class="concept-section" id="smartnavigation-troubleshooting">
+                <h2 class="concept-title">Troubleshooting</h2>
+                <div class="warning">
+                    <strong>Common Issues:</strong>
+                    <ul class="mb-0">
+                        <li><strong>Navigation not initializing?</strong> Check that your HTML
+                            structure includes a <code>&lt;ul&gt;</code> element inside the
+                            navigation container.</li>
+                        <li><strong>Submenus not expanding?</strong> Ensure your HTML structure is
+                            correct with proper nesting of <code>&lt;li&gt;</code> and
+                            <code>&lt;ul&gt;</code> elements.
+                        </li>
+                        <li><strong>Animation issues?</strong> Try adjusting the
+                            <code>slideUpSpeed</code> and <code>slideDownSpeed</code> options, or
+                            check for CSS conflicts.
+                        </li>
+                        <li><strong>Security errors?</strong> Make sure URLs are valid and HTML
+                            content is safe when using <code>createMenuItem</code> or
+                            <code>updateMenuItem</code>.
+                        </li>
+                        <li><strong>Performance issues?</strong> Reduce the depth of your navigation
+                            structure or increase the <code>debounceTime</code> to prevent rapid
+                            interactions.</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+        <div class="order-1 order-xl-2 col-lg-12 col-xl-3 position-relative">
+            <!-- Sidebar (Right Side) - Sticky Navigation -->
+            <h5 class="mb-3 ps-lg-3">On This Page</h5>
+            <ul class="list-unstyled ps-lg-3">
+                <li class="py-1"><a href="#smartnavigation">Introduction</a></li>
+                <li class="py-1"><a href="#smartnavigation-installation">Installation</a></li>
+                <li class="py-1"><a href="#smartnavigation-configuration">Configuration</a></li>
+                <li class="py-1"><a href="#smartnavigation-advanced-configuration">Advanced
+                        Configuration</a></li>
+                <li class="py-1"><a href="#smartnavigation-api-methods">API Methods</a></li>
+                <li class="py-1"><a href="#smartnavigation-accessibility">Accessibility</a></li>
+                <li class="py-1"><a href="#smartnavigation-security">Security Features</a></li>
+                <li class="py-1"><a href="#smartnavigation-show-more">Show More Feature</a></li>
+                <li class="py-1"><a href="#smartnavigation-events">Event Handling</a></li>
+                <li class="py-1"><a href="#smartnavigation-animations">Animation System</a></li>
+                <li class="py-1"><a href="#smartnavigation-best-practices">Best Practices</a></li>
+                <li class="py-1"><a href="#smartnavigation-troubleshooting">Troubleshooting</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script src="~/plugins/highlightjs/highlight.min.js"></script>
+    <script src="~/plugins/highlightjs/go.min.js"></script>
+    <script src="~/scripts/pages/code-highlight.js"></script>
+}

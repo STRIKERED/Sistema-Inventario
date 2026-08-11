@@ -1,0 +1,520 @@
+@page "/docs-smartfilterjs"
+@model Inventario.Web.Pages.Docs.SmartfilterjsModel
+
+@{
+    ViewBag.Title = "Smartfilterjs";
+}
+
+@section styles
+{
+    <link href="~/plugins/highlightjs/night-owl.css" rel="stylesheet" />
+}
+
+@await Html.PartialAsync("~/Pages/Shared/Partials/_PageTitle.cshtml", new {
+pageTitle = "SmartFilter.js",
+pageSubTitle1 = "Config",
+pageSubTitle2 = "Documentation",
+pageSubText = (string?)null
+})
+
+<div class="main-content">
+    <div class="row">
+        <div class="order-2 order-xl-1 col-lg-12 col-xl-9">
+            <!-- SmartFilter.js -->
+            <section class="concept-section" id="smartfilter">
+                <h2 class="concept-title with-lead">Find What You Need, Instantly!</h2>
+                <p>SmartFilter.js is a powerful JavaScript library that provides advanced filtering
+                    capabilities for lists, navigation menus, and other DOM elements. It features
+                    fuzzy search with intelligent scoring, performance optimizations, and a robust
+                    error handling system.</p>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> SmartFilter.js uses an advanced fuzzy matching
+                    algorithm that can find items even when users make typos or only remember part
+                    of a name.
+                </div>
+            </section>
+            <section class="concept-section" id="smartfilter-installation">
+                <h2 class="concept-title">Installation</h2>
+                <p>Include the SmartFilter.js script in your HTML file:</p>
+                <div class="code-example">
+                    <pre><code>&lt;script src="~/scripts/core/smartFilter.js"&gt;&lt;/script&gt;</code></pre>
+                </div>
+                <h4>Basic initialization</h4>
+                <div class="code-example">
+                    <pre><code>// Initialize with default options
+var filter = new ListFilter('#navigation-list', '#search-input');
+
+// Or with custom options
+var filter = new ListFilter('#navigation-list', '#search-input', {
+    debounceWait: 300,
+    minLength: 2,
+    caseSensitive: false,
+    onFilter: function(value) {
+        console.log('Filtering with:', value);
+    }
+});</code></pre>
+                </div>
+                <h4>HTML Structure</h4>
+                <div class="code-example">
+                    <pre><code>&lt;input type="text" id="search-input" placeholder="Search..."&gt;
+&lt;span class="js-filter-message"&gt;&lt;/span&gt;
+
+&lt;nav id="navigation-list"&gt;
+    &lt;ul&gt;
+        &lt;li class="nav-title"&gt;Category 1&lt;/li&gt;
+        &lt;li&gt;
+            &lt;a href="/page1"&gt;
+                &lt;span class="nav-link-text"&gt;Page 1&lt;/span&gt;
+            &lt;/a&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+            &lt;a href="/page2"&gt;
+                &lt;span class="nav-link-text"&gt;Page 2&lt;/span&gt;
+            &lt;/a&gt;
+        &lt;/li&gt;
+        &lt;li class="nav-title"&gt;Category 2&lt;/li&gt;
+        &lt;li&gt;
+            &lt;a href="/page3"&gt;
+                &lt;span class="nav-link-text"&gt;Page 3&lt;/span&gt;
+            &lt;/a&gt;
+        &lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/nav&gt;</code></pre>
+                </div>
+                <div class="warning">
+                    <strong>Important:</strong> For the filter to work correctly, each filterable
+                    item should have a <code>&lt;span class="nav-link-text"&gt;</code> element
+                    containing the text to be filtered.
+                </div>
+            </section>
+            <section class="concept-section" id="smartfilter-configuration">
+                <h2 class="concept-title">Configuration Options</h2>
+                <p>SmartFilter.js offers several configuration options to customize its behavior:
+                </p>
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-striped table-clean">
+                        <thead>
+                            <tr>
+                                <th>Option</th>
+                                <th>Default Value</th>
+                                <th>Description</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>anchor</code></td>
+                                <td><strong class="text-danger">null</strong></td>
+                                <td>Element to which the filter class will be applied (instead of
+                                    the list element).</td>
+                                <td><strong class="text-dark">Element|string|null</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>messageSelector</code></td>
+                                <td><strong>'.js-filter-message'</strong></td>
+                                <td>Selector for the element that displays the match count.</td>
+                                <td><strong class="text-danger">string</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>debounceWait</code></td>
+                                <td><strong>250</strong></td>
+                                <td>Time in milliseconds to wait before filtering after input
+                                    changes.</td>
+                                <td><strong class="text-success">number</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>minLength</code></td>
+                                <td><strong>1</strong></td>
+                                <td>Minimum number of characters required to trigger filtering.</td>
+                                <td><strong class="text-success">number</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>maxLength</code></td>
+                                <td><strong>100</strong></td>
+                                <td>Maximum number of characters allowed in the search input.</td>
+                                <td><strong class="text-success">number</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>caseSensitive</code></td>
+                                <td><strong class="text-primary">false</strong></td>
+                                <td>Whether the filter should be case-sensitive.</td>
+                                <td><strong class="text-primary">boolean</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>onFilter</code></td>
+                                <td><strong class="text-danger">null</strong></td>
+                                <td>Callback function that is called when filtering occurs.</td>
+                                <td><strong class="text-dark">Function|null</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>onReset</code></td>
+                                <td><strong class="text-danger">null</strong></td>
+                                <td>Callback function that is called when the filter is reset.</td>
+                                <td><strong class="text-dark">Function|null</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>onError</code></td>
+                                <td><strong class="text-danger">null</strong></td>
+                                <td>Callback function that is called when an error occurs.</td>
+                                <td><strong class="text-dark">Function|null</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <section class="concept-section" id="smartfilter-advanced-configuration">
+                <h2 class="concept-title">Advanced Configuration Example</h2>
+                <p>Here's an example of how to configure SmartFilter with advanced options:</p>
+                <div class="code-example">
+                    <pre><code>var filter = new ListFilter('#navigation-list', '#search-input', {
+    anchor: '#nav-container',
+    messageSelector: '.filter-results',
+    debounceWait: 300,
+    minLength: 2,
+    maxLength: 50,
+    caseSensitive: false,
+    onFilter: function(value) {
+        console.log('Filtering with:', value);
+        // Update UI or trigger other actions
+    },
+    onReset: function() {
+        console.log('Filter has been reset');
+        // Restore original state or trigger other actions
+    },
+    onError: function(error) {
+        console.error('Filter error:', error);
+        // Handle errors gracefully
+    }
+});</code></pre>
+                </div>
+            </section>
+            <section class="concept-section" id="smartfilter-fuzzy-search">
+                <h2 class="concept-title">Fuzzy Search Algorithm</h2>
+                <p>SmartFilter.js uses an advanced fuzzy search algorithm with intelligent scoring:
+                </p>
+                <div class="code-example">
+                    <pre><code>// Match weights used by the fuzzy search algorithm
+var MATCH_WEIGHTS = {
+    EXACT: 3,              // Exact match gets highest score
+    SUBSTRING: 2,          // Substring match gets second highest score
+    CONSECUTIVE: 0.5,      // Consecutive character matches
+    CONSECUTIVE_BONUS: 0.1, // Bonus for each additional consecutive match
+    NON_CONSECUTIVE: 0.3,  // Non-consecutive character matches
+    PREFIX_BONUS: 0.2,     // Bonus for matching at the beginning
+    CASE_MATCH_BONUS: 0.1  // Bonus for matching case
+};</code></pre>
+                </div>
+                <p>The algorithm provides several advantages:</p>
+                <ul class="list-spaced">
+                    <li><strong>Typo tolerance:</strong> Finds matches even when users make typing
+                        errors</li>
+                    <li><strong>Partial matching:</strong> Works with incomplete search terms</li>
+                    <li><strong>Intelligent scoring:</strong> Ranks results by relevance</li>
+                    <li><strong>Performance optimization:</strong> Uses caching to improve speed
+                    </li>
+                    <li><strong>Case sensitivity options:</strong> Can match exact case or ignore
+                        case</li>
+                </ul>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> The fuzzy search algorithm gives higher scores to
+                    matches at the beginning of words and consecutive character matches, making the
+                    results more intuitive for users.
+                </div>
+            </section>
+            <section class="concept-section" id="smartfilter-performance">
+                <h2 class="concept-title">Performance Optimizations</h2>
+                <p>SmartFilter.js includes several performance optimizations:</p>
+                <h4>Debouncing</h4>
+                <div class="code-example">
+                    <pre><code>// Debounce function with rate limiting
+function debounce(func, wait, immediate) {
+    var timeout;
+    var lastRun = 0;
+    
+    return function() {
+        var context = this;
+        var args = arguments;
+        var now = Date.now();
+        
+        // Rate limiting
+        if (now - lastRun &lt; RATE_LIMIT_MS) {
+            return;
+        }
+        
+        // Debounce implementation
+        clearTimeout(timeout);
+        timeout = setTimeout(function() {
+            timeout = null;
+            if (!immediate) func.apply(context, args);
+        }, wait);
+        
+        if (immediate &amp;&amp; !timeout) func.apply(context, args);
+    };
+}</code></pre>
+                </div>
+                <h4>Result Caching</h4>
+                <div class="code-example">
+                    <pre><code>// Cache for fuzzy match results
+var fuzzyMatchCache = new Map();
+
+// Check cache before computing match
+var cacheKey = pattern + '|' + str;
+if (fuzzyMatchCache.has(cacheKey)) {
+    return fuzzyMatchCache.get(cacheKey);
+}
+
+// Store result in cache
+fuzzyMatchCache.set(cacheKey, score);</code></pre>
+                </div>
+                <h4>DOM Caching</h4>
+                <div class="code-example">
+                    <pre><code>// Pre-cache DOM elements
+this._cache = {
+    items: this.list.getElementsByTagName('a'),
+    titles: this.list.getElementsByTagName('li'),
+    messageElement: document.querySelector(this.settings.messageSelector),
+    size: 0
+};</code></pre>
+                </div>
+                <div class="warning">
+                    <strong>Important:</strong> The filter automatically clears caches when they
+                    grow too large to prevent memory issues. The maximum cache size is set to 10,000
+                    items.
+                </div>
+            </section>
+            <section class="concept-section" id="smartfilter-api-methods">
+                <h2 class="concept-title">API Methods</h2>
+                <p>SmartFilter.js exposes several methods for programmatic control:</p>
+                <div class="code-example">
+                    <pre><code>// Get filter instance
+var filter = new ListFilter('#navigation-list', '#search-input');
+
+// Manually trigger filtering
+filter.filter();
+
+// Reset the filter (clear input and show all items)
+filter.reset();
+
+// Destroy the filter instance and clean up
+filter.destroy();</code></pre>
+                </div>
+                <h4>Internal Methods</h4>
+                <div class="code-example">
+                    <pre><code>// Find the navigation title associated with an element
+filter.findNavTitle(element);
+
+// Show all parent elements of a given element
+filter.showParents(element);
+
+// Show all child elements of a given element
+filter.showChildren(element);</code></pre>
+                </div>
+            </section>
+            <section class="concept-section" id="smartfilter-error-handling">
+                <h2 class="concept-title">Error Handling</h2>
+                <p>SmartFilter.js includes a robust error handling system:</p>
+                <div class="code-example">
+                    <pre><code>// Error handling with auto-recovery
+_handleError: function(error) {
+    console.error('ListFilter error:', error);
+    
+    // Track error frequency
+    var now = Date.now();
+    if (now - this._lastErrorTime &gt; 60000) {
+        this._errorCount = 0;
+    }
+    
+    this._errorCount++;
+    this._lastErrorTime = now;
+    
+    // Call error callback if provided
+    if (this.settings.onError) {
+        this.settings.onError(error);
+    }
+    
+    // Auto-recovery if too many errors
+    if (this._errorCount &gt; 10) {
+        this.reset();
+        this._errorCount = 0;
+    }
+}</code></pre>
+                </div>
+                <p>The error handling system provides:</p>
+                <ul class="list-spaced">
+                    <li><strong>Detailed error logging:</strong> Logs errors with context
+                        information</li>
+                    <li><strong>Error rate tracking:</strong> Monitors error frequency</li>
+                    <li><strong>Custom error callbacks:</strong> Allows custom error handling</li>
+                    <li><strong>Auto-recovery:</strong> Automatically resets the filter if too many
+                        errors occur</li>
+                    <li><strong>Input validation:</strong> Prevents common errors by validating
+                        inputs</li>
+                </ul>
+            </section>
+            <section class="concept-section" id="smartfilter-events">
+                <h2 class="concept-title">Event Handling</h2>
+                <p>SmartFilter.js uses efficient event handling to manage user interactions:</p>
+                <div class="code-example">
+                    <pre><code>// Bind events with passive listeners for better performance
+bindEvents: function() {
+    var self = this;
+    this.handleFilter = debounce(this.filter.bind(this), this.settings.debounceWait);
+    
+    // Use passive event listeners for better performance
+    this.input.addEventListener('input', this._validateEvent.bind(this), { passive: true });
+    this.input.addEventListener('change', this._validateEvent.bind(this), { passive: true });
+
+    // Add ESC key handler
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' || e.key === 'Esc') {
+            self.reset();
+        }
+    });
+
+    // Handle window resize for responsive layouts
+    this._resizeHandler = debounce(function() {
+        if (self.input.value.length &gt; self.settings.minLength) {
+            self.filter();
+        }
+    }, 250);
+    
+    window.addEventListener('resize', this._resizeHandler, { passive: true });
+}</code></pre>
+                </div>
+                <p>The filter responds to the following events:</p>
+                <ul class="list-spaced">
+                    <li><strong>input:</strong> Triggers filtering when the search input changes
+                    </li>
+                    <li><strong>change:</strong> Triggers filtering when the search input loses
+                        focus</li>
+                    <li><strong>keydown (Escape):</strong> Resets the filter when the Escape key is
+                        pressed</li>
+                    <li><strong>resize:</strong> Re-applies the filter when the window is resized
+                    </li>
+                    <li><strong>click:</strong> Resets the filter when the message element is
+                        clicked</li>
+                </ul>
+            </section>
+            <section class="concept-section" id="smartfilter-css-classes">
+                <h2 class="concept-title">CSS Classes</h2>
+                <p>SmartFilter.js uses several CSS classes to manage the visibility of elements:</p>
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-striped table-clean">
+                        <thead>
+                            <tr>
+                                <th>Class</th>
+                                <th>Description</th>
+                                <th>Applied To</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>js-list-filter</code></td>
+                                <td>Indicates that the element is a filterable list</td>
+                                <td>List element or anchor element</td>
+                            </tr>
+                            <tr>
+                                <td><code>js-list-active</code></td>
+                                <td>Indicates that the filter is currently active</td>
+                                <td>List element</td>
+                            </tr>
+                            <tr>
+                                <td><code>js-filter-hide</code></td>
+                                <td>Hides elements that don't match the filter</td>
+                                <td>List items</td>
+                            </tr>
+                            <tr>
+                                <td><code>js-filter-show</code></td>
+                                <td>Shows elements that match the filter</td>
+                                <td>List items</td>
+                            </tr>
+                            <tr>
+                                <td><code>nav-title</code></td>
+                                <td>Identifies category titles in the navigation</td>
+                                <td>Category title elements</td>
+                            </tr>
+                            <tr>
+                                <td><code>nav-link-text</code></td>
+                                <td>Identifies the text content to be filtered</td>
+                                <td>Text elements inside links</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> You can style these classes in your CSS to create
+                    visual effects when filtering, such as highlighting matched items or fading out
+                    hidden items.
+                </div>
+            </section>
+            <section class="concept-section" id="smartfilter-best-practices">
+                <h2 class="concept-title">Best Practices</h2>
+                <ul class="list-spaced">
+                    <li>Set an appropriate <code>debounceWait</code> value (200-300ms is
+                        recommended) to balance responsiveness and performance</li>
+                    <li>Use the <code>minLength</code> option to prevent filtering on very short
+                        inputs</li>
+                    <li>Provide a clear visual indication when filtering is active</li>
+                    <li>Include a way for users to clear the filter (the filter automatically
+                        supports the Escape key)</li>
+                    <li>Use the <code>onFilter</code> and <code>onReset</code> callbacks to
+                        synchronize other UI elements</li>
+                    <li>Implement proper error handling with the <code>onError</code> callback</li>
+                </ul>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> For large lists, consider increasing the
+                    <code>debounceWait</code> value to reduce the frequency of filtering operations
+                    and improve performance.
+                </div>
+            </section>
+            <section class="concept-section" id="smartfilter-troubleshooting">
+                <h2 class="concept-title">Troubleshooting</h2>
+                <div class="warning">
+                    <strong>Common Issues:</strong>
+                    <ul class="mb-0">
+                        <li><strong>Filter not working?</strong> Check that your HTML structure
+                            includes <code>&lt;span class="nav-link-text"&gt;</code> elements inside
+                            your links.</li>
+                        <li><strong>No matches found?</strong> Verify that the text content of your
+                            items matches what users are searching for.</li>
+                        <li><strong>Performance issues?</strong> Try increasing the
+                            <code>debounceWait</code> value and ensure you're not filtering
+                            extremely large lists.
+                        </li>
+                        <li><strong>Filter showing incorrect results?</strong> Check that your
+                            navigation titles are properly marked with the <code>nav-title</code>
+                            class.</li>
+                        <li><strong>Match count not showing?</strong> Verify that you have an
+                            element matching the <code>messageSelector</code> option.</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+        <div class="order-1 order-xl-2 col-lg-12 col-xl-3 position-relative">
+            <!-- Sidebar (Right Side) - Sticky Navigation -->
+            <h5 class="mb-3 ps-lg-3">On This Page</h5>
+            <ul class="list-unstyled ps-lg-3">
+                <li class="py-1"><a href="#smartfilter">Introduction</a></li>
+                <li class="py-1"><a href="#smartfilter-installation">Installation</a></li>
+                <li class="py-1"><a href="#smartfilter-configuration">Configuration</a></li>
+                <li class="py-1"><a href="#smartfilter-advanced-configuration">Advanced
+                        Configuration</a></li>
+                <li class="py-1"><a href="#smartfilter-fuzzy-search">Fuzzy Search</a></li>
+                <li class="py-1"><a href="#smartfilter-performance">Performance</a></li>
+                <li class="py-1"><a href="#smartfilter-api-methods">API Methods</a></li>
+                <li class="py-1"><a href="#smartfilter-error-handling">Error Handling</a></li>
+                <li class="py-1"><a href="#smartfilter-events">Event Handling</a></li>
+                <li class="py-1"><a href="#smartfilter-css-classes">CSS Classes</a></li>
+                <li class="py-1"><a href="#smartfilter-best-practices">Best Practices</a></li>
+                <li class="py-1"><a href="#smartfilter-troubleshooting">Troubleshooting</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script src="~/plugins/highlightjs/highlight.min.js"></script>
+    <script src="~/plugins/highlightjs/go.min.js"></script>
+    <script src="~/scripts/pages/code-highlight.js"></script>
+}

@@ -1,0 +1,535 @@
+@page "/docs-sortablejs"
+@model Inventario.Web.Pages.Docs.SortablejsModel
+
+@{
+    ViewBag.Title = "Sortablejs";
+}
+
+@section styles
+{
+    <link href="~/plugins/highlightjs/night-owl.css" rel="stylesheet" />
+}
+
+@await Html.PartialAsync("~/Pages/Shared/Partials/_PageTitle.cshtml", new {
+pageTitle = "SortableJS",
+pageSubTitle1 = "Config",
+pageSubTitle2 = "Documentation",
+pageSubText = (string?)null
+})
+
+<div class="main-content">
+    <div class="row">
+        <div class="order-2 order-xl-1 col-lg-12 col-xl-9">
+            <h2 class="concept-title with-lead">Turning Chaos into Click-and-Drag Order!</h2>
+            <section class="concept-section" id="sortable-introduction">
+                <p>
+                    Sortable.js is a powerful JavaScript library that enables drag-and-drop
+                    interactions for reordering elements within lists and grids. It provides a
+                    smooth, intuitive way for users to reorganize content with minimal code
+                    implementation.
+                </p>
+                <div class="info">
+                    <strong>Key Features:</strong>
+                    <ul>
+                        <li>Drag and drop sorting for lists, grids, and nested structures</li>
+                        <li>Touch device support for mobile-friendly interactions</li>
+                        <li>Cross-list sorting capabilities</li>
+                        <li>Animation effects during sorting operations</li>
+                        <li>Customizable drag handles</li>
+                        <li>Event hooks for complete control over the sorting process</li>
+                        <li>Support for multiple item selection and manipulation</li>
+                    </ul>
+                </div>
+            </section>
+            <section class="concept-section" id="sortable-installation">
+                <h2 class="concept-title">Installation</h2>
+                <p>
+                    Include Sortable.js in your project by adding the script to your HTML file:
+                </p>
+                <div class="code-example">
+                    <pre><code>&lt;script src="~/plugins/sortablejs/sortable.js"&lt;/script&gt;</code></pre>
+                </div>
+                <p>
+                    Initialize Sortable on any container element that holds sortable items:
+                </p>
+                <div class="code-example">
+                    <pre><code>// Basic initialization
+new Sortable(document.getElementById('list'), {
+    // options
+});</code></pre>
+                </div>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> For optimal performance, apply Sortable to the
+                    container element rather than individual items. The library will automatically
+                    handle the draggable behavior for all child elements.
+                </div>
+            </section>
+            <section class="concept-section" id="sortable-html-structure">
+                <h2 class="concept-title">HTML Structure</h2>
+                <p>
+                    Sortable.js works with virtually any HTML structure. The most common pattern is
+                    a list of items:
+                </p>
+                <div class="code-example">
+                    <pre><code>
+&lt;!-- Simple list --&gt;
+&lt;ul id="simple-list"&gt;
+    &lt;li&gt;Item 1&lt;/li&gt;
+    &lt;li&gt;Item 2&lt;/li&gt;
+    &lt;li&gt;Item 3&lt;/li&gt;
+    &lt;li&gt;Item 4&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;!-- Grid layout --&gt;
+&lt;div id="grid-demo" class="row"&gt;
+    &lt;div class="col-3"&gt;Item 1&lt;/div&gt;
+    &lt;div class="col-3"&gt;Item 2&lt;/div&gt;
+    &lt;div class="col-3"&gt;Item 3&lt;/div&gt;
+    &lt;div class="col-3"&gt;Item 4&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Nested lists --&gt;
+&lt;ul id="nested-demo"&gt;
+    &lt;li&gt;Item 1
+        &lt;ul&gt;
+            &lt;li&gt;Subitem 1.1&lt;/li&gt;
+            &lt;li&gt;Subitem 1.2&lt;/li&gt;
+        &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;Item 2&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+                </div>
+                <div class="info">
+                    <strong>Note:</strong> Sortable works with any element type, not just lists. You
+                    can use divs, cards, or any other container structure.
+                </div>
+            </section>
+            <section class="concept-section" id="sortable-configuration">
+                <h2 class="concept-title">Configuration Options</h2>
+                <p>
+                    Sortable.js offers numerous configuration options to customize its behavior:
+                </p>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Option</th>
+                                <th>Type</th>
+                                <th>Default</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>group</code></td>
+                                <td>String or Object</td>
+                                <td><code>null</code></td>
+                                <td>Group name or configuration for shared lists. Enables drag
+                                    between lists with the same group name.</td>
+                            </tr>
+                            <tr>
+                                <td><code>sort</code></td>
+                                <td>Boolean</td>
+                                <td><code>true</code></td>
+                                <td>Enables sorting within list.</td>
+                            </tr>
+                            <tr>
+                                <td><code>delay</code></td>
+                                <td>Number</td>
+                                <td><code>0</code></td>
+                                <td>Time in milliseconds to define when the sorting should start.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><code>delayOnTouchOnly</code></td>
+                                <td>Boolean</td>
+                                <td><code>false</code></td>
+                                <td>Only delay if user is using touch.</td>
+                            </tr>
+                            <tr>
+                                <td><code>animation</code></td>
+                                <td>Number</td>
+                                <td><code>150</code></td>
+                                <td>Animation speed in milliseconds.</td>
+                            </tr>
+                            <tr>
+                                <td><code>handle</code></td>
+                                <td>String</td>
+                                <td><code>null</code></td>
+                                <td>CSS selector for the drag handle element within list items.</td>
+                            </tr>
+                            <tr>
+                                <td><code>filter</code></td>
+                                <td>String</td>
+                                <td><code>null</code></td>
+                                <td>CSS selector for elements that should not be draggable.</td>
+                            </tr>
+                            <tr>
+                                <td><code>draggable</code></td>
+                                <td>String</td>
+                                <td><code>&gt;*</code></td>
+                                <td>CSS selector for draggable items within the container.</td>
+                            </tr>
+                            <tr>
+                                <td><code>ghostClass</code></td>
+                                <td>String</td>
+                                <td><code>sortable-ghost</code></td>
+                                <td>Class name for the drop placeholder.</td>
+                            </tr>
+                            <tr>
+                                <td><code>chosenClass</code></td>
+                                <td>String</td>
+                                <td><code>sortable-chosen</code></td>
+                                <td>Class name for the chosen item.</td>
+                            </tr>
+                            <tr>
+                                <td><code>dragClass</code></td>
+                                <td>String</td>
+                                <td><code>sortable-drag</code></td>
+                                <td>Class name for the dragging item.</td>
+                            </tr>
+                            <tr>
+                                <td><code>swapThreshold</code></td>
+                                <td>Number</td>
+                                <td><code>1</code></td>
+                                <td>Threshold of the swap zone (0 to 1).</td>
+                            </tr>
+                            <tr>
+                                <td><code>invertSwap</code></td>
+                                <td>Boolean</td>
+                                <td><code>false</code></td>
+                                <td>Inverts the swap zone if set to true.</td>
+                            </tr>
+                            <tr>
+                                <td><code>direction</code></td>
+                                <td>String</td>
+                                <td><code>null</code></td>
+                                <td>Direction of sorting ('vertical', 'horizontal').</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> Use the <code>group</code> option with
+                    <code>{ name: 'shared', pull: true, put: true }</code> to enable drag-and-drop
+                    between multiple lists.
+                </div>
+            </section>
+            <section class="concept-section" id="sortable-events">
+                <h2 class="concept-title">Events</h2>
+                <p>
+                    Sortable.js provides a rich set of events to hook into the sorting lifecycle:
+                </p>
+                <div class="code-example">
+                    <pre><code>new Sortable(element, {
+    // Event callbacks
+    onStart: function(evt) {
+        // Element dragging started
+        console.log('Drag started', evt.oldIndex);
+    },
+    onEnd: function(evt) {
+        // Element dragging ended
+        console.log('Drag ended', evt.oldIndex, evt.newIndex);
+    },
+    onAdd: function(evt) {
+        // Element is dropped into the list from another list
+        console.log('Item added', evt.item);
+    },
+    onUpdate: function(evt) {
+        // Changed position within list
+        console.log('Item position changed', evt.oldIndex, evt.newIndex);
+    },
+    onSort: function(evt) {
+        // Called during sorting
+        console.log('Sorting in progress');
+    },
+    onRemove: function(evt) {
+        // Element is removed from the list into another list
+        console.log('Item removed', evt.item);
+    },
+    onChange: function(evt) {
+        // Element changed list or position
+        console.log('Change occurred', evt);
+    }
+});</code></pre>
+                </div>
+                <div class="info">
+                    <strong>Event Object Properties:</strong>
+                    <ul>
+                        <li><code>item</code>: The dragged element</li>
+                        <li><code>from</code>: Source list</li>
+                        <li><code>to</code>: Destination list</li>
+                        <li><code>oldIndex</code>: Element's old index within the source list</li>
+                        <li><code>newIndex</code>: Element's new index within the destination list
+                        </li>
+                        <li><code>oldDraggableIndex</code>: Element's old index within the source
+                            list, only counting draggable elements</li>
+                        <li><code>newDraggableIndex</code>: Element's new index within the
+                            destination list, only counting draggable elements</li>
+                    </ul>
+                </div>
+            </section>
+            <section class="concept-section" id="sortable-methods">
+                <h2 class="concept-title">Methods</h2>
+                <p>
+                    Sortable.js provides several methods for programmatic control:
+                </p>
+                <div class="code-example">
+                    <pre><code>// Create a Sortable instance
+const sortable = new Sortable(document.getElementById('list'), {
+    // options
+});
+
+// Get the order of items as an array of IDs
+const order = sortable.toArray();
+
+// Sort elements in a predefined order
+sortable.sort(['item-3', 'item-1', 'item-2']);
+
+// Destroy the Sortable instance
+sortable.destroy();
+
+// Save the current order
+const savedOrder = sortable.save();
+
+// Option getter/setter
+const currentAnimation = sortable.option('animation'); // getter
+sortable.option('animation', 300); // setter</code></pre>
+                </div>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> Use the <code>toArray()</code> method to get the
+                    current order of items, which is useful for saving the state to a database.
+                </div>
+            </section>
+            <section class="concept-section" id="sortable-plugins">
+                <h2 class="concept-title">Plugins</h2>
+                <p>
+                    Sortable.js includes several built-in plugins that extend its functionality:
+                </p>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Plugin</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>AutoScroll</code></td>
+                                <td>Automatically scrolls the window when dragging near the edges.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><code>MultiDrag</code></td>
+                                <td>Enables selecting and dragging multiple items simultaneously.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><code>Swap</code></td>
+                                <td>Allows direct swapping of items instead of sorting.</td>
+                            </tr>
+                            <tr>
+                                <td><code>Revert</code></td>
+                                <td>Reverts items to their original position if dropped outside
+                                    valid targets.</td>
+                            </tr>
+                            <tr>
+                                <td><code>Remove</code></td>
+                                <td>Removes items when dropped outside valid targets.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p>
+                    To use a plugin, you need to activate it and configure it in your Sortable
+                    initialization:
+                </p>
+                <div class="code-example">
+                    <pre><code>// Enable MultiDrag plugin
+Sortable.mount(new MultiDrag());
+
+// Initialize with plugin options
+new Sortable(element, {
+    multiDrag: true,
+    selectedClass: 'selected',
+    multiDragKey: 'CTRL'
+});</code></pre>
+                </div>
+                <div class="info">
+                    <strong>Note:</strong> Some plugins may require additional CSS to properly style
+                    the interaction states.
+                </div>
+            </section>
+            <section class="concept-section" id="sortable-examples">
+                <h2 class="concept-title">Usage Examples</h2>
+                <h3>Basic Sortable List</h3>
+                <div class="code-example">
+                    <pre><code>// Simple sortable list
+new Sortable(document.getElementById('simple-list'), {
+    animation: 150,
+    ghostClass: 'blue-background-class'
+});</code></pre>
+                </div>
+                <h3>Shared Lists with Drag Between</h3>
+                <div class="code-example">
+                    <pre><code>// List A
+new Sortable(document.getElementById('list-a'), {
+    group: 'shared',
+    animation: 150
+});
+
+// List B
+new Sortable(document.getElementById('list-b'), {
+    group: 'shared',
+    animation: 150
+});</code></pre>
+                </div>
+                <h3>Kanban Board</h3>
+                <div class="code-example">
+                    <pre><code>// Initialize each column as a Sortable list
+document.querySelectorAll('.kanban-column').forEach(column =&gt; {
+    new Sortable(column, {
+        group: 'kanban',
+        animation: 150,
+        ghostClass: 'blue-background-class',
+        onEnd: function(evt) {
+            // Update task status based on the column it was moved to
+            const taskId = evt.item.dataset.id;
+            const newStatus = evt.to.dataset.status;
+            updateTaskStatus(taskId, newStatus);
+        }
+    });
+});</code></pre>
+                </div>
+                <h3>Nested Lists</h3>
+                <div class="code-example">
+                    <pre><code>// Initialize parent list
+new Sortable(document.getElementById('nested-parent'), {
+    group: 'nested',
+    animation: 150
+});
+
+// Initialize all child lists
+document.querySelectorAll('.nested-child').forEach(list =&gt; {
+    new Sortable(list, {
+        group: 'nested',
+        animation: 150
+    });
+});</code></pre>
+                </div>
+                <h3>Using MultiDrag Plugin</h3>
+                <div class="code-example">
+                    <pre><code>// Mount the MultiDrag plugin
+Sortable.mount(new MultiDrag());
+
+// Initialize with MultiDrag options
+new Sortable(document.getElementById('multi-list'), {
+    animation: 150,
+    multiDrag: true,
+    selectedClass: 'selected',
+    multiDragKey: 'CTRL'
+});</code></pre>
+                </div>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> For complex applications, consider using the
+                    <code>store</code> option to automatically save and restore the sort order using
+                    localStorage or a server API.
+                </div>
+            </section>
+            <section class="concept-section" id="sortable-best-practices">
+                <h2 class="concept-title">Best Practices</h2>
+                <div class="info">
+                    <ul>
+                        <li><strong>Performance:</strong> For large lists (100+ items), consider
+                            using the <code>animation: 0</code> option to improve performance.</li>
+                        <li><strong>Mobile Support:</strong> Set <code>delayOnTouchOnly: true</code>
+                            and <code>delay: 100</code> for better touch device experience.</li>
+                        <li><strong>Accessibility:</strong> Add appropriate ARIA attributes to
+                            sortable elements to improve accessibility.</li>
+                        <li><strong>Feedback:</strong> Use the <code>chosenClass</code> and
+                            <code>ghostClass</code> options to provide visual feedback during drag
+                            operations.
+                        </li>
+                        <li><strong>Nested Lists:</strong> When working with nested lists, ensure
+                            each list has the same group name but unique IDs.</li>
+                        <li><strong>Saving State:</strong> Use the <code>onEnd</code> event to save
+                            the new order to your database or localStorage.</li>
+                        <li><strong>Drag Handles:</strong> For complex items, use the
+                            <code>handle</code> option to specify a drag handle to prevent
+                            accidental dragging when interacting with other elements.
+                        </li>
+                    </ul>
+                </div>
+            </section>
+            <section class="concept-section" id="sortable-browser-support">
+                <h2 class="concept-title">Browser Support</h2>
+                <p>
+                    Sortable.js supports all modern browsers including:
+                </p>
+                <ul>
+                    <li>Chrome</li>
+                    <li>Firefox</li>
+                    <li>Safari</li>
+                    <li>Edge</li>
+                    <li>IE11 (with polyfills)</li>
+                    <li>Mobile browsers (iOS Safari, Chrome for Android)</li>
+                </ul>
+                <div class="warning">
+                    <strong>Note:</strong> For IE11 support, you may need to include additional
+                    polyfills for ES6 features.
+                </div>
+            </section>
+            <section class="concept-section" id="sortable-troubleshooting">
+                <h2 class="concept-title">Troubleshooting</h2>
+                <div class="warning">
+                    <strong>Common Issues:</strong>
+                    <ul class="mb-0">
+                        <li><strong>Items not draggable?</strong> Check that your selector matches
+                            the items and that they don't have <code>position: static</code>.</li>
+                        <li><strong>Can't drag between lists?</strong> Ensure both lists have the
+                            same <code>group</code> name and that <code>pull</code> and
+                            <code>put</code> options are correctly set.
+                        </li>
+                        <li><strong>Dragging starts immediately on touch devices?</strong> Add a
+                            <code>delay</code> and set <code>delayOnTouchOnly: true</code>.
+                        </li>
+                        <li><strong>Ghost element looks wrong?</strong> Customize the appearance
+                            with <code>ghostClass</code> or adjust your CSS.</li>
+                        <li><strong>Events not firing?</strong> Check that your event handlers are
+                            properly bound and that the Sortable instance is correctly initialized.
+                        </li>
+                        <li><strong>Nested sortable not working?</strong> Ensure each nested list
+                            has its own Sortable instance with the same group name.</li>
+                        <li><strong>Performance issues with large lists?</strong> Reduce or disable
+                            animation, or implement virtual scrolling for very large datasets.</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+        <div class="order-1 order-xl-2 col-lg-12 col-xl-3 position-relative">
+            <!-- Sidebar (Right Side) - Sticky Navigation -->
+            <h5 class="mb-3 ps-lg-3">On This Page</h5>
+            <ul class="list-unstyled ps-lg-3">
+                <li class="py-1"><a href="#sortable-introduction">Introduction</a></li>
+                <li class="py-1"><a href="#sortable-installation">Installation</a></li>
+                <li class="py-1"><a href="#sortable-html-structure">HTML Structure</a></li>
+                <li class="py-1"><a href="#sortable-configuration">Configuration</a></li>
+                <li class="py-1"><a href="#sortable-events">Events</a></li>
+                <li class="py-1"><a href="#sortable-methods">Methods</a></li>
+                <li class="py-1"><a href="#sortable-plugins">Plugins</a></li>
+                <li class="py-1"><a href="#sortable-examples">Usage Examples</a></li>
+                <li class="py-1"><a href="#sortable-best-practices">Best Practices</a></li>
+                <li class="py-1"><a href="#sortable-browser-support">Browser Support</a></li>
+                <li class="py-1"><a href="#sortable-troubleshooting">Troubleshooting</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script src="~/plugins/highlightjs/highlight.min.js"></script>
+    <script src="~/plugins/highlightjs/go.min.js"></script>
+    <script src="~/scripts/pages/code-highlight.js"></script>
+}

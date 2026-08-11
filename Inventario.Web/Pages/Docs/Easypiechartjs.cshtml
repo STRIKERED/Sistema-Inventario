@@ -1,0 +1,652 @@
+@page "/docs-easypiechartjs"
+@model Inventario.Web.Pages.Docs.EasypiechartjsModel
+
+@{
+    ViewBag.Title = "Easypiechartjs";
+}
+
+@section styles
+{
+    <link href="~/plugins/highlightjs/night-owl.css" rel="stylesheet" />
+}
+
+@await Html.PartialAsync("~/Pages/Shared/Partials/_PageTitle.cshtml", new {
+pageTitle = "EasyPieChart.js",
+pageSubTitle1 = "UI Components",
+pageSubTitle2 = "Documentation",
+pageSubText = "Lightweight, Animated Circular Progress Indicators."
+})
+
+<div class="main-content">
+    <div class="row">
+        <div class="order-2 order-xl-1 col-lg-12 col-xl-9">
+            <section class="concept-section" id="easypiechart">
+                <h2 class="concept-title with-lead">Lightweight, Animated Circular Progress
+                    Indicators</h2>
+                <p>EasyPieChart is a lightweight plugin to render simple, animated and
+                    retina-optimized pie charts. It uses the HTML5 canvas element for rendering and
+                    is designed to work well with percentages and visualize progress metrics in a
+                    compact, circular format.</p>
+                <p>
+                    These circular charts are perfect for dashboards, project progress tracking, and
+                    anywhere you need to show percentage-based information in a visually appealing
+                    way.
+                </p>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> EasyPieChart works seamlessly with SmartAdmin's color
+                    system and can be combined with other elements like counters, icons, or text to
+                    create rich, informative widgets.
+                </div>
+            </section>
+            <section class="concept-section" id="easypiechart-installation">
+                <h2 class="concept-title">Installation</h2>
+                <p>EasyPieChart is included in the SmartAdmin theme. There are two ways to use it:
+                </p>
+                <h4>1. Automatic Implementation with Data Attributes</h4>
+                <div class="code-example">
+                    <pre><code>// The easypiechart.js file is already included in SmartAdmin
+// and automatically initializes all charts with the 'js-easy-pie-chart' class
+
+// Simply add elements with this class and configuration via data attributes:
+&lt;div class="js-easy-pie-chart" data-percent="75" data-piesize="100" data-linewidth="10"&gt;
+    &lt;span class="js-percent"&gt;0&lt;/span&gt;%
+&lt;/div&gt;
+
+// No JavaScript needed - charts initialize automatically on page load</code></pre>
+                </div>
+                <h4>2. Manual Implementation with Direct API</h4>
+                <div class="code-example">
+                    <pre><code>// Import the EasyPieChart constructor directly
+import EasyPieChart from './thirdparty/easypiechart/easypiechart.es6.js';
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Basic initialization
+    const element = document.querySelector('.my-chart');
+    new EasyPieChart(element, {
+        barColor: 'var(--primary-500)',
+        trackColor: 'var(--primary-200)',
+        scaleColor: false,
+        lineWidth: 20,
+        size: 150,
+        animate: 1000,
+        onStep: function(from, to, percent) {
+            this.el.querySelector('.percent').textContent = Math.round(percent);
+        }
+    });
+    
+    // You can update the chart programmatically
+    // chart.update(65); // Updates to 65%
+});</code></pre>
+                </div>
+                <h4>HTML Structure</h4>
+                <div class="code-example">
+                    <pre><code>&lt;!-- For automatic initialization with easypiechart.js --&gt;
+&lt;div class="js-easy-pie-chart" data-percent="75"&gt;
+    &lt;span class="js-percent"&gt;0&lt;/span&gt;%
+&lt;/div&gt;
+
+&lt;!-- With data attributes for configuration --&gt;
+&lt;div class="js-easy-pie-chart" 
+    data-percent="65" 
+    data-piesize="100"
+    data-linewidth="10" 
+    data-linecap="round"&gt;
+    &lt;span class="js-percent"&gt;0&lt;/span&gt;%
+&lt;/div&gt;
+
+&lt;!-- For manual initialization with easypiechart.es6.js --&gt;
+&lt;div class="my-chart" data-percent="33"&gt;
+    &lt;svg class="sa-icon"&gt;
+        &lt;use href="img/sprite.svg#star"&gt;&lt;/use&gt;
+    &lt;/svg&gt;
+    &lt;div class="percent text-center mt-2"&gt;33&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                </div>
+                <div class="pro-tip">
+                    <strong>When to use each approach:</strong>
+                    <ul class="mb-0">
+                        <li><strong>Automatic Implementation:</strong> Best for typical use cases.
+                            Just add HTML with the proper class and data attributes - no JavaScript
+                            needed.</li>
+                        <li><strong>Manual Implementation:</strong> Use when you need more control
+                            over initialization timing, want to update charts dynamically, or need
+                            custom behavior.</li>
+                    </ul>
+                </div>
+                <div class="warning">
+                    <strong>Important:</strong>
+                    <ul class="mb-0">
+                        <li>The element must have a <code>data-percent</code> attribute with the
+                            percentage value to display.</li>
+                        <li>For automatic initialization, use <code>.js-percent</code> for the
+                            percentage text to update.</li>
+                        <li>For manual initialization, use whatever selector you reference in your
+                            <code>onStep</code> callback.
+                        </li>
+                        <li>EasyPieChart uses the HTML5 Canvas element, so it's not supported in
+                            very old browsers.</li>
+                    </ul>
+                </div>
+            </section>
+            <section class="concept-section" id="easypiechart-configuration">
+                <h2 class="concept-title">Configuration Options</h2>
+                <p>EasyPieChart offers various configuration options to customize the appearance and
+                    behavior of your charts:</p>
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-striped table-clean">
+                        <thead>
+                            <tr>
+                                <th>Option</th>
+                                <th>Type</th>
+                                <th>Default</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>barColor</code></td>
+                                <td>String | Function</td>
+                                <td>'#ef1e25'</td>
+                                <td>The color of the progress bar. Can be a CSS color or a function
+                                    that returns a color based on the current percentage.</td>
+                            </tr>
+                            <tr>
+                                <td><code>trackColor</code></td>
+                                <td>String</td>
+                                <td>'#f2f2f2'</td>
+                                <td>The color of the track (background) of the progress bar.</td>
+                            </tr>
+                            <tr>
+                                <td><code>scaleColor</code></td>
+                                <td>String | Boolean</td>
+                                <td>'#dfe0e0'</td>
+                                <td>The color of the scale lines. Set to <code>false</code> to
+                                    disable scale lines.</td>
+                            </tr>
+                            <tr>
+                                <td><code>scaleLength</code></td>
+                                <td>Number</td>
+                                <td>5</td>
+                                <td>Length of the scale lines (in pixels).</td>
+                            </tr>
+                            <tr>
+                                <td><code>lineCap</code></td>
+                                <td>String</td>
+                                <td>'round'</td>
+                                <td>Shape of the line cap: 'butt', 'round', or 'square'.</td>
+                            </tr>
+                            <tr>
+                                <td><code>lineWidth</code></td>
+                                <td>Number</td>
+                                <td>3</td>
+                                <td>Width of the progress bar line (in pixels).</td>
+                            </tr>
+                            <tr>
+                                <td><code>size</code></td>
+                                <td>Number</td>
+                                <td>110</td>
+                                <td>Size of the pie chart (in pixels).</td>
+                            </tr>
+                            <tr>
+                                <td><code>rotate</code></td>
+                                <td>Number</td>
+                                <td>0</td>
+                                <td>Rotation of the chart in degrees (0-360).</td>
+                            </tr>
+                            <tr>
+                                <td><code>animate</code></td>
+                                <td>Boolean | Object</td>
+                                <td>{duration: 1000, enabled: true}</td>
+                                <td>Animation configuration. Set to <code>false</code> to disable
+                                    animation.</td>
+                            </tr>
+                            <tr>
+                                <td><code>easing</code></td>
+                                <td>String | Function</td>
+                                <td>'linear'</td>
+                                <td>Animation easing function: 'linear', 'easeInOutQuad', etc.</td>
+                            </tr>
+                            <tr>
+                                <td><code>onStart</code></td>
+                                <td>Function</td>
+                                <td>null</td>
+                                <td>Callback function called at the start of animation.</td>
+                            </tr>
+                            <tr>
+                                <td><code>onStep</code></td>
+                                <td>Function</td>
+                                <td>null</td>
+                                <td>Callback function called during each animation step. Receives
+                                    the from, to, and current percentage values.</td>
+                            </tr>
+                            <tr>
+                                <td><code>onStop</code></td>
+                                <td>Function</td>
+                                <td>null</td>
+                                <td>Callback function called at the end of animation.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> You can also set these options using HTML data
+                    attributes by prefixing the option name with <code>data-</code>. For example,
+                    <code>data-bar-color</code>, <code>data-track-color</code>, etc.
+                </div>
+            </section>
+            <section class="concept-section" id="easypiechart-examples">
+                <h2 class="concept-title">Usage Examples</h2>
+                <p>Here are some common usage patterns for EasyPieChart:</p>
+                <h4>Basic Usage</h4>
+                <div class="code-example">
+                    <pre><code>// Basic chart with default values
+new EasyPieChart(document.querySelector('.chart-1'), {
+    barColor: 'var(--primary-500)',
+    trackColor: 'var(--primary-200)',
+    scaleColor: false,
+    lineWidth: 8,
+    size: 100
+});</code></pre>
+                </div>
+                <h4>Dynamic Color Based on Percentage</h4>
+                <div class="code-example">
+                    <pre><code>// Chart color changes based on percentage value
+new EasyPieChart(document.querySelector('.chart-2'), {
+    barColor: function(percent) {
+        if (percent &lt; 25) {
+            return 'var(--danger-500)'; // Red for low percentages
+        } else if (percent &lt; 50) {
+            return 'var(--warning-500)'; // Orange for medium-low
+        } else if (percent &lt; 75) {
+            return 'var(--info-500)'; // Blue for medium-high
+        } else {
+            return 'var(--success-500)'; // Green for high percentages
+        }
+    },
+    trackColor: 'var(--gray-300)',
+    scaleColor: false,
+    lineWidth: 10,
+    size: 120
+});</code></pre>
+                </div>
+                <h4>With Animation and Callback</h4>
+                <div class="code-example">
+                    <pre><code>// Chart with custom animation and callbacks
+new EasyPieChart(document.querySelector('.chart-3'), {
+    barColor: 'var(--info-500)',
+    trackColor: 'var(--info-200)',
+    scaleColor: false,
+    lineWidth: 15,
+    size: 150,
+    animate: {
+        duration: 2000,
+        enabled: true
+    },
+    easing: 'easeOutBounce',
+    onStart: function() {
+        console.log('Animation started');
+    },
+    onStep: function(from, to, percent) {
+        this.el.querySelector('.percent').textContent = Math.round(percent);
+    },
+    onStop: function() {
+        console.log('Animation stopped');
+    }
+});</code></pre>
+                </div>
+                <h4>Updating Chart Values</h4>
+                <div class="code-example">
+                    <pre><code>// Create chart instance
+const element = document.querySelector('.chart-4');
+const chart = new EasyPieChart(element, {
+    barColor: 'var(--success-500)',
+    trackColor: 'var(--success-200)',
+    scaleColor: false,
+    lineWidth: 10,
+    size: 120
+});
+
+// Update chart value (e.g., after user action or data refresh)
+document.getElementById('update-btn').addEventListener('click', function() {
+    // Generate random percentage
+    const newValue = Math.floor(Math.random() * 100);
+    
+    // Update chart
+    chart.update(newValue);
+    
+    // Update display text
+    element.querySelector('.percent').textContent = newValue;
+});</code></pre>
+                </div>
+            </section>
+            <section class="concept-section" id="easypiechart-smartadmin">
+                <h2 class="concept-title">SmartAdmin Integration</h2>
+                <p>Here are some tips for integrating EasyPieChart with SmartAdmin:</p>
+                <h4>Using Color Variables</h4>
+                <div class="code-example">
+                    <pre><code>// Use SmartAdmin CSS variables for consistent colors
+new EasyPieChart(element, {
+    barColor: 'var(--primary-500)', // Primary theme color
+    trackColor: 'var(--primary-200)', // Lighter shade of primary 
+    scaleColor: false,
+    lineWidth: 8,
+    size: 100
+});</code></pre>
+                </div>
+                <h4>Creating Panel-Based Widgets</h4>
+                <div class="code-example">
+                    <pre><code>&lt;div class="panel"&gt;
+    &lt;div class="panel-hdr"&gt;
+        &lt;h2&gt;Project &lt;span class="fw-300"&gt;&lt;i&gt;Progress&lt;/i&gt;&lt;/span&gt;&lt;/h2&gt;
+        &lt;div class="panel-toolbar"&gt;
+            &lt;button class="btn btn-panel" data-action="panel-collapse"&gt;
+                &lt;svg class="sa-icon"&gt;
+                    &lt;use href="img/sprite.svg#minus-circle"&gt;&lt;/use&gt;
+                &lt;/svg&gt;
+            &lt;/button&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="panel-container show"&gt;
+        &lt;div class="panel-content"&gt;
+            &lt;div class="row"&gt;
+                &lt;div class="col-md-4 text-center"&gt;
+                    &lt;div class="js-pie-chart mb-2" data-percent="65" data-bar-color="var(--primary-500)" data-track-color="var(--primary-200)" data-line-width="5" data-size="100"&gt;
+                        &lt;span class="percent"&gt;&lt;/span&gt;%
+                    &lt;/div&gt;
+                    &lt;h5&gt;Phase 1&lt;/h5&gt;
+                &lt;/div&gt;
+                &lt;div class="col-md-4 text-center"&gt;
+                    &lt;div class="js-pie-chart mb-2" data-percent="42" data-bar-color="var(--success-500)" data-track-color="var(--success-200)" data-line-width="5" data-size="100"&gt;
+                        &lt;span class="percent"&gt;&lt;/span&gt;%
+                    &lt;/div&gt;
+                    &lt;h5&gt;Phase 2&lt;/h5&gt;
+                &lt;/div&gt;
+                &lt;div class="col-md-4 text-center"&gt;
+                    &lt;div class="js-pie-chart mb-2" data-percent="10" data-bar-color="var(--info-500)" data-track-color="var(--info-200)" data-line-width="5" data-size="100"&gt;
+                        &lt;span class="percent"&gt;&lt;/span&gt;%
+                    &lt;/div&gt;
+                    &lt;h5&gt;Phase 3&lt;/h5&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                </div>
+                <h4>Batch Initialization</h4>
+                <div class="code-example">
+                    <pre><code>// Initialize all pie charts on the page
+document.addEventListener('DOMContentLoaded', function() {
+    // Select all elements with the js-pie-chart class
+    const elements = document.querySelectorAll('.js-pie-chart');
+    
+    // Initialize each chart with options from data attributes
+    elements.forEach(function(element) {
+        // Get options from data attributes
+        const options = {
+            barColor: element.dataset.barColor || 'var(--primary-500)',
+            trackColor: element.dataset.trackColor || 'var(--primary-200)',
+            scaleColor: element.dataset.scaleColor === 'false' ? false : element.dataset.scaleColor,
+            lineWidth: parseInt(element.dataset.lineWidth || 3, 10),
+            size: parseInt(element.dataset.size || 110, 10),
+            animate: element.dataset.animate === 'false' ? false : parseInt(element.dataset.animate || 1000, 10),
+            onStep: function(from, to, percent) {
+                const percentElement = element.querySelector('.percent');
+                if (percentElement) {
+                    percentElement.textContent = Math.round(percent);
+                }
+            }
+        };
+        
+        // Initialize the chart
+        new EasyPieChart(element, options);
+    });
+});</code></pre>
+                </div>
+            </section>
+            <section class="concept-section" id="easypiechart-advanced">
+                <h2 class="concept-title">Advanced Techniques</h2>
+                <h4>Custom Easing Functions</h4>
+                <div class="code-example">
+                    <pre><code>// Custom easing function
+const customEasing = function(t, b, c, d) {
+    // t: current time, b: beginning value, c: change in value, d: duration
+    if ((t /= d / 2) &lt; 1) return c / 2 * t * t * t + b;
+    return c / 2 * ((t -= 2) * t * t + 2) + b;
+};
+
+// Use custom easing
+new EasyPieChart(element, {
+    barColor: 'var(--primary-500)',
+    trackColor: 'var(--primary-200)',
+    scaleColor: false,
+    lineWidth: 10,
+    size: 120,
+    easing: customEasing
+});</code></pre>
+                </div>
+                <h4>Responsive Size Adjustment</h4>
+                <div class="code-example">
+                    <pre><code>// Make charts responsive
+function initResponsiveCharts() {
+    const charts = [];
+    
+    // Initialize charts
+    document.querySelectorAll('.js-pie-chart').forEach(function(element) {
+        // Store original size
+        element.dataset.originalSize = element.dataset.size || '110';
+        
+        // Initialize with current size
+        const size = window.innerWidth &lt; 768 ? 
+            Math.floor(parseInt(element.dataset.originalSize, 10) * 0.7) : // Smaller size on mobile
+            parseInt(element.dataset.originalSize, 10); // Original size on desktop
+            
+        const chart = new EasyPieChart(element, {
+            barColor: element.dataset.barColor || 'var(--primary-500)',
+            trackColor: element.dataset.trackColor || 'var(--primary-200)',
+            scaleColor: false,
+            lineWidth: parseInt(element.dataset.lineWidth || 3, 10),
+            size: size,
+            animate: 1000
+        });
+        
+        // Store chart instance for later updates
+        charts.push({ element: element, chart: chart });
+    });
+    
+    // Update sizes on window resize
+    window.addEventListener('resize', function() {
+        charts.forEach(function(item) {
+            // Recalculate size
+            const size = window.innerWidth &lt; 768 ? 
+                Math.floor(parseInt(item.element.dataset.originalSize, 10) * 0.7) : 
+                parseInt(item.element.dataset.originalSize, 10);
+                
+            // Update chart
+            item.chart.options.size = size;
+            item.chart.update(parseInt(item.element.dataset.percent, 10));
+        });
+    });
+}
+
+// Call initialization on DOMContentLoaded
+document.addEventListener('DOMContentLoaded', initResponsiveCharts);</code></pre>
+                </div>
+                <h4>Animated Progress Updates</h4>
+                <div class="code-example">
+                    <pre><code>// Function to animate a chart from current value to target value
+function animateProgress(chartElement, targetPercent, duration = 1500, steps = 30) {
+    // Get chart instance
+    const chart = chartElement.__chart;
+    if (!chart) return;
+    
+    // Get current percent
+    const currentPercent = parseInt(chartElement.dataset.percent, 10);
+    
+    // Calculate step size
+    const stepSize = (targetPercent - currentPercent) / steps;
+    const stepTime = duration / steps;
+    
+    // Current step counter
+    let currentStep = 0;
+    
+    // Update function
+    function updateStep() {
+        currentStep++;
+        
+        // Calculate current value
+        const newPercent = Math.round(currentPercent + (stepSize * currentStep));
+        
+        // Update chart
+        chartElement.dataset.percent = newPercent;
+        chart.update(newPercent);
+        
+        // Continue animation if not complete
+        if (currentStep &lt; steps) {
+            setTimeout(updateStep, stepTime);
+        }
+    }
+    
+    // Start animation
+    updateStep();
+}
+
+// Example usage
+const progressChart = document.querySelector('.project-progress');
+document.getElementById('complete-task').addEventListener('click', function() {
+    animateProgress(progressChart, 75); // Animate to 75%
+});</code></pre>
+                </div>
+            </section>
+            <section class="concept-section" id="easypiechart-troubleshooting">
+                <h2 class="concept-title">Troubleshooting</h2>
+                <div class="warning">
+                    <strong>Common Issues:</strong>
+                    <ul class="mb-0">
+                        <li><strong>Chart not rendering?</strong> Ensure the container element
+                            exists and has dimensions before initializing.</li>
+                        <li><strong>Percentage not updating during animation?</strong> Verify that
+                            you have included a <code>.percent</code> element and proper
+                            <code>onStep</code> callback.
+                        </li>
+                        <li><strong>Colors not applying?</strong> Check that CSS variables are
+                            correctly defined and accessible.</li>
+                        <li><strong>Canvas rendering issues?</strong> Ensure the browser supports
+                            HTML5 Canvas.</li>
+                    </ul>
+                </div>
+                <h4>Debugging Tips</h4>
+                <div class="code-example">
+                    <pre><code>// Debug chart initialization
+try {
+    const element = document.querySelector('.chart');
+    console.log('Chart element:', element);
+    
+    if (!element) {
+        console.error('Chart element not found!');
+        return;
+    }
+    
+    // Log dimensions
+    console.log('Element size:', element.offsetWidth, element.offsetHeight);
+    
+    // Check if data-percent exists
+    console.log('Percent value:', element.dataset.percent);
+    
+    // Initialize with debug callback
+    const chart = new EasyPieChart(element, {
+        barColor: 'var(--primary-500)',
+        trackColor: 'var(--primary-200)',
+        scaleColor: false,
+        lineWidth: 10,
+        size: 100,
+        onStart: function() {
+            console.log('Animation started');
+        },
+        onStep: function(from, to, percent) {
+            console.log('Step:', from, to, percent);
+            const percentElement = element.querySelector('.percent');
+            if (percentElement) {
+                percentElement.textContent = Math.round(percent);
+            } else {
+                console.warn('No .percent element found inside chart container');
+            }
+        },
+        onStop: function() {
+            console.log('Animation completed');
+        }
+    });
+} catch (error) {
+    console.error('Chart initialization error:', error);
+}</code></pre>
+                </div>
+                <h4>Handling Hidden Elements</h4>
+                <p>Charts initialized in hidden elements (e.g., collapsed panels, inactive tabs) may
+                    not render properly. Initialize or update them when they become visible:</p>
+                <div class="code-example">
+                    <pre><code>// Initialize charts in tabs when they become visible
+document.querySelectorAll('[data-bs-toggle="tab"]').forEach(function(tab) {
+    tab.addEventListener('shown.bs.tab', function(e) {
+        // Get the newly activated tab content
+        const tabContent = document.querySelector(e.target.getAttribute('href'));
+        
+        // Find and initialize/update charts
+        tabContent.querySelectorAll('.js-pie-chart').forEach(function(element) {
+            // If chart already initialized, update it
+            if (element.__chart) {
+                element.__chart.update(parseInt(element.dataset.percent, 10));
+            } else {
+                // Otherwise initialize new chart
+                const chart = new EasyPieChart(element, {
+                    barColor: element.dataset.barColor || 'var(--primary-500)',
+                    trackColor: element.dataset.trackColor || 'var(--primary-200)',
+                    scaleColor: false,
+                    lineWidth: parseInt(element.dataset.lineWidth || 3, 10),
+                    size: parseInt(element.dataset.size || 110, 10)
+                });
+                
+                // Store reference to chart instance
+                element.__chart = chart;
+            }
+        });
+    });
+});</code></pre>
+                </div>
+            </section>
+            <section class="concept-section" id="easypiechart-resources">
+                <h2 class="concept-title">Further Resources</h2>
+                <p>For more advanced usage and detailed API documentation, refer to these resources:
+                </p>
+                <ul class="list-spaced">
+                    <li><a href="https://github.com/rendro/easy-pie-chart" target="_blank">EasyPieChart GitHub
+                            Repository</a></li>
+                    <li><a href="https://rendro.github.io/easy-pie-chart/" target="_blank">EasyPieChart Demo Page</a>
+                    </li>
+                    <li><a href="https://github.com/rendro/easy-pie-chart/blob/master/docs/README.md"
+                            target="_blank">Official EasyPieChart Documentation</a></li>
+                </ul>
+            </section>
+        </div>
+        <div class="order-1 order-xl-2 col-lg-12 col-xl-3 position-relative">
+            <!-- Sidebar (Right Side) - Sticky Navigation -->
+            <h5 class="mb-3 ps-lg-3">On This Page</h5>
+            <ul class="list-unstyled ps-lg-3">
+                <li class="py-1"><a href="#easypiechart">Introduction</a></li>
+                <li class="py-1"><a href="#easypiechart-installation">Installation</a></li>
+                <li class="py-1"><a href="#easypiechart-configuration">Configuration Options</a>
+                </li>
+                <li class="py-1"><a href="#easypiechart-examples">Usage Examples</a></li>
+                <li class="py-1"><a href="#easypiechart-smartadmin">SmartAdmin Integration</a></li>
+                <li class="py-1"><a href="#easypiechart-advanced">Advanced Techniques</a></li>
+                <li class="py-1"><a href="#easypiechart-troubleshooting">Troubleshooting</a></li>
+                <li class="py-1"><a href="#easypiechart-resources">Further Resources</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script src="~/plugins/highlightjs/highlight.min.js"></script>
+    <script src="~/plugins/highlightjs/go.min.js"></script>
+    <script src="~/scripts/pages/code-highlight.js"></script>
+}

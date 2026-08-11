@@ -1,0 +1,28 @@
+@model dynamic
+
+@if (Model.pageTitle != null)
+{
+    <h1 class="subheader-title mb-2">@Model.pageTitle</h1>
+}
+
+@if (Model.pageTitle != null)
+{
+    <nav class="app-breadcrumb" aria-label="breadcrumb">
+        <ol class="breadcrumb ms-0 text-muted mb-0">
+            @if (Model.pageSubTitle1 != null)
+            {
+                <li class="breadcrumb-item">@Model.pageSubTitle1</li>
+            }
+            @if (Model.pageSubTitle2 != null)
+            {
+                <li class="breadcrumb-item">@Model.pageSubTitle2</li>
+            }
+            <li class="breadcrumb-item active" aria-current="page">@Model.pageTitle</li>
+        </ol>
+    </nav>
+}
+
+@if (!string.IsNullOrEmpty(Model.pageSubText) && Model.pageSubText != "false")
+{
+    <h6 class="mt-3 mb-4 fst-italic">@Html.Raw(Model.pageSubText)</h6>
+}

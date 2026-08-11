@@ -1,0 +1,572 @@
+@page "/docs-streamlinejs"
+@model Inventario.Web.Pages.Docs.StreamlinejsModel
+
+@{
+    ViewBag.Title = "Streamlinejs";
+}
+
+@section styles
+{
+    <link href="~/plugins/highlightjs/night-owl.css" rel="stylesheet" />
+}
+
+@await Html.PartialAsync("~/Pages/Shared/Partials/_PageTitle.cshtml", new {
+pageTitle = "Streamline.js",
+pageSubTitle1 = "Config",
+pageSubTitle2 = "Documentation",
+pageSubText = (string?)null
+})
+
+<div class="main-content">
+    <div class="row">
+        <div class="order-2 order-xl-1 col-lg-12 col-xl-9">
+            <section class="concept-section" id="streamline">
+                <h2 class="concept-title with-lead">Sleek Data Visualization in Micro Format!</h2>
+                <p>Streamline.js is a lightweight, dependency-free JavaScript library for generating
+                    micro charts, often called sparklines. These small, simple charts are designed
+                    to be embedded inline with text or in small spaces where a full-sized chart
+                    would be impractical.</p>
+                <p>
+                    These compact visualizations are perfect for dashboards, reports, and anywhere
+                    you need to show
+                    trends or data patterns at a glance, without the overhead of a full charting
+                    library.
+                </p>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> Streamline works with your existing HTML elements and
+                    automatically adapts to different screen sizes through its responsive design
+                    capabilities.
+                </div>
+            </section>
+            <section class="concept-section" id="streamline-installation">
+                <h2 class="concept-title">Installation</h2>
+                <p>Streamline.js is available as a modern ES6 module. You can include it in your
+                    project in several ways:</p>
+                <h4>1. Using ES6 Modules (Recommended)</h4>
+                <div class="code-example">
+                    <pre><code>// Import the streamline function and initialization utility
+import { streamline, initStreamlines } from './../thirdparty/streamline.es6.js';
+
+// To initialize all elements with .streamline class
+initStreamlines();
+
+// Or to manually create a chart on a specific element
+const element = document.getElementById('myChart');
+streamline(element, {
+    type: 'line',
+    lineColor: 'var(--primary-500)',
+    fillColor: 'var(--primary-200)',
+    height: 40,
+    width: 200
+});</code></pre>
+                </div>
+                <h4>2. Using in an HTML file</h4>
+                <div class="code-example">
+                    <pre><code>&lt;!-- Include the script --&gt;
+&lt;script type="module"&gt;
+    import { initStreamlines } from './thirdparty/streamline.es6.js';
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize all streamline charts
+        initStreamlines();
+    });
+&lt;/script&gt;</code></pre>
+                </div>
+                <h4>HTML Structure</h4>
+                <div class="code-example">
+                    <pre><code>&lt;!-- Basic line chart --&gt;
+&lt;span class="streamline" data-type="line" data-line-color="var(--success-500)" 
+    data-fill-color="var(--success-200)" data-height="40" data-width="110" data-line-width="2"&gt;
+    5,3,9,6,5,9,7,3,5,2
+&lt;/span&gt;
+
+&lt;!-- Bar chart with negative values --&gt;
+&lt;span class="streamline" data-type="bar" data-bar-color="var(--success-500)" 
+    data-neg-bar-color="var(--danger-500)" data-height="40" data-width="110" 
+    data-bar-width="4" data-bar-spacing="1"&gt;
+    4,-3,-6,-4,-5,-4,7,-3,-5,2
+&lt;/span&gt;
+
+&lt;!-- Pie chart --&gt;
+&lt;span class="streamline" data-type="pie" data-width="80" data-height="80" 
+    data-slice-colors="var(--info-500),var(--warning-500),var(--success-200)"&gt;
+    7,6,3
+&lt;/span&gt;</code></pre>
+                </div>
+                <div class="warning">
+                    <strong>Important:</strong>
+                    <ul class="mb-0">
+                        <li>Streamline.js uses data attributes prefixed with <code>data-</code> to
+                            configure chart options directly in HTML.</li>
+                        <li>Values can be provided either inside the element or using a
+                            <code>data-values</code> attribute.
+                        </li>
+                        <li>CSS variable support allows for easy theming that matches your site's
+                            color scheme.</li>
+                    </ul>
+                </div>
+            </section>
+            <section class="concept-section" id="streamline-configuration">
+                <h2 class="concept-title">Configuration Options</h2>
+                <p>Streamline.js provides extensive configuration options to customize your charts.
+                    All options are optional and will fall back to sensible defaults.</p>
+                <div class="code-example">
+                    <pre><code>// Programmatic configuration
+streamline(element, {
+    type: 'line',
+    width: 200,
+    height: 40,
+    lineColor: 'var(--primary-500)',
+    fillColor: 'var(--primary-200)',
+    lineWidth: 2,
+    responsive: true,
+    disableTooltips: false,
+    tooltipPrefix: 'Value: ',
+    tooltipSuffix: ' units'
+});
+
+// HTML data attributes configuration
+&lt;span class="streamline"
+    data-type="line"
+    data-width="200"
+    data-height="40"
+    data-line-color="var(--primary-500)"
+    data-fill-color="var(--primary-200)"
+    data-line-width="2"
+    data-responsive="true"
+    data-disable-tooltips="false"
+    data-tooltip-prefix="Value: "
+    data-tooltip-suffix=" units"&gt;
+    5,3,9,6,5,9,7,3,5,2
+&lt;/span&gt;</code></pre>
+                </div>
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-striped table-clean">
+                        <thead>
+                            <tr>
+                                <th>Option</th>
+                                <th>Default Value</th>
+                                <th>Description</th>
+                                <th>Applicable Types</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Common Options -->
+                            <tr>
+                                <td><code>type</code></td>
+                                <td><strong>'line'</strong></td>
+                                <td>Chart type: line, bar, tristate, discrete, pie</td>
+                                <td><strong>All</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>width</code></td>
+                                <td><strong>'auto'</strong></td>
+                                <td>Width of the chart in pixels. 'auto' uses container width.</td>
+                                <td><strong>All</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>height</code></td>
+                                <td><strong>'auto'</strong></td>
+                                <td>Height of the chart in pixels. 'auto' uses container height.
+                                </td>
+                                <td><strong>All</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>responsive</code></td>
+                                <td><strong class="text-primary">true</strong></td>
+                                <td>Enables/disables responsive resizing when container changes.
+                                </td>
+                                <td><strong>All</strong></td>
+                            </tr>
+                            <!-- Line Chart Options -->
+                            <tr>
+                                <td><code>lineColor</code></td>
+                                <td><strong>'var(--primary-500)'</strong></td>
+                                <td>Color of the line in line charts.</td>
+                                <td><strong>line, discrete</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>fillColor</code></td>
+                                <td><strong>'var(--primary-100)'</strong></td>
+                                <td>Fill color below the line. Set to 'transparent' for no fill.
+                                </td>
+                                <td><strong>line</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>lineWidth</code></td>
+                                <td><strong>2</strong></td>
+                                <td>Width of the line in pixels.</td>
+                                <td><strong>line, discrete</strong></td>
+                            </tr>
+                            <!-- Bar Chart Options -->
+                            <tr>
+                                <td><code>barColor</code></td>
+                                <td><strong>'var(--primary-500)'</strong></td>
+                                <td>Color of the bars in bar charts.</td>
+                                <td><strong>bar</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>negBarColor</code></td>
+                                <td><strong>'var(--danger-500)'</strong></td>
+                                <td>Color of negative value bars.</td>
+                                <td><strong>bar</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>barWidth</code></td>
+                                <td><strong>4</strong></td>
+                                <td>Width of each bar in pixels.</td>
+                                <td><strong>bar, tristate</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>barSpacing</code></td>
+                                <td><strong>1</strong></td>
+                                <td>Space between bars in pixels.</td>
+                                <td><strong>bar, tristate</strong></td>
+                            </tr>
+                            <!-- Tristate Chart Options -->
+                            <tr>
+                                <td><code>posBarColor</code></td>
+                                <td><strong>'var(--success-500)'</strong></td>
+                                <td>Color for positive (1) values in tristate charts.</td>
+                                <td><strong>tristate</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>zeroBarColor</code></td>
+                                <td><strong>'var(--bs-secondary)'</strong></td>
+                                <td>Color for neutral (0) values in tristate charts.</td>
+                                <td><strong>tristate</strong></td>
+                            </tr>
+                            <!-- Discrete Chart Options -->
+                            <tr>
+                                <td><code>thresholdValue</code></td>
+                                <td><strong>0</strong></td>
+                                <td>Threshold value for discrete charts. Lines with values above
+                                    this will use the main color.</td>
+                                <td><strong>discrete</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>thresholdColor</code></td>
+                                <td><strong>'var(--bs-secondary)'</strong></td>
+                                <td>Color for lines below the threshold value.</td>
+                                <td><strong>discrete</strong></td>
+                            </tr>
+                            <!-- Pie Chart Options -->
+                            <tr>
+                                <td><code>sliceColors</code></td>
+                                <td><strong>[]</strong></td>
+                                <td>Array of colors for pie chart slices. Can be a comma-separated
+                                    string in HTML attributes.</td>
+                                <td><strong>pie</strong></td>
+                            </tr>
+                            <!-- Tooltip Options -->
+                            <tr>
+                                <td><code>disableTooltips</code></td>
+                                <td><strong class="text-primary">false</strong></td>
+                                <td>Disables interactive tooltips on hover.</td>
+                                <td><strong>All</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>tooltipPrefix</code></td>
+                                <td><strong>''</strong></td>
+                                <td>Text to display before the value in tooltips.</td>
+                                <td><strong>All</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>tooltipSuffix</code></td>
+                                <td><strong>''</strong></td>
+                                <td>Text to display after the value in tooltips.</td>
+                                <td><strong>All</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>tooltipOffsetX</code></td>
+                                <td><strong>10</strong></td>
+                                <td>Horizontal offset for tooltips in pixels.</td>
+                                <td><strong>All</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>tooltipOffsetY</code></td>
+                                <td><strong>-20</strong></td>
+                                <td>Vertical offset for tooltips in pixels.</td>
+                                <td><strong>All</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> When using CSS variables for colors, Streamline.js
+                    automatically resolves them to their actual color values for proper rendering in
+                    SVG elements.
+                </div>
+            </section>
+            <section class="concept-section" id="streamline-chart-types">
+                <h2 class="concept-title">Chart Types</h2>
+                <p>Streamline.js supports various chart types to visualize different kinds of data:
+                </p>
+                <h4>Line Charts</h4>
+                <p>Line charts display data points connected by straight line segments. They're
+                    perfect for showing trends over time.</p>
+                <div class="code-example">
+                    <pre><code>&lt;span class="streamline" data-type="line" data-line-color="var(--success-500)" 
+    data-fill-color="var(--success-200)" data-height="40" data-width="110" data-line-width="2"&gt;
+    5,3,9,6,5,9,7,3,5,2
+&lt;/span&gt;</code></pre>
+                </div>
+                <h4>Area Charts</h4>
+                <p>Area charts are line charts with the area below the line filled with a color,
+                    emphasizing volume or magnitude.</p>
+                <div class="code-example">
+                    <pre><code>&lt;span class="streamline" data-type="line" data-line-color="var(--info-500)" 
+    data-fill-color="var(--info-200)" data-height="40" data-width="110"&gt;
+    5,3,2,-1,-3,-2,2,3,5,2
+&lt;/span&gt;</code></pre>
+                </div>
+                <h4>Bar Charts</h4>
+                <p>Bar charts display data as vertical bars, great for comparing values across
+                    categories.</p>
+                <div class="code-example">
+                    <pre><code>&lt;span class="streamline" data-type="bar" data-bar-color="var(--primary-500)" 
+    data-height="40" data-width="110" data-bar-width="4" data-bar-spacing="1"&gt;
+    5,3,9,6,5,9,7,3,5,2
+&lt;/span&gt;</code></pre>
+                </div>
+                <h4>Tristate Charts</h4>
+                <p>Tristate charts represent data with three possible states: positive (1), neutral
+                    (0), and negative (-1).</p>
+                <div class="code-example">
+                    <pre><code>&lt;span class="streamline" data-type="tristate" data-height="40" data-width="110" 
+    data-bar-width="8" data-bar-spacing="2" data-pos-bar-color="var(--success-500)" 
+    data-neg-bar-color="var(--danger-500)" data-zero-bar-color="var(--secondary)"&gt;
+    1,1,0,1,-1,-1,1,-1,0,0,1,1
+&lt;/span&gt;</code></pre>
+                </div>
+                <h4>Discrete Charts</h4>
+                <p>Discrete charts display data as individual vertical lines, useful for showing
+                    distribution or frequency.</p>
+                <div class="code-example">
+                    <pre><code>&lt;span class="streamline" data-type="discrete" data-line-color="var(--primary-500)" 
+    data-threshold-color="var(--danger-500)" data-threshold-value="5" 
+    data-height="40" data-width="110" data-line-width="2"&gt;
+    5,9,7,6,5,3,2,5,8,9,7,5
+&lt;/span&gt;</code></pre>
+                </div>
+                <h4>Pie Charts</h4>
+                <p>Pie charts show data as proportional slices of a whole, ideal for displaying
+                    part-to-whole relationships.</p>
+                <div class="code-example">
+                    <pre><code>&lt;span class="streamline" data-type="pie" data-width="80" data-height="80" 
+    data-slice-colors="var(--info-500),var(--warning-500),var(--success-200)"&gt;
+    7,6,3
+&lt;/span&gt;</code></pre>
+                </div>
+            </section>
+            <section class="concept-section" id="streamline-api-methods">
+                <h2 class="concept-title">API Methods</h2>
+                <p>Streamline.js exposes several methods for programmatic control:</p>
+                <div class="code-example">
+                    <pre><code>// Import the library
+import { streamline, initStreamlines } from './thirdparty/streamline.es6.js';
+
+// Initialize all streamline charts
+initStreamlines();
+
+// Create a chart on a specific element
+const element = document.getElementById('myChart');
+streamline(element, {
+    type: 'line',
+    lineColor: 'var(--primary-500)'
+});
+
+// Update an existing chart with new data
+element.textContent = '5,8,9,3,5,7,2,6';
+streamline(element, {
+    type: 'line',
+    lineColor: 'var(--success-500)'
+});</code></pre>
+                </div>
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-striped table-clean">
+                        <thead>
+                            <tr>
+                                <th>Method</th>
+                                <th>Description</th>
+                                <th>Parameters</th>
+                                <th>Return Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>streamline(element, options)</code></td>
+                                <td>Creates or updates a chart on the specified element</td>
+                                <td>element: HTMLElement or CSS selector, options: Object</td>
+                                <td>HTMLElement</td>
+                            </tr>
+                            <tr>
+                                <td><code>streamline(element, values, options)</code></td>
+                                <td>Creates a chart with specific values</td>
+                                <td>element: HTMLElement, values: Array, options: Object</td>
+                                <td>HTMLElement</td>
+                            </tr>
+                            <tr>
+                                <td><code>initStreamlines()</code></td>
+                                <td>Initializes all elements with class "streamline" on the page
+                                </td>
+                                <td>None</td>
+                                <td>void</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <section class="concept-section" id="streamline-dynamic-updates">
+                <h2 class="concept-title">Dynamic Updates</h2>
+                <p>Streamline.js makes it easy to create real-time updating charts to display live
+                    data:</p>
+                <div class="code-example">
+                    <pre><code>// HTML
+&lt;span id="updating-chart" class="streamline" data-type="line" data-line-color="var(--success-500)" 
+    data-fill-color="var(--success-200)" data-height="40" data-width="200" data-line-width="2"&gt;
+    5,3,9,6,5,9,7,3,5,2
+&lt;/span&gt;
+
+// JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize all streamline charts
+    initStreamlines();
+    
+    // Get the updating chart element
+    const updatingChart = document.getElementById('updating-chart');
+    if (updatingChart) {
+        let values = updatingChart.textContent.split(',').map(Number);
+        
+        setInterval(function() {
+            // Generate a new random value between 1 and 10
+            const newValue = Math.floor(Math.random() * 10) + 1;
+            
+            // Add the new value and remove the oldest one
+            values.push(newValue);
+            values.shift();
+            
+            // Update the chart with new data
+            updatingChart.textContent = values.join(',');
+            
+            // Re-initialize the chart
+            initStreamlines();
+        }, 500);
+    }
+});</code></pre>
+                </div>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> For performance-critical applications with many
+                    charts, consider using <code>requestAnimationFrame</code> for smoother updates
+                    and debounce the resize listener to prevent layout thrashing.
+                </div>
+            </section>
+            <section class="concept-section" id="streamline-advanced-examples">
+                <h2 class="concept-title">Advanced Examples</h2>
+                <h4>Creating Gauges with Pie Charts</h4>
+                <p>Pie charts can be used as simple gauge visualizations:</p>
+                <div class="code-example">
+                    <pre><code>&lt;!-- 25% Completion Gauge --&gt;
+&lt;span class="streamline" data-type="pie" data-width="80" data-height="80" 
+    data-slice-colors="var(--primary-500),var(--bs-border-color)"&gt;1/4&lt;/span&gt;
+
+&lt;!-- 50% Completion Gauge --&gt;
+&lt;span class="streamline" data-type="pie" data-width="80" data-height="80" 
+    data-slice-colors="var(--success-500),var(--bs-border-color)"&gt;1/2&lt;/span&gt;
+
+&lt;!-- 75% Completion Gauge --&gt;
+&lt;span class="streamline" data-type="pie" data-width="80" data-height="80" 
+    data-slice-colors="var(--info-500),var(--bs-border-color)"&gt;3/4&lt;/span&gt;</code></pre>
+                </div>
+                <h4>Combining Charts with Text</h4>
+                <p>Streamline charts are perfect for embedding directly within text:</p>
+                <div class="code-example">
+                    <pre><code>&lt;p&gt;
+    Revenue has been trending upward 
+    &lt;span class="streamline" data-type="line" data-height="20" data-width="60" 
+        data-line-color="var(--success-500)"&gt;1,3,5,6,8,7,9&lt;/span&gt; 
+    over the last quarter, while costs have remained relatively stable 
+    &lt;span class="streamline" data-type="line" data-height="20" data-width="60" 
+        data-line-color="var(--info-500)"&gt;4,4,3,5,4,3,5&lt;/span&gt;.
+&lt;/p&gt;</code></pre>
+                </div>
+                <h4>Custom Tooltips</h4>
+                <p>Enhance user experience with descriptive tooltips:</p>
+                <div class="code-example">
+                    <pre><code>&lt;span class="streamline" data-type="line" data-line-color="var(--primary-500)" 
+    data-tooltip-prefix="Temperature: " data-tooltip-suffix="°C" 
+    data-height="40" data-width="150"&gt;
+    18,22,26,30,28,24,20
+&lt;/span&gt;</code></pre>
+                </div>
+            </section>
+            <section class="concept-section" id="streamline-troubleshooting">
+                <h2 class="concept-title">Troubleshooting</h2>
+                <div class="warning">
+                    <strong>Common Issues:</strong>
+                    <ul class="mb-0">
+                        <li><strong>Chart not displaying?</strong> Ensure your container has
+                            sufficient width and height, or specify them explicitly.</li>
+                        <li><strong>Colors not showing?</strong> If using CSS variables, make sure
+                            they're correctly defined in your CSS.</li>
+                        <li><strong>Pie chart slices all black?</strong> Ensure your
+                            <code>slice-colors</code> is set properly - use comma-separated format
+                            without spaces: <code>data-slice-colors="color1,color2,color3"</code>.
+                        </li>
+                        <li><strong>Chart not updating?</strong> Verify that you're reinitializing
+                            the chart after changing the data.</li>
+                    </ul>
+                </div>
+                <h4>Pie Chart Color Issues</h4>
+                <p>If you're having issues with pie chart slice colors, ensure the format is
+                    correct:</p>
+                <div class="code-example">
+                    <pre><code>// Incorrect - using array notation in HTML attribute
+&lt;span class="streamline" data-type="pie" data-slice-colors='["var(--primary-500)", "var(--success-500)"]'&gt;
+    30,70
+&lt;/span&gt;
+
+// Correct - using comma-separated format without spaces
+&lt;span class="streamline" data-type="pie" data-slice-colors="var(--primary-500),var(--success-500)"&gt;
+    30,70
+&lt;/span&gt;
+
+// Correct - when using JavaScript
+streamline(element, {
+    type: 'pie',
+    sliceColors: ['var(--primary-500)', 'var(--success-500)']
+});</code></pre>
+                </div>
+                <h4>Debugging Tips</h4>
+                <ul class="list-spaced">
+                    <li>Check your browser console for any JavaScript errors</li>
+                    <li>Inspect the generated SVG elements to see if they're being created correctly
+                    </li>
+                    <li>Try with explicit width and height values to rule out sizing issues</li>
+                    <li>Verify that your data values are correctly parsed by using console.log</li>
+                </ul>
+            </section>
+        </div>
+        <div class="order-1 order-xl-2 col-lg-12 col-xl-3 position-relative">
+            <!-- Sidebar (Right Side) - Sticky Navigation -->
+            <h5 class="mb-3 ps-lg-3">On This Page</h5>
+            <ul class="list-unstyled ps-lg-3">
+                <li class="py-1"><a href="#streamline">Introduction</a></li>
+                <li class="py-1"><a href="#streamline-installation">Installation</a></li>
+                <li class="py-1"><a href="#streamline-configuration">Configuration</a></li>
+                <li class="py-1"><a href="#streamline-chart-types">Chart Types</a></li>
+                <li class="py-1"><a href="#streamline-api-methods">API Methods</a></li>
+                <li class="py-1"><a href="#streamline-dynamic-updates">Dynamic Updates</a></li>
+                <li class="py-1"><a href="#streamline-advanced-examples">Advanced Examples</a></li>
+                <li class="py-1"><a href="#streamline-troubleshooting">Troubleshooting</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script src="~/plugins/highlightjs/highlight.min.js"></script>
+    <script src="~/plugins/highlightjs/go.min.js"></script>
+    <script src="~/scripts/pages/code-highlight.js"></script>
+}

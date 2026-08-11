@@ -1,0 +1,440 @@
+@page "/docs-bootstrapbundlejs"
+@model Inventario.Web.Pages.Docs.BootstrapbundlejsModel
+
+@{
+  ViewBag.Title = "Bootstrapbundlejs";
+}
+
+@section styles
+{
+  <link href="~/plugins/highlightjs/night-owl.css" rel="stylesheet" />
+}
+
+@await Html.PartialAsync("~/Pages/Shared/Partials/_PageTitle.cshtml", new {
+pageTitle = "BootstrapBundle.js",
+pageSubTitle1 = "Config",
+pageSubTitle2 = "Documentation",
+pageSubText = (string?)null
+})
+
+<div class="main-content">
+  <div class="row">
+    <div class="order-2 order-xl-1 col-lg-12 col-xl-9">
+      <section class="concept-section" id="bootstrap5">
+        <h2 class="concept-title with-lead">Big things in big packages</h2>
+        <p>Bootstrap 5 includes a powerful collection of JavaScript plugins that extend the functionality of
+          its components. These plugins provide interactive features like dropdowns, modals, tooltips, and
+          more without requiring you to write complex JavaScript code.</p>
+        <div class="pro-tip">
+          <strong>Pro Tip:</strong> Bootstrap 5 plugins are now fully written in vanilla JavaScript (no jQuery
+          dependency) and can be used individually or all together via the bootstrap.js bundle.
+        </div>
+      </section>
+      <section class="concept-section" id="bootstrap5-installation">
+        <h2 class="concept-title">Installation</h2>
+        <p>Include Bootstrap's JavaScript bundle after the CSS:</p>
+        <div class="code-example">
+          <pre><code>&lt;!-- Bootstrap CSS --&gt;
+&lt;link href="~/plugins/bootstrap/bootstrap.min.css" rel="stylesheet"&gt;
+
+&lt;!-- Bootstrap Bundle JS (includes Popper) --&gt;
+&lt;script src="~/plugins/bootstrap/bootstrap.bundle.min.js"&gt;&lt;/script&gt;</code></pre>
+        </div>
+      </section>
+      <section class="concept-section" id="bootstrap5-initialization">
+        <h2 class="concept-title">Initialization</h2>
+        <p>Bootstrap components can be initialized in two ways:</p>
+        <h4>Via Data Attributes</h4>
+        <div class="code-example">
+          <pre><code>&lt;!-- Initialize a modal via data attributes --&gt;
+&lt;button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"&gt;
+  Launch modal
+&lt;/button&gt;</code></pre>
+        </div>
+        <h4>Via JavaScript</h4>
+        <div class="code-example">
+          <pre><code>// Initialize a modal via JavaScript
+var myModal = new bootstrap.Modal(document.getElementById('exampleModal'), {
+  backdrop: 'static',
+  keyboard: false
+});</code></pre>
+        </div>
+      </section>
+      <section class="concept-section" id="bootstrap5-core-components">
+        <h2 class="concept-title">Core JavaScript Components</h2>
+        <h4>Alerts</h4>
+        <div class="code-example">
+          <pre><code>// Dismiss an alert via JavaScript
+var alertNode = document.querySelector('.alert')
+var alert = bootstrap.Alert.getInstance(alertNode)
+alert.close()
+
+// Via data attributes
+&lt;div class="alert alert-warning alert-dismissible fade show" role="alert"&gt;
+  &lt;strong&gt;Holy guacamole!&lt;/strong&gt; You should check in on some of those fields below.
+  &lt;button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"&gt;&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+        <p><a href="https://getbootstrap.com/docs/5.3/components/alerts/#javascript-behavior" target="_blank">Official
+            Alert Documentation</a></p>
+        <h4>Modals</h4>
+        <div class="code-example">
+          <pre><code>// Create a modal instance
+var myModal = new bootstrap.Modal(document.getElementById('myModal'), {
+  backdrop: true,
+  focus: true,
+  keyboard: true
+})
+
+// Show and hide methods
+myModal.show()
+myModal.hide()
+myModal.toggle()
+myModal.handleUpdate() // Readjust modal position in case of height changes
+
+// Events
+myModal.addEventListener('show.bs.modal', function () {
+  // do something when modal is about to be shown
+})
+myModal.addEventListener('shown.bs.modal', function () {
+  // do something when modal is shown
+})</code></pre>
+        </div>
+        <p><a href="https://getbootstrap.com/docs/5.3/components/modal/" target="_blank">Official Modal
+            Documentation</a></p>
+        <h4>Tooltips</h4>
+        <div class="code-example">
+          <pre><code>// Initialize all tooltips on a page
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+  return new bootstrap.Tooltip(tooltipTriggerEl)
+})
+
+// Options
+var tooltip = new bootstrap.Tooltip(element, {
+  boundary: 'clippingParents',
+  customClass: 'custom-tooltip',
+  delay: { show: 500, hide: 100 },
+  html: true,
+  placement: 'auto',
+  template: '&lt;div class="tooltip" role="tooltip"&gt;&lt;div class="tooltip-arrow"&gt;&lt;/div&gt;&lt;div class="tooltip-inner"&gt;&lt;/div&gt;&lt;/div&gt;',
+  trigger: 'hover focus'
+})</code></pre>
+        </div>
+        <div class="warning">
+          <strong>Important:</strong> Tooltips rely on the third-party library Popper for positioning. Popper
+          is included in bootstrap.bundle.min.js.
+        </div>
+        <p><a href="https://getbootstrap.com/docs/5.3/components/tooltips/" target="_blank">Official Tooltip
+            Documentation</a></p>
+        <h4>Popovers</h4>
+        <div class="code-example">
+          <pre><code>// Initialize all popovers
+var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+  return new bootstrap.Popover(popoverTriggerEl)
+})
+
+// With options
+var popover = new bootstrap.Popover(document.querySelector('.example-popover'), {
+  container: 'body',
+  content: 'This is popover content',
+  html: true,
+  placement: 'right',
+  sanitize: true,
+  trigger: 'focus'
+})</code></pre>
+        </div>
+        <p><a href="https://getbootstrap.com/docs/5.3/components/popovers/" target="_blank">Official Popover
+            Documentation</a></p>
+      </section>
+      <section class="concept-section" id="bootstrap5-navigation">
+        <h2 class="concept-title">Navigation Components</h2>
+        <h4>Dropdowns</h4>
+        <div class="code-example">
+          <pre><code>// Initialize a dropdown
+var dropdown = new bootstrap.Dropdown(document.querySelector('.dropdown-toggle'))
+
+// Methods
+dropdown.toggle() // Shows or hides dropdown
+dropdown.show()   // Shows dropdown
+dropdown.hide()   // Hides dropdown
+
+// Via data attributes
+&lt;div class="dropdown"&gt;
+  &lt;button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" 
+          data-bs-toggle="dropdown" aria-expanded="false"&gt;
+    Dropdown button
+  &lt;/button&gt;
+  &lt;ul class="dropdown-menu" aria-labelledby="dropdownMenuButton"&gt;
+    &lt;li&gt;&lt;a class="dropdown-item" href="#"&gt;Action&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a class="dropdown-item" href="#"&gt;Another action&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a class="dropdown-item" href="#"&gt;Something else here&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+        <p><a href="https://getbootstrap.com/docs/5.3/components/dropdowns/" target="_blank">Official Dropdown
+            Documentation</a></p>
+        <h4>Tabs</h4>
+        <div class="code-example">
+          <pre><code>// Activate a tab
+var triggerTabList = [].slice.call(document.querySelectorAll('#myTab a'))
+triggerTabList.forEach(function (triggerEl) {
+  var tabTrigger = new bootstrap.Tab(triggerEl)
+
+  triggerEl.addEventListener('click', function (event) {
+    event.preventDefault()
+    tabTrigger.show()
+  })
+})
+
+// Programmatically show a tab
+var triggerEl = document.querySelector('#myTab a[href="#profile"]')
+bootstrap.Tab.getInstance(triggerEl).show() // Select tab by name
+
+// Events
+var tabEl = document.querySelector('a[data-bs-toggle="tab"]')
+tabEl.addEventListener('shown.bs.tab', function (event) {
+  // Tab is now active
+})</code></pre>
+        </div>
+        <p><a href="https://getbootstrap.com/docs/5.3/components/navs-tabs/#javascript-behavior"
+            target="_blank">Official Tabs Documentation</a></p>
+        <h4>Collapse</h4>
+        <div class="code-example">
+          <pre><code>// Initialize a collapsible element
+var myCollapse = document.getElementById('myCollapse')
+var bsCollapse = new bootstrap.Collapse(myCollapse, {
+  toggle: false // Don't toggle on initialization
+})
+
+// Methods
+bsCollapse.toggle() // Shows or hides collapsible element
+bsCollapse.show()   // Shows collapsible element
+bsCollapse.hide()   // Hides collapsible element
+
+// Via data attributes
+&lt;p&gt;
+  &lt;a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button"&gt;
+    Link with href
+  &lt;/a&gt;
+  &lt;button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample"&gt;
+    Button with data-bs-target
+  &lt;/button&gt;
+&lt;/p&gt;
+&lt;div class="collapse" id="collapseExample"&gt;
+  &lt;div class="card card-body"&gt;
+    Collapsible content here
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+        <p><a href="https://getbootstrap.com/docs/5.3/components/collapse/" target="_blank">Official Collapse
+            Documentation</a></p>
+      </section>
+      <section class="concept-section" id="bootstrap5-carousel">
+        <h2 class="concept-title">Carousel</h2>
+        <p>The carousel is a slideshow component for cycling through elements:</p>
+        <div class="code-example">
+          <pre><code>// Initialize a carousel
+var myCarousel = document.querySelector('#myCarousel')
+var carousel = new bootstrap.Carousel(myCarousel, {
+  interval: 2000,        // Time between slide transitions (ms)
+  keyboard: true,        // React to keyboard events
+  pause: 'hover',        // Pause on mouse enter
+  ride: false,           // Autoplays on page load
+  wrap: true,            // Cycles continuously
+  touch: true            // Supports swipe gestures
+})
+
+// Methods
+carousel.cycle()     // Start cycling through items
+carousel.pause()     // Pause the carousel
+carousel.prev()      // Cycle to previous item
+carousel.next()      // Cycle to next item
+carousel.to(2)       // Cycle to a particular item (0-based)
+carousel.dispose()   // Destroys the carousel
+
+// Events
+myCarousel.addEventListener('slide.bs.carousel', function () {
+  // Fires immediately when the slide transition is invoked
+})
+myCarousel.addEventListener('slid.bs.carousel', function () {
+  // Fires when the carousel has completed its slide transition
+})</code></pre>
+        </div>
+        <p><a href="https://getbootstrap.com/docs/5.3/components/carousel/" target="_blank">Official Carousel
+            Documentation</a></p>
+      </section>
+      <section class="concept-section" id="bootstrap5-utility">
+        <h2 class="concept-title">Utility Components</h2>
+        <h4>Toasts</h4>
+        <div class="code-example">
+          <pre><code>// Initialize a toast
+var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+var toastList = toastElList.map(function (toastEl) {
+  return new bootstrap.Toast(toastEl, {
+    autohide: true,
+    delay: 5000
+  })
+})
+
+// Show a toast
+toastList.forEach(toast =&gt; toast.show())
+
+// Methods
+var myToast = bootstrap.Toast.getInstance(document.getElementById('myToast'))
+myToast.show()
+myToast.hide()
+
+// Via data attributes
+&lt;div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="5000"&gt;
+  &lt;div class="toast-header"&gt;
+    &lt;strong class="me-auto"&gt;Bootstrap&lt;/strong&gt;
+    &lt;small&gt;11 mins ago&lt;/small&gt;
+    &lt;button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"&gt;&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div class="toast-body"&gt;
+    Hello, world! This is a toast message.
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+        <p><a href="https://getbootstrap.com/docs/5.3/components/toasts/" target="_blank">Official Toast
+            Documentation</a></p>
+        <h4>Scrollspy</h4>
+        <div class="code-example">
+          <pre><code>// Initialize scrollspy via JavaScript
+var scrollSpy = new bootstrap.ScrollSpy(document.body, {
+  target: '#navbar-example'
+})
+
+// Get the current ScrollSpy instance
+var dataSpyList = [].slice.call(document.querySelectorAll('[data-bs-spy="scroll"]'))
+dataSpyList.forEach(function (dataSpyEl) {
+  bootstrap.ScrollSpy.getInstance(dataSpyEl)
+    .refresh() // Recalculate element positions and offsets
+})
+
+// Via data attributes
+&lt;body data-bs-spy="scroll" data-bs-target="#navbar-example" data-bs-offset="0" tabindex="0"&gt;
+  &lt;nav id="navbar-example"&gt;
+    &lt;ul class="nav nav-tabs"&gt;
+      &lt;li class="nav-item"&gt;&lt;a class="nav-link" href="#fat"&gt;@@fat&lt;/a&gt;&lt;/li&gt;
+      &lt;li class="nav-item"&gt;&lt;a class="nav-link" href="#mdo"&gt;@@mdo&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/nav&gt;
+  &lt;div data-bs-spy="scroll" data-bs-target="#navbar-example" data-bs-offset="0" class="scrollspy-example"&gt;
+    &lt;h4 id="fat"&gt;@@fat&lt;/h4&gt;
+    &lt;p&gt;...&lt;/p&gt;
+    &lt;h4 id="mdo"&gt;@@mdo&lt;/h4&gt;
+    &lt;p&gt;...&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/body&gt;</code></pre>
+        </div>
+        <p><a href="https://getbootstrap.com/docs/5.3/components/scrollspy/" target="_blank">Official
+            Scrollspy Documentation</a></p>
+      </section>
+      <section class="concept-section" id="bootstrap5-forms">
+        <h2 class="concept-title">Form Components</h2>
+        <h4>Form Validation</h4>
+        <div class="code-example">
+          <pre><code>// Example starter JavaScript for disabling form submissions if there are invalid fields
+(function () {
+  'use strict'
+
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  var forms = document.querySelectorAll('.needs-validation')
+
+  // Loop over them and prevent submission
+  Array.prototype.slice.call(forms)
+    .forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+
+        form.classList.add('was-validated')
+      }, false)
+    })
+})()
+
+// HTML structure
+&lt;form class="needs-validation" novalidate&gt;
+  &lt;div class="mb-3"&gt;
+    &lt;label for="validationCustom01" class="form-label"&gt;First name&lt;/label&gt;
+    &lt;input type="text" class="form-control" id="validationCustom01" value="Mark" required&gt;
+    &lt;div class="valid-feedback"&gt;
+      Looks good!
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="mb-3"&gt;
+    &lt;label for="validationCustom02" class="form-label"&gt;Last name&lt;/label&gt;
+    &lt;input type="text" class="form-control" id="validationCustom02" value="Otto" required&gt;
+    &lt;div class="invalid-feedback"&gt;
+      Please provide a last name.
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;button class="btn btn-primary" type="submit"&gt;Submit form&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+        </div>
+        <p><a href="https://getbootstrap.com/docs/5.3/forms/validation/" target="_blank">Official Form
+            Validation Documentation</a></p>
+      </section>
+      <section class="concept-section" id="bootstrap5-best-practices">
+        <h2 class="concept-title">Best Practices</h2>
+        <ul class="list-spaced">
+          <li>Use data attributes for simple implementations and JavaScript for more complex scenarios</li>
+          <li>Initialize components that aren't automatically activated (like tooltips and popovers)</li>
+          <li>Use event listeners to respond to component state changes</li>
+          <li>Ensure Popper.js is included when using tooltips, popovers, or dropdowns</li>
+          <li>Use the dispose method to clean up components when they're no longer needed</li>
+        </ul>
+        <div class="pro-tip">
+          <strong>Pro Tip:</strong> For better performance, use <code>data-bs-toggle="tooltip"</code> on a
+          parent element and initialize once, rather than initializing each tooltip individually.
+        </div>
+      </section>
+      <section class="concept-section" id="bootstrap5-troubleshooting">
+        <h2 class="concept-title">Troubleshooting</h2>
+        <div class="warning">
+          <strong>Common Issues:</strong>
+          <ul class="mb-0">
+            <li><strong>Components not working?</strong> Make sure you've included bootstrap.bundle.min.js
+              which contains Popper.js.</li>
+            <li><strong>Tooltips or popovers not showing?</strong> Remember they must be initialized manually
+              with JavaScript.</li>
+            <li><strong>Modal backdrop issues?</strong> Check for proper z-index values and ensure you're not
+              nesting modals incorrectly.</li>
+            <li><strong>Scrollspy not highlighting correctly?</strong> Verify your target elements have the
+              correct IDs and enough content to scroll.</li>
+            <li><strong>Form validation not working?</strong> Ensure you've added the 'needs-validation' class
+              and 'novalidate' attribute to your form.</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+    <div class="order-1 order-xl-2 col-lg-12 col-xl-3 position-relative">
+      <!-- Sidebar (Right Side) - Sticky Navigation -->
+      <h5 class="mb-3 ps-lg-3">On This Page</h5>
+      <ul class="list-unstyled ps-lg-3">
+        <li class="py-1"><a href="#bootstrap5">Introduction</a></li>
+        <li class="py-1"><a href="#bootstrap5-installation">Installation</a></li>
+        <li class="py-1"><a href="#bootstrap5-initialization">Initialization</a></li>
+        <li class="py-1"><a href="#bootstrap5-core-components">Core Components</a></li>
+        <li class="py-1"><a href="#bootstrap5-navigation">Navigation Components</a></li>
+        <li class="py-1"><a href="#bootstrap5-carousel">Carousel</a></li>
+        <li class="py-1"><a href="#bootstrap5-utility">Utility Components</a></li>
+        <li class="py-1"><a href="#bootstrap5-forms">Form Components</a></li>
+        <li class="py-1"><a href="#bootstrap5-best-practices">Best Practices</a></li>
+        <li class="py-1"><a href="#bootstrap5-troubleshooting">Troubleshooting</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+@section scripts
+{
+  <script src="~/plugins/highlightjs/highlight.min.js"></script>
+  <script src="~/plugins/highlightjs/go.min.js"></script>
+  <script src="~/scripts/pages/code-highlight.js"></script>
+}

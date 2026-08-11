@@ -1,0 +1,532 @@
+@page "/docs-smartslimscrolljs"
+@model Inventario.Web.Pages.Docs.SmartslimscrolljsModel
+
+@{
+    ViewBag.Title = "Smartslimscrolljs";
+}
+
+@section styles
+{
+    <link href="~/plugins/highlightjs/night-owl.css" rel="stylesheet" />
+}
+
+@await Html.PartialAsync("~/Pages/Shared/Partials/_PageTitle.cshtml", new {
+pageTitle = "SmartSlimScroll.js",
+pageSubTitle1 = "Config",
+pageSubTitle2 = "Documentation",
+pageSubText = (string?)null
+})
+
+<div class="main-content">
+    <div class="row">
+        <div class="order-2 order-xl-1 col-lg-12 col-xl-9">
+            <section class="concept-section" id="smartslimscroll">
+                <h2 class="concept-title with-lead">Smooth Scrolling, No Drama!</h2>
+                <p>SmartSlimScroll.js is a lightweight, high-performance JavaScript library that
+                    replaces the browser's default scrollbars with elegant, customizable slim
+                    scrollbars. It enhances the user experience with smooth scrolling, touch
+                    support, and a modern look while maintaining accessibility and performance.</p>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> SmartSlimScroll.js is built with security and
+                    performance in mind, featuring input sanitization, event throttling, and passive
+                    event listeners for smooth scrolling even on low-end devices.
+                </div>
+            </section>
+            <section class="concept-section" id="smartslimscroll-installation">
+                <h2 class="concept-title">Installation</h2>
+                <p>Include the SmartSlimScroll.js script in your HTML file:</p>
+                <div class="code-example">
+                    <pre><code>&lt;script src="~/scripts/core/smartSlimscroll.js"&gt;&lt;/script&gt;</code></pre>
+                </div>
+                <h4>Basic initialization</h4>
+                <div class="code-example">
+                    <pre><code>// Initialize with default options
+new smartSlimScroll('#content-container');
+
+// Or with custom options
+new smartSlimScroll('#content-container', {
+    height: '400px',
+    size: '8px',
+    color: '#4285f4',
+    position: 'right',
+    alwaysVisible: true
+});</code></pre>
+                </div>
+                <h4>HTML Structure</h4>
+                <div class="code-example">
+                    <pre><code>&lt;div id="content-container" style="height: 300px;"&gt;
+    &lt;!-- Your scrollable content here --&gt;
+    &lt;p&gt;Lorem ipsum dolor sit amet...&lt;/p&gt;
+    &lt;p&gt;More content...&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+                </div>
+                <div class="warning">
+                    <strong>Important:</strong> The target element should have a fixed height or a
+                    max-height set either via CSS or through the plugin options. Without a defined
+                    height, the scrollbar won't appear.
+                </div>
+            </section>
+            <section class="concept-section" id="smartslimscroll-configuration">
+                <h2 class="concept-title">Configuration Options</h2>
+                <p>SmartSlimScroll.js offers extensive configuration options to customize its
+                    appearance and behavior:</p>
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-striped table-clean">
+                        <thead>
+                            <tr>
+                                <th>Option</th>
+                                <th>Default Value</th>
+                                <th>Description</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>width</code></td>
+                                <td><strong>'auto'</strong></td>
+                                <td>Width of the scrollable area. 'auto' uses the element's width.
+                                </td>
+                                <td><strong class="text-danger">string</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>height</code></td>
+                                <td><strong>'250px'</strong></td>
+                                <td>Height of the scrollable area.</td>
+                                <td><strong class="text-danger">string</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>size</code></td>
+                                <td><strong>'7px'</strong></td>
+                                <td>Width of the scrollbar.</td>
+                                <td><strong class="text-danger">string</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>color</code></td>
+                                <td><strong>'#000'</strong></td>
+                                <td>Color of the scrollbar.</td>
+                                <td><strong class="text-danger">string</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>position</code></td>
+                                <td><strong>'right'</strong></td>
+                                <td>Position of the scrollbar ('right' or 'left').</td>
+                                <td><strong class="text-danger">string</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>offsetX</code></td>
+                                <td><strong>'1px'</strong></td>
+                                <td>Horizontal offset of the scrollbar from the edge.</td>
+                                <td><strong class="text-danger">string</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>offsetY</code></td>
+                                <td><strong>'0px'</strong></td>
+                                <td>Vertical offset of the scrollbar from the top.</td>
+                                <td><strong class="text-danger">string</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>start</code></td>
+                                <td><strong>'top'</strong></td>
+                                <td>Initial scroll position ('top', 'bottom', or a CSS selector).
+                                </td>
+                                <td><strong class="text-danger">string</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>opacity</code></td>
+                                <td><strong>0.4</strong></td>
+                                <td>Opacity of the scrollbar when visible.</td>
+                                <td><strong class="text-success">number</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>fadeOutSpeed</code></td>
+                                <td><strong>500</strong></td>
+                                <td>Time in milliseconds for the scrollbar to fade out.</td>
+                                <td><strong class="text-success">number</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>alwaysVisible</code></td>
+                                <td><strong class="text-primary">false</strong></td>
+                                <td>Whether the scrollbar should always be visible.</td>
+                                <td><strong class="text-primary">boolean</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>disableFadeOut</code></td>
+                                <td><strong class="text-primary">false</strong></td>
+                                <td>Prevents the scrollbar from fading out after use.</td>
+                                <td><strong class="text-primary">boolean</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>railVisible</code></td>
+                                <td><strong class="text-primary">false</strong></td>
+                                <td>Whether the scrollbar rail should be visible.</td>
+                                <td><strong class="text-primary">boolean</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>railColor</code></td>
+                                <td><strong>'#333'</strong></td>
+                                <td>Color of the scrollbar rail.</td>
+                                <td><strong class="text-danger">string</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>railOpacity</code></td>
+                                <td><strong>0.2</strong></td>
+                                <td>Opacity of the scrollbar rail when visible.</td>
+                                <td><strong class="text-success">number</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>railClass</code></td>
+                                <td><strong>'slimScrollRail'</strong></td>
+                                <td>CSS class for the scrollbar rail.</td>
+                                <td><strong class="text-danger">string</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>barClass</code></td>
+                                <td><strong>'slimScrollBar'</strong></td>
+                                <td>CSS class for the scrollbar.</td>
+                                <td><strong class="text-danger">string</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>wrapperClass</code></td>
+                                <td><strong>'slimScrollDiv'</strong></td>
+                                <td>CSS class for the wrapper element.</td>
+                                <td><strong class="text-danger">string</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>allowPageScroll</code></td>
+                                <td><strong class="text-primary">false</strong></td>
+                                <td>Whether to allow the page to scroll when reaching the end of the
+                                    content.</td>
+                                <td><strong class="text-primary">boolean</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>wheelStep</code></td>
+                                <td><strong>20</strong></td>
+                                <td>Scroll distance for each mouse wheel step (in percentage).</td>
+                                <td><strong class="text-success">number</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>touchScrollStep</code></td>
+                                <td><strong>200</strong></td>
+                                <td>Scroll distance for touch events.</td>
+                                <td><strong class="text-success">number</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>borderRadius</code></td>
+                                <td><strong>'7px'</strong></td>
+                                <td>Border radius of the scrollbar.</td>
+                                <td><strong class="text-danger">string</strong></td>
+                            </tr>
+                            <tr>
+                                <td><code>railBorderRadius</code></td>
+                                <td><strong>'7px'</strong></td>
+                                <td>Border radius of the scrollbar rail.</td>
+                                <td><strong class="text-danger">string</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <section class="concept-section" id="smartslimscroll-advanced-configuration">
+                <h2 class="concept-title">Advanced Configuration Example</h2>
+                <p>Here's an example of how to configure SmartSlimScroll with advanced options:</p>
+                <div class="code-example">
+                    <pre><code>new smartSlimScroll('#content-container', {
+    width: '100%',
+    height: '500px',
+    size: '10px',
+    color: '#4285f4',
+    position: 'right',
+    offsetX: '2px',
+    offsetY: '5px',
+    start: '#section-2', // Scroll to an element with id "section-2"
+    opacity: 0.7,
+    fadeOutSpeed: 1000,
+    alwaysVisible: false,
+    disableFadeOut: false,
+    railVisible: true,
+    railColor: '#e0e0e0',
+    railOpacity: 0.5,
+    railClass: 'custom-rail',
+    barClass: 'custom-bar',
+    wrapperClass: 'custom-wrapper',
+    allowPageScroll: false,
+    wheelStep: 10,
+    touchScrollStep: 100,
+    borderRadius: '5px',
+    railBorderRadius: '5px'
+});</code></pre>
+                </div>
+            </section>
+            <section class="concept-section" id="smartslimscroll-features">
+                <h2 class="concept-title">Key Features</h2>
+                <h4>Security Enhancements</h4>
+                <ul class="list-spaced">
+                    <li><strong>Input Sanitization:</strong> All user-provided options are sanitized
+                        to prevent XSS attacks</li>
+                    <li><strong>Bounds Checking:</strong> Touch and scroll inputs are validated to
+                        prevent manipulation</li>
+                    <li><strong>Safe DOM Manipulation:</strong> Uses modern DOM APIs with proper
+                        validation</li>
+                </ul>
+                <h4>Performance Optimizations</h4>
+                <ul class="list-spaced">
+                    <li><strong>Event Throttling:</strong> Scroll and touch events are throttled to
+                        improve performance</li>
+                    <li><strong>Passive Event Listeners:</strong> Uses passive listeners where
+                        appropriate for smoother scrolling</li>
+                    <li><strong>Intersection Observer:</strong> Uses modern APIs to efficiently
+                        check element visibility</li>
+                    <li><strong>Efficient DOM Operations:</strong> Minimizes reflows and repaints
+                    </li>
+                </ul>
+                <h4>Memory Management</h4>
+                <ul class="list-spaced">
+                    <li><strong>WeakMap for State:</strong> Uses WeakMap for private state to
+                        prevent memory leaks</li>
+                    <li><strong>Proper Cleanup:</strong> Includes a destroy method to remove event
+                        listeners and DOM elements</li>
+                    <li><strong>Event Listener Management:</strong> Properly removes event listeners
+                        to prevent memory leaks</li>
+                </ul>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> The use of WeakMap for private state management
+                    ensures that memory is automatically reclaimed when elements are removed from
+                    the DOM, preventing memory leaks in long-running applications.
+                </div>
+            </section>
+            <section class="concept-section" id="smartslimscroll-usage">
+                <h2 class="concept-title">Usage Examples</h2>
+                <h4>Basic Usage</h4>
+                <div class="code-example">
+                    <pre><code>// Initialize with default options
+new smartSlimScroll('#content-container');</code></pre>
+                </div>
+                <h4>Multiple Elements</h4>
+                <div class="code-example">
+                    <pre><code>// Initialize on multiple elements with the same options
+new smartSlimScroll('.scrollable-content', {
+    height: '300px',
+    color: '#4285f4'
+});</code></pre>
+                </div>
+                <h4>Different Positions</h4>
+                <div class="code-example">
+                    <pre><code>// Left-positioned scrollbar
+new smartSlimScroll('#left-content', {
+    position: 'left',
+    color: '#db4437'
+});
+
+// Right-positioned scrollbar (default)
+new smartSlimScroll('#right-content', {
+    position: 'right',
+    color: '#0f9d58'
+});</code></pre>
+                </div>
+                <h4>Always Visible Scrollbar</h4>
+                <div class="code-example">
+                    <pre><code>// Scrollbar that never fades out
+new smartSlimScroll('#important-content', {
+    alwaysVisible: true,
+    opacity: 0.8,
+    color: '#4285f4'
+});</code></pre>
+                </div>
+                <h4>Custom Styling</h4>
+                <div class="code-example">
+                    <pre><code>// Fully customized scrollbar
+new smartSlimScroll('#styled-content', {
+    size: '12px',
+    color: 'rgba(66, 133, 244, 0.8)',
+    railVisible: true,
+    railColor: 'rgba(0, 0, 0, 0.1)',
+    borderRadius: '6px',
+    railBorderRadius: '6px'
+});</code></pre>
+                </div>
+            </section>
+            <section class="concept-section" id="smartslimscroll-events">
+                <h2 class="concept-title">Event Handling</h2>
+                <p>SmartSlimScroll.js handles various user interaction events:</p>
+                <div class="code-example">
+                    <pre><code>// Mouse wheel events
+wrapper.addEventListener('wheel', handleWheel, { 
+    passive: false, 
+    capture: true 
+});
+
+// Touch events
+wrapper.addEventListener('touchmove', handleTouchMove, { 
+    passive: false, 
+    capture: true 
+});
+
+// Mouse drag events
+bar.addEventListener('mousedown', onMouseDown);
+
+// Mouse hover events
+wrapper.addEventListener('mouseenter', function() {
+    state.isOverPanel = true;
+    showBar();
+});
+
+// Rail click events
+rail.addEventListener('mousedown', function(e) {
+    // Calculate and scroll to clicked position
+});</code></pre>
+                </div>
+                <p>The scrollbar responds to the following interactions:</p>
+                <ul class="list-spaced">
+                    <li><strong>Mouse wheel:</strong> Scrolls the content up or down</li>
+                    <li><strong>Touch movement:</strong> Scrolls the content on touch devices</li>
+                    <li><strong>Scrollbar drag:</strong> Allows direct manipulation of the scrollbar
+                    </li>
+                    <li><strong>Rail click:</strong> Jumps to the clicked position</li>
+                    <li><strong>Mouse hover:</strong> Shows the scrollbar when hovering over the
+                        content</li>
+                </ul>
+            </section>
+            <section class="concept-section" id="smartslimscroll-visibility">
+                <h2 class="concept-title">Scrollbar Visibility</h2>
+                <p>SmartSlimScroll.js intelligently manages scrollbar visibility:</p>
+                <div class="code-example">
+                    <pre><code>// Show scrollbar
+var showBar = function() {
+    getBarHeight();
+    clearTimeout(state.queueHide);
+
+    // Show bar if content is scrollable and we're either:
+    // 1. Over the content panel
+    // 2. Over the bar/rail
+    // 3. Currently dragging
+    // 4. Currently scrolling
+    if (me.scrollHeight &gt; wrapper.offsetHeight &amp;&amp; 
+        (state.isOverPanel || state.isOverBar || state.isOverRail || state.isDragg || state.isScrolling)) {
+        bar.style.opacity = o.opacity;
+        rail.style.opacity = o.railOpacity;
+
+        // If only hovering over panel (not interacting), hide after delay
+        if (state.isOverPanel &amp;&amp; 
+            !state.isOverBar &amp;&amp; 
+            !state.isOverRail &amp;&amp; 
+            !state.isDragg &amp;&amp; 
+            !state.isScrolling) {
+            clearTimeout(state.queueHide);
+            state.queueHide = setTimeout(function() {
+                hideBar();
+            }, o.fadeOutSpeed);
+        }
+    }
+};</code></pre>
+                </div>
+                <p>The scrollbar visibility is controlled by:</p>
+                <ul class="list-spaced">
+                    <li><strong>Mouse hover:</strong> Shows when hovering over the content</li>
+                    <li><strong>Interaction:</strong> Shows during scrolling or dragging</li>
+                    <li><strong>Fade out:</strong> Automatically fades out after a delay</li>
+                    <li><strong>Configuration:</strong> Can be set to always visible</li>
+                    <li><strong>Intersection Observer:</strong> Shows/hides based on element
+                        visibility in viewport</li>
+                </ul>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> For important content where users need to be aware of
+                    scrollability, set <code>alwaysVisible: true</code> to ensure the scrollbar is
+                    always visible.
+                </div>
+            </section>
+            <section class="concept-section" id="smartslimscroll-cleanup">
+                <h2 class="concept-title">Cleanup and Destruction</h2>
+                <p>SmartSlimScroll.js provides a clean way to remove the custom scrollbar and
+                    restore the original element:</p>
+                <div class="code-example">
+                    <pre><code>// Get the instance
+var scroll = new smartSlimScroll('#content-container');
+
+// Later, when you want to destroy it:
+scroll.destroy();</code></pre>
+                </div>
+                <p>The destroy method:</p>
+                <ul class="list-spaced">
+                    <li>Removes all event listeners to prevent memory leaks</li>
+                    <li>Disconnects the Intersection Observer</li>
+                    <li>Removes the custom scrollbar elements from the DOM</li>
+                    <li>Restores the original element to its pre-initialization state</li>
+                    <li>Cleans up internal state and references</li>
+                </ul>
+                <div class="warning">
+                    <strong>Important:</strong> Always call the <code>destroy()</code> method before
+                    removing elements with SmartSlimScroll from the DOM to prevent memory leaks,
+                    especially in single-page applications.
+                </div>
+            </section>
+            <section class="concept-section" id="smartslimscroll-best-practices">
+                <h2 class="concept-title">Best Practices</h2>
+                <ul class="list-spaced">
+                    <li>Always specify a height for the container element, either via CSS or the
+                        plugin options</li>
+                    <li>For touch devices, consider increasing the <code>touchScrollStep</code>
+                        value for better usability</li>
+                    <li>Use <code>alwaysVisible: true</code> for content where scrollability needs
+                        to be obvious</li>
+                    <li>For dark themes, use lighter scrollbar colors with higher opacity for better
+                        visibility</li>
+                    <li>Call <code>destroy()</code> when removing elements from the DOM to prevent
+                        memory leaks</li>
+                    <li>Use the <code>railVisible</code> option to provide better visual cues for
+                        scrollable areas</li>
+                </ul>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> For the best user experience, match the scrollbar
+                    color to your application's accent color and use a subtle, semi-transparent rail
+                    color to indicate the scrollable area.
+                </div>
+            </section>
+            <section class="concept-section" id="smartslimscroll-troubleshooting">
+                <h2 class="concept-title">Troubleshooting</h2>
+                <div class="warning">
+                    <strong>Common Issues:</strong>
+                    <ul class="mb-0">
+                        <li><strong>Scrollbar not appearing?</strong> Ensure your container has a
+                            fixed height and contains content that exceeds this height.</li>
+                        <li><strong>Scrollbar not working on mobile?</strong> Check that touch
+                            events are not being prevented by other scripts or CSS properties like
+                            <code>touch-action: none</code>.
+                        </li>
+                        <li><strong>Content not scrollable?</strong> Verify that the content's
+                            height is correctly calculated and exceeds the container's height.</li>
+                        <li><strong>Performance issues?</strong> Reduce the complexity of the
+                            scrollable content or increase the <code>fadeOutSpeed</code> to reduce
+                            animation overhead.</li>
+                        <li><strong>Memory leaks?</strong> Ensure you call <code>destroy()</code>
+                            when removing elements with SmartSlimScroll from the DOM.</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+        <div class="order-1 order-xl-2 col-lg-12 col-xl-3 position-relative">
+            <!-- Sidebar (Right Side) - Sticky Navigation -->
+            <h5 class="mb-3 ps-lg-3">On This Page</h5>
+            <ul class="list-unstyled ps-lg-3">
+                <li class="py-1"><a href="#smartslimscroll">Introduction</a></li>
+                <li class="py-1"><a href="#smartslimscroll-installation">Installation</a></li>
+                <li class="py-1"><a href="#smartslimscroll-configuration">Configuration</a></li>
+                <li class="py-1"><a href="#smartslimscroll-advanced-configuration">Advanced
+                        Configuration</a></li>
+                <li class="py-1"><a href="#smartslimscroll-features">Key Features</a></li>
+                <li class="py-1"><a href="#smartslimscroll-usage">Usage Examples</a></li>
+                <li class="py-1"><a href="#smartslimscroll-events">Event Handling</a></li>
+                <li class="py-1"><a href="#smartslimscroll-visibility">Scrollbar Visibility</a></li>
+                <li class="py-1"><a href="#smartslimscroll-cleanup">Cleanup and Destruction</a></li>
+                <li class="py-1"><a href="#smartslimscroll-best-practices">Best Practices</a></li>
+                <li class="py-1"><a href="#smartslimscroll-troubleshooting">Troubleshooting</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script src="~/plugins/highlightjs/highlight.min.js"></script>
+    <script src="~/plugins/highlightjs/go.min.js"></script>
+    <script src="~/scripts/pages/code-highlight.js"></script>
+}

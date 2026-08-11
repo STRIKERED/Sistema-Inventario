@@ -1,0 +1,81 @@
+@page "/productos"
+@model Inventario.Web.Pages.Productos.IndexModel
+
+@{
+    ViewBag.Title = "Productos";
+}
+
+@section styles
+{
+
+}
+
+@await Html.PartialAsync("~/Pages/Shared/Partials/_PageTitle.cshtml", new {
+pageTitle = "Productos",
+pageSubTitle1 = "Inventario",
+pageSubTitle2 = (string?)null,
+pageSubText = (string?)null
+})
+
+<div class="main-content">
+    @if (!string.IsNullOrEmpty(Model.ErrorMensaje))
+    {
+        <div class="alert alert-danger" role="alert">@Model.ErrorMensaje</div>
+    }
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card shadow-0 mb-g">
+                <div class="card-header">
+                    <div class="card-title">Catálogo de productos</div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>SKU</th>
+                                    <th>Código de barras</th>
+                                    <th>Nombre</th>
+                                    <th>Categoría</th>
+                                    <th>Precio costo</th>
+                                    <th>Precio venta</th>
+                                    <th>Activo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Productos.Count == 0 && string.IsNullOrEmpty(Model.ErrorMensaje))
+                                {
+                                    <tr>
+                                        <td colspan="7" class="text-center">No hay productos registrados.</td>
+                                    </tr>
+                                }
+                                @foreach (var producto in Model.Productos)
+                                {
+                                    <tr>
+                                        <td>@producto.Sku</td>
+                                        <td>@producto.CodigoBarras</td>
+                                        <td>@producto.Nombre</td>
+                                        <td>@producto.Categoria</td>
+                                        <td>@producto.PrecioCosto.ToString("C2")</td>
+                                        <td>@producto.PrecioVenta.ToString("C2")</td>
+                                        <td>
+                                            @if (producto.Activo)
+                                            {
+                                                <span class="badge bg-success">Sí</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">No</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
