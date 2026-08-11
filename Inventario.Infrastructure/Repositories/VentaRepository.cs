@@ -39,4 +39,18 @@ public class VentaRepository : IVentaRepository
             .OrderBy(v => v.Fecha)
             .ToListAsync();
     }
+
+    public async Task ActualizarFolioAsync(int id, string folio)
+    {
+        // FindAsync reutiliza la instancia ya trackeada por el DbContext (misma request/scope) si la venta
+        // se acaba de insertar con CrearAsync, así que esto no dispara una segunda consulta a la BD.
+        var venta = await _context.Ventas.FindAsync(id);
+        if (venta is null)
+        {
+            return;
+        }
+
+        venta.Folio = folio;
+        await _context.SaveChangesAsync();
+    }
 }

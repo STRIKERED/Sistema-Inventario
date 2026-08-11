@@ -26,6 +26,8 @@ public class MovimientoInventarioRepository : IMovimientoInventarioRepository
     public async Task<IEnumerable<MovimientoInventario>> ObtenerPorProductoAsync(int productoId)
     {
         return await _context.MovimientosInventario
+            .Include(m => m.Sucursal)
+            .Include(m => m.Usuario)
             .Where(m => m.ProductoId == productoId)
             .OrderByDescending(m => m.Fecha)
             .ToListAsync();
@@ -34,6 +36,8 @@ public class MovimientoInventarioRepository : IMovimientoInventarioRepository
     public async Task<IEnumerable<MovimientoInventario>> ObtenerPorSucursalAsync(int sucursalId)
     {
         return await _context.MovimientosInventario
+            .Include(m => m.Producto)
+            .Include(m => m.Usuario)
             .Where(m => m.SucursalId == sucursalId)
             .OrderByDescending(m => m.Fecha)
             .ToListAsync();

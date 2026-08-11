@@ -1,11 +1,13 @@
-using Inventario.Core.Enums;
+using Inventario.Core.Dtos;
 using Inventario.Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Inventario.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[AllowAnonymous]
 public class AuthController : ControllerBase
 {
     private readonly IUsuarioRepository _usuarioRepository;
@@ -43,14 +45,4 @@ public class AuthController : ControllerBase
             usuario.Rol,
             usuario.SucursalId));
     }
-
-    public record LoginRequest(string NombreUsuario, string Password);
-
-    public record LoginResponse(
-        string Token,
-        int UsuarioId,
-        string NombreUsuario,
-        string? NombreCompleto,
-        RolUsuario Rol,
-        int? SucursalId);
 }

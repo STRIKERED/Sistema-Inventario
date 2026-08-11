@@ -1,11 +1,14 @@
-using Inventario.Core.Entities;
+using Inventario.Core.Dtos;
 using Inventario.Core.Interfaces;
+using Inventario.Core.Mapping;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Inventario.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class SucursalesController : ControllerBase
 {
     private readonly ISucursalRepository _sucursalRepository;
@@ -16,14 +19,14 @@ public class SucursalesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Sucursal>>> ObtenerTodas()
+    public async Task<ActionResult<IEnumerable<SucursalDto>>> ObtenerTodas()
     {
         var sucursales = await _sucursalRepository.ObtenerTodasAsync();
-        return Ok(sucursales);
+        return Ok(sucursales.ToDto());
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<Sucursal>> ObtenerPorId(int id)
+    public async Task<ActionResult<SucursalDto>> ObtenerPorId(int id)
     {
         var sucursal = await _sucursalRepository.ObtenerPorIdAsync(id);
         if (sucursal is null)
@@ -31,31 +34,30 @@ public class SucursalesController : ControllerBase
             return NotFound();
         }
 
-        return Ok(sucursal);
+        return Ok(sucursal.ToDto());
     }
 
     [HttpPost]
-    public async Task<ActionResult<Sucursal>> Crear(Sucursal sucursal)
+    [Authorize(Roles = "Administrador")]
+    public async Task<ActionResult<SucursalDto>> Crear(SucursalRequest request)
     {
+        var sucursal = request.ToEntity();
         await _sucursalRepository.AgregarAsync(sucursal);
-        return CreatedAtAction(nameof(ObtenerPorId), new { id = sucursal.Id }, sucursal);
+        return CreatedAtAction(nameof(ObtenerPorId), new { id = sucursal.Id }, sucursal.ToDto());
     }
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Actualizar(int id, Sucursal sucursal)
+    [Authorize(Roles = "Administrador")]
+    public async Task<IActionResult> Actualizar(int id, SucursalRequest request)
     {
-        if (id != sucursal.Id)
-        {
-            return BadRequest("El id de la ruta no coincide con el id de la sucursal.");
-        }
-
         var existente = await _sucursalRepository.ObtenerPorIdAsync(id);
         if (existente is null)
         {
             return NotFound();
         }
 
-        await _sucursalRepository.ActualizarAsync(sucursal);
+        request.AplicarA(existente);
+        await _sucursalRepository.ActualizarAsync(existente);
         return NoContent();
     }
 }

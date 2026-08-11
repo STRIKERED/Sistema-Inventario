@@ -1,12 +1,14 @@
-using Inventario.Core.Entities;
-using Inventario.Core.Enums;
+using Inventario.Core.Dtos;
 using Inventario.Core.Interfaces;
+using Inventario.Core.Mapping;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Inventario.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize(Roles = "Administrador,Gerente")]
 public class UsuariosController : ControllerBase
 {
     private readonly IUsuarioRepository _usuarioRepository;
@@ -19,14 +21,14 @@ public class UsuariosController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<UsuarioResponse>>> ObtenerTodos()
+    public async Task<ActionResult<IEnumerable<UsuarioDto>>> ObtenerTodos()
     {
         var usuarios = await _usuarioRepository.ObtenerTodosAsync();
-        return Ok(usuarios.Select(UsuarioResponse.DesdeEntidad));
+        return Ok(usuarios.ToDto());
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<UsuarioResponse>> ObtenerPorId(int id)
+    public async Task<ActionResult<UsuarioDto>> ObtenerPorId(int id)
     {
         var usuario = await _usuarioRepository.ObtenerPorIdAsync(id);
         if (usuario is null)
@@ -34,28 +36,22 @@ public class UsuariosController : ControllerBase
             return NotFound();
         }
 
-        return Ok(UsuarioResponse.DesdeEntidad(usuario));
+        return Ok(usuario.ToDto());
     }
 
+    // Alta y baja de usuarios (con hash de contraseña) quedan reservadas a Administrador:
+    // Gerente puede consultar la lista, pero no crear cuentas nuevas.
     [HttpPost]
-    public async Task<ActionResult<UsuarioResponse>> Crear(CrearUsuarioRequest request)
+    [Authorize(Roles = "Administrador")]
+    public async Task<ActionResult<UsuarioDto>> Crear(CrearUsuarioRequest request)
     {
-        var usuario = new Usuario
-        {
-            NombreUsuario = request.NombreUsuario,
-            PasswordHash = _passwordHasher.Hashear(request.Password),
-            NombreCompleto = request.NombreCompleto,
-            Rol = request.Rol,
-            SucursalId = request.SucursalId,
-            Activo = true
-        };
-
+        var usuario = request.ToEntity(_passwordHasher.Hashear(request.Password));
         await _usuarioRepository.AgregarAsync(usuario);
-        return CreatedAtAction(nameof(ObtenerPorId), new { id = usuario.Id }, UsuarioResponse.DesdeEntidad(usuario));
+        return CreatedAtAction(nameof(ObtenerPorId), new { id = usuario.Id }, usuario.ToDto());
     }
 
-    // No incluye la contraseña: para cambiarla haría falta un endpoint dedicado que la vuelva a hashear.
     [HttpPut("{id:int}")]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Actualizar(int id, ActualizarUsuarioRequest request)
     {
         var existente = await _usuarioRepository.ObtenerPorIdAsync(id);
@@ -64,26 +60,8 @@ public class UsuariosController : ControllerBase
             return NotFound();
         }
 
-        existente.NombreUsuario = request.NombreUsuario;
-        existente.NombreCompleto = request.NombreCompleto;
-        existente.Rol = request.Rol;
-        existente.Activo = request.Activo;
-        existente.SucursalId = request.SucursalId;
-
+        request.AplicarA(existente);
         await _usuarioRepository.ActualizarAsync(existente);
         return NoContent();
-    }
-
-    public record CrearUsuarioRequest(
-        string NombreUsuario, string Password, string? NombreCompleto, RolUsuario Rol, int? SucursalId);
-
-    public record ActualizarUsuarioRequest(
-        string NombreUsuario, string? NombreCompleto, RolUsuario Rol, bool Activo, int? SucursalId);
-
-    // Excluye PasswordHash de las respuestas: nunca debe exponerse vía API, ni siquiera hasheado.
-    public record UsuarioResponse(int Id, string NombreUsuario, string? NombreCompleto, RolUsuario Rol, bool Activo, int? SucursalId)
-    {
-        public static UsuarioResponse DesdeEntidad(Usuario usuario) =>
-            new(usuario.Id, usuario.NombreUsuario, usuario.NombreCompleto, usuario.Rol, usuario.Activo, usuario.SucursalId);
     }
 }

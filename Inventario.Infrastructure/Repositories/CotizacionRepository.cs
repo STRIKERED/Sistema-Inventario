@@ -48,4 +48,16 @@ public class CotizacionRepository : ICotizacionRepository
         _context.Cotizaciones.Update(cotizacion);
         await _context.SaveChangesAsync();
     }
+
+    public async Task ActualizarFolioAsync(int id, string folio)
+    {
+        var cotizacion = await _context.Cotizaciones.FindAsync(id);
+        if (cotizacion is null)
+        {
+            return;
+        }
+
+        cotizacion.Folio = folio;
+        await _context.SaveChangesAsync();
+    }
 }

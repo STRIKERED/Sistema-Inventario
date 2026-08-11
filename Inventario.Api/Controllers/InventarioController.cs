@@ -1,12 +1,14 @@
-using Inventario.Core.Entities;
-using Inventario.Core.Enums;
+using Inventario.Core.Dtos;
 using Inventario.Core.Interfaces;
+using Inventario.Core.Mapping;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Inventario.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class InventarioController : ControllerBase
 {
     private readonly IInventarioService _inventarioService;
@@ -31,75 +33,51 @@ public class InventarioController : ControllerBase
     }
 
     [HttpGet("stock/sucursal/{sucursalId:int}")]
-    public async Task<ActionResult<IEnumerable<StockPorSucursal>>> ObtenerStockPorSucursal(int sucursalId)
+    public async Task<ActionResult<IEnumerable<StockPorSucursalDto>>> ObtenerStockPorSucursal(int sucursalId)
     {
         var stock = await _stockRepository.ObtenerPorSucursalAsync(sucursalId);
-        return Ok(stock);
+        return Ok(stock.ToDto());
     }
 
     [HttpGet("stock/producto/{productoId:int}")]
-    public async Task<ActionResult<IEnumerable<StockPorSucursal>>> ObtenerStockPorProducto(int productoId)
+    public async Task<ActionResult<IEnumerable<StockPorSucursalDto>>> ObtenerStockPorProducto(int productoId)
     {
         var stock = await _stockRepository.ObtenerPorProductoAsync(productoId);
-        return Ok(stock);
+        return Ok(stock.ToDto());
     }
 
     [HttpGet("movimientos/producto/{productoId:int}")]
-    public async Task<ActionResult<IEnumerable<MovimientoInventario>>> ObtenerMovimientosPorProducto(int productoId)
+    public async Task<ActionResult<IEnumerable<MovimientoInventarioDto>>> ObtenerMovimientosPorProducto(int productoId)
     {
         var movimientos = await _movimientoRepository.ObtenerPorProductoAsync(productoId);
-        return Ok(movimientos);
+        return Ok(movimientos.ToDto());
     }
 
     [HttpGet("movimientos/sucursal/{sucursalId:int}")]
-    public async Task<ActionResult<IEnumerable<MovimientoInventario>>> ObtenerMovimientosPorSucursal(int sucursalId)
+    public async Task<ActionResult<IEnumerable<MovimientoInventarioDto>>> ObtenerMovimientosPorSucursal(int sucursalId)
     {
         var movimientos = await _movimientoRepository.ObtenerPorSucursalAsync(sucursalId);
-        return Ok(movimientos);
+        return Ok(movimientos.ToDto());
     }
 
+    // Ajustes de inventario (altas manuales, mermas, conteos) quedan reservados a Administrador/Gerente:
+    // un Cajero o Vendedor no debería poder mover stock fuera del flujo normal de venta.
     [HttpPost("movimientos")]
-    public async Task<ActionResult<MovimientoInventario>> RegistrarMovimiento(RegistrarMovimientoRequest request)
+    [Authorize(Roles = "Administrador,Gerente")]
+    public async Task<ActionResult<MovimientoInventarioDto>> RegistrarMovimiento(RegistrarMovimientoRequest request)
     {
-        try
-        {
-            var movimiento = await _inventarioService.RegistrarMovimientoAsync(
-                request.ProductoId, request.SucursalId, request.Tipo, request.Cantidad, request.Motivo, request.UsuarioId);
-            return Ok(movimiento);
-        }
-        catch (ArgumentOutOfRangeException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return Conflict(ex.Message);
-        }
+        var movimiento = await _inventarioService.RegistrarMovimientoAsync(
+            request.ProductoId, request.SucursalId, request.Tipo, request.Cantidad, request.Motivo, request.UsuarioId);
+        return Ok(movimiento.ToDto());
     }
 
     [HttpPost("transferencias")]
+    [Authorize(Roles = "Administrador,Gerente")]
     public async Task<IActionResult> Transferir(TransferirStockRequest request)
     {
-        try
-        {
-            await _inventarioService.TransferirStockAsync(
-                request.ProductoId, request.SucursalOrigenId, request.SucursalDestinoId,
-                request.Cantidad, request.UsuarioId, request.Motivo);
-            return NoContent();
-        }
-        catch (ArgumentOutOfRangeException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return Conflict(ex.Message);
-        }
+        await _inventarioService.TransferirStockAsync(
+            request.ProductoId, request.SucursalOrigenId, request.SucursalDestinoId,
+            request.Cantidad, request.UsuarioId, request.Motivo);
+        return NoContent();
     }
-
-    public record RegistrarMovimientoRequest(
-        int ProductoId, int SucursalId, TipoMovimientoInventario Tipo, int Cantidad, string? Motivo, int? UsuarioId);
-
-    public record TransferirStockRequest(
-        int ProductoId, int SucursalOrigenId, int SucursalDestinoId, int Cantidad, int? UsuarioId, string? Motivo);
 }

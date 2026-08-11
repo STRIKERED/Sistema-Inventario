@@ -8,4 +8,7 @@ public interface ICotizacionRepository
     Task<Cotizacion> CrearAsync(Cotizacion cotizacion);
     Task<IEnumerable<Cotizacion>> ObtenerVigentesAsync(int sucursalId);
     Task ActualizarAsync(Cotizacion cotizacion);
+
+    /// <summary>Fija el folio de una cotización ya insertada (se genera después del insert, a partir de su Id).</summary>
+    Task ActualizarFolioAsync(int id, string folio);
 }

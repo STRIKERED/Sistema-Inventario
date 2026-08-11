@@ -1,11 +1,14 @@
-using Inventario.Core.Entities;
+using Inventario.Core.Dtos;
 using Inventario.Core.Interfaces;
+using Inventario.Core.Mapping;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Inventario.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class CajasController : ControllerBase
 {
     private readonly ICajaRepository _cajaRepository;
@@ -16,7 +19,7 @@ public class CajasController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<Caja>> ObtenerPorId(int id)
+    public async Task<ActionResult<CajaDto>> ObtenerPorId(int id)
     {
         var caja = await _cajaRepository.ObtenerPorIdAsync(id);
         if (caja is null)
@@ -24,38 +27,37 @@ public class CajasController : ControllerBase
             return NotFound();
         }
 
-        return Ok(caja);
+        return Ok(caja.ToDto());
     }
 
     [HttpGet("sucursal/{sucursalId:int}")]
-    public async Task<ActionResult<IEnumerable<Caja>>> ObtenerPorSucursal(int sucursalId)
+    public async Task<ActionResult<IEnumerable<CajaDto>>> ObtenerPorSucursal(int sucursalId)
     {
         var cajas = await _cajaRepository.ObtenerPorSucursalAsync(sucursalId);
-        return Ok(cajas);
+        return Ok(cajas.ToDto());
     }
 
     [HttpPost]
-    public async Task<ActionResult<Caja>> Crear(Caja caja)
+    [Authorize(Roles = "Administrador,Gerente")]
+    public async Task<ActionResult<CajaDto>> Crear(CajaRequest request)
     {
+        var caja = request.ToEntity();
         await _cajaRepository.AgregarAsync(caja);
-        return CreatedAtAction(nameof(ObtenerPorId), new { id = caja.Id }, caja);
+        return CreatedAtAction(nameof(ObtenerPorId), new { id = caja.Id }, caja.ToDto());
     }
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Actualizar(int id, Caja caja)
+    [Authorize(Roles = "Administrador,Gerente")]
+    public async Task<IActionResult> Actualizar(int id, CajaRequest request)
     {
-        if (id != caja.Id)
-        {
-            return BadRequest("El id de la ruta no coincide con el id de la caja.");
-        }
-
         var existente = await _cajaRepository.ObtenerPorIdAsync(id);
         if (existente is null)
         {
             return NotFound();
         }
 
-        await _cajaRepository.ActualizarAsync(caja);
+        request.AplicarA(existente);
+        await _cajaRepository.ActualizarAsync(existente);
         return NoContent();
     }
 }

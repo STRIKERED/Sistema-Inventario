@@ -1,12 +1,16 @@
+using Inventario.Core.Dtos;
 using Inventario.Core.Entities;
 using Inventario.Core.Enums;
 using Inventario.Core.Interfaces;
+using Inventario.Core.Mapping;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Inventario.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class CortesDeCajaController : ControllerBase
 {
     private readonly ICorteDeCajaRepository _corteRepository;
@@ -19,7 +23,7 @@ public class CortesDeCajaController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<CorteDeCaja>> ObtenerPorId(int id)
+    public async Task<ActionResult<CorteDeCajaDto>> ObtenerPorId(int id)
     {
         var corte = await _corteRepository.ObtenerPorIdAsync(id);
         if (corte is null)
@@ -27,18 +31,18 @@ public class CortesDeCajaController : ControllerBase
             return NotFound();
         }
 
-        return Ok(corte);
+        return Ok(corte.ToDto());
     }
 
     [HttpGet("caja/{cajaId:int}")]
-    public async Task<ActionResult<IEnumerable<CorteDeCaja>>> ObtenerPorCaja(int cajaId)
+    public async Task<ActionResult<IEnumerable<CorteDeCajaDto>>> ObtenerPorCaja(int cajaId)
     {
         var cortes = await _corteRepository.ObtenerPorCajaAsync(cajaId);
-        return Ok(cortes);
+        return Ok(cortes.ToDto());
     }
 
     [HttpGet("caja/{cajaId:int}/abierto")]
-    public async Task<ActionResult<CorteDeCaja>> ObtenerAbiertoPorCaja(int cajaId)
+    public async Task<ActionResult<CorteDeCajaDto>> ObtenerAbiertoPorCaja(int cajaId)
     {
         var corte = await _corteRepository.ObtenerAbiertoPorCajaAsync(cajaId);
         if (corte is null)
@@ -46,11 +50,12 @@ public class CortesDeCajaController : ControllerBase
             return NotFound();
         }
 
-        return Ok(corte);
+        return Ok(corte.ToDto());
     }
 
     [HttpPost("abrir")]
-    public async Task<ActionResult<CorteDeCaja>> Abrir(AbrirCorteRequest request)
+    [Authorize(Roles = "Administrador,Gerente,Cajero")]
+    public async Task<ActionResult<CorteDeCajaDto>> Abrir(AbrirCorteRequest request)
     {
         var abierto = await _corteRepository.ObtenerAbiertoPorCajaAsync(request.CajaId);
         if (abierto is not null)
@@ -68,11 +73,12 @@ public class CortesDeCajaController : ControllerBase
         };
 
         var creado = await _corteRepository.CrearAsync(corte);
-        return CreatedAtAction(nameof(ObtenerPorId), new { id = creado.Id }, creado);
+        return CreatedAtAction(nameof(ObtenerPorId), new { id = creado.Id }, creado.ToDto());
     }
 
     [HttpPut("{id:int}/cerrar")]
-    public async Task<ActionResult<CorteDeCaja>> Cerrar(int id, CerrarCorteRequest request)
+    [Authorize(Roles = "Administrador,Gerente,Cajero")]
+    public async Task<ActionResult<CorteDeCajaDto>> Cerrar(int id, CerrarCorteRequest request)
     {
         var corte = await _corteRepository.ObtenerPorIdAsync(id);
         if (corte is null)
@@ -95,10 +101,6 @@ public class CortesDeCajaController : ControllerBase
         corte.FechaCierre = DateTime.UtcNow;
 
         await _corteRepository.ActualizarAsync(corte);
-        return Ok(corte);
+        return Ok(corte.ToDto());
     }
-
-    public record AbrirCorteRequest(int CajaId, int UsuarioId, decimal MontoInicial);
-
-    public record CerrarCorteRequest(decimal MontoFinalContado);
 }
