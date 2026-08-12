@@ -47,7 +47,10 @@ public class UsuariosController : ControllerBase
     {
         var usuario = request.ToEntity(_passwordHasher.Hashear(request.Password));
         await _usuarioRepository.AgregarAsync(usuario);
-        return CreatedAtAction(nameof(ObtenerPorId), new { id = usuario.Id }, usuario.ToDto());
+        await _usuarioRepository.SincronizarInventariosAsync(usuario.Id, request.InventarioIds);
+
+        var completo = await _usuarioRepository.ObtenerPorIdAsync(usuario.Id);
+        return CreatedAtAction(nameof(ObtenerPorId), new { id = usuario.Id }, completo!.ToDto());
     }
 
     [HttpPut("{id:int}")]
@@ -62,6 +65,7 @@ public class UsuariosController : ControllerBase
 
         request.AplicarA(existente);
         await _usuarioRepository.ActualizarAsync(existente);
+        await _usuarioRepository.SincronizarInventariosAsync(id, request.InventarioIds);
         return NoContent();
     }
 }

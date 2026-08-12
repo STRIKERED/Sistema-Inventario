@@ -7,7 +7,8 @@ public static class ProductoMapping
 {
     public static ProductoDto ToDto(this Producto producto) =>
         new(producto.Id, producto.Sku, producto.CodigoBarras, producto.Nombre, producto.Categoria,
-            producto.Unidad, producto.PrecioCosto, producto.PrecioVenta, producto.Activo);
+            producto.Unidad, producto.PrecioCosto, producto.PrecioVenta, producto.Activo,
+            producto.InventarioId, producto.Inventario?.Nombre, producto.CantidadDisponible, producto.StockMinimo);
 
     public static IEnumerable<ProductoDto> ToDto(this IEnumerable<Producto> productos) =>
         productos.Select(p => p.ToDto());
@@ -22,6 +23,9 @@ public static class ProductoMapping
             Unidad = request.Unidad,
             PrecioCosto = request.PrecioCosto,
             PrecioVenta = request.PrecioVenta,
+            InventarioId = request.InventarioId,
+            CantidadDisponible = request.CantidadDisponible,
+            StockMinimo = request.StockMinimo,
             Activo = true
         };
 
@@ -35,5 +39,8 @@ public static class ProductoMapping
         producto.PrecioCosto = request.PrecioCosto;
         producto.PrecioVenta = request.PrecioVenta;
         producto.Activo = request.Activo;
+        producto.InventarioId = request.InventarioId;
+        producto.CantidadDisponible = request.CantidadDisponible;
+        producto.StockMinimo = request.StockMinimo;
     }
 }

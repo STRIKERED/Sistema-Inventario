@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Inventario.Core.Dtos;
 using Inventario.Core.Enums;
+using Inventario.Desktop.Models;
 using Inventario.Desktop.Services.Api;
 using Inventario.Desktop.Services.Sesion;
 
@@ -11,17 +12,19 @@ namespace Inventario.Desktop.ViewModels;
 public partial class UsuariosViewModel : BaseViewModel
 {
     private readonly IUsuarioApiService _usuarioApiService;
-    private readonly ISucursalApiService _sucursalApiService;
+    private readonly IInventarioApiService _inventarioApiService;
 
-    public UsuariosViewModel(IUsuarioApiService usuarioApiService, ISucursalApiService sucursalApiService, ISessionService sessionService)
+    public UsuariosViewModel(IUsuarioApiService usuarioApiService, IInventarioApiService inventarioApiService, ISessionService sessionService)
         : base(sessionService)
     {
         _usuarioApiService = usuarioApiService;
-        _sucursalApiService = sucursalApiService;
+        _inventarioApiService = inventarioApiService;
     }
 
     public ObservableCollection<UsuarioDto> Usuarios { get; } = new();
-    public ObservableCollection<SucursalDto> Sucursales { get; } = new();
+
+    // Un checkbox por Inventario disponible; GuardarUsuarioAsync junta los marcados en InventarioIds.
+    public ObservableCollection<InventarioSeleccionable> InventariosDisponibles { get; } = new();
 
     // La lista de la que habla el pedido: todos los valores del enum, para un Picker de selección única.
     public IReadOnlyList<RolUsuario> Roles { get; } = Enum.GetValues<RolUsuario>();
@@ -41,10 +44,6 @@ public partial class UsuariosViewModel : BaseViewModel
     [ObservableProperty]
     private RolUsuario rolSeleccionado = RolUsuario.Vendedor;
 
-    // Nullable a propósito: Administrador puede no tener una sucursal fija (ver Usuario.SucursalId).
-    [ObservableProperty]
-    private SucursalDto? sucursalSeleccionada;
-
     [RelayCommand]
     private async Task CargarAsync()
     {
@@ -56,11 +55,11 @@ public partial class UsuariosViewModel : BaseViewModel
                 Usuarios.Add(usuario);
             }
 
-            if (Sucursales.Count == 0)
+            if (InventariosDisponibles.Count == 0)
             {
-                foreach (var sucursal in await _sucursalApiService.ObtenerTodasAsync())
+                foreach (var inventario in await _inventarioApiService.ObtenerTodosAsync())
                 {
-                    Sucursales.Add(sucursal);
+                    InventariosDisponibles.Add(new InventarioSeleccionable(inventario));
                 }
             }
         });
@@ -77,7 +76,11 @@ public partial class UsuariosViewModel : BaseViewModel
         Password = string.Empty;
         NombreCompleto = null;
         RolSeleccionado = RolUsuario.Vendedor;
-        SucursalSeleccionada = null;
+
+        foreach (var inventario in InventariosDisponibles)
+        {
+            inventario.Seleccionado = false;
+        }
     }
 
     [RelayCommand]
@@ -97,12 +100,14 @@ public partial class UsuariosViewModel : BaseViewModel
 
         await EjecutarAsync(async () =>
         {
+            var inventarioIds = InventariosDisponibles.Where(i => i.Seleccionado).Select(i => i.Id).ToList();
+
             var request = new CrearUsuarioRequest(
                 NombreUsuario.Trim(),
                 Password,
                 string.IsNullOrWhiteSpace(NombreCompleto) ? null : NombreCompleto.Trim(),
                 RolSeleccionado,
-                SucursalSeleccionada?.Id);
+                inventarioIds);
 
             var creado = await _usuarioApiService.CrearAsync(request);
             Usuarios.Add(creado);
@@ -127,7 +132,7 @@ public partial class UsuariosViewModel : BaseViewModel
                 usuario.NombreCompleto,
                 usuario.Rol,
                 !usuario.Activo,
-                usuario.SucursalId);
+                usuario.Inventarios.Select(i => i.Id).ToList());
 
             await _usuarioApiService.ActualizarAsync(usuario.Id, request);
 

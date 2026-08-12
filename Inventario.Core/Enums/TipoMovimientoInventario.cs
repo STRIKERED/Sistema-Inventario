@@ -4,6 +4,5 @@ public enum TipoMovimientoInventario
 {
     Entrada,
     Salida,
-    Ajuste,
-    Transferencia
+    Ajuste
 }

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Inventario.Desktop.ViewModels"
+             xmlns:dtos="clr-namespace:Inventario.Core.Dtos;assembly=Inventario.Core"
+             x:Class="Inventario.Desktop.Views.InventariosPage"
+             x:DataType="vm:InventariosViewModel"
+             Title="Inventarios">
+
+    <Grid Padding="16" RowDefinitions="Auto,*">
+
+        <HorizontalStackLayout Grid.Row="0" Spacing="12" Margin="0,0,0,12">
+            <Label Text="Inventarios" FontSize="22" FontAttributes="Bold" VerticalOptions="Center" />
+            <Button Text="Nuevo inventario" Command="{Binding MostrarFormularioCommand}"
+                    IsVisible="{Binding MostrarFormularioNuevoInventario, Converter={StaticResource InversoConverter}}" />
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+        </HorizontalStackLayout>
+
+        <!-- Lista de inventarios existentes -->
+        <CollectionView Grid.Row="1" ItemsSource="{Binding Inventarios}"
+                         IsVisible="{Binding MostrarFormularioNuevoInventario, Converter={StaticResource InversoConverter}}">
+            <CollectionView.EmptyView>
+                <Label Text="No hay inventarios registrados." Opacity="0.6" Margin="8" />
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="dtos:InventarioDto">
+                    <Border Padding="12" Margin="0,4" StrokeShape="RoundRectangle 8">
+                        <Grid ColumnDefinitions="*,Auto,Auto" RowDefinitions="Auto,Auto">
+                            <Label Grid.Row="0" Grid.Column="0" Text="{Binding Nombre}" FontAttributes="Bold" FontSize="16" />
+                            <Label Grid.Row="1" Grid.Column="0" Text="{Binding SucursalNombre}" Opacity="0.7" />
+
+                            <Label Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Text="Activo" VerticalOptions="Center" />
+                            <Switch Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" IsToggled="{Binding Activo, Mode=OneWay}"
+                                    Toggled="OnActivoToggled" VerticalOptions="Center" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Formulario de nuevo inventario -->
+        <ScrollView Grid.Row="1" IsVisible="{Binding MostrarFormularioNuevoInventario}">
+            <VerticalStackLayout Spacing="12" MaximumWidthRequest="480">
+                <Label Text="Nuevo inventario" FontSize="20" FontAttributes="Bold" />
+
+                <Entry Placeholder="Nombre (p. ej. Papelería, Abarrotes)" Text="{Binding Nombre}" />
+
+                <Label Text="Sucursal" FontAttributes="Bold" Margin="0,8,0,0" />
+                <Picker ItemsSource="{Binding Sucursales}" ItemDisplayBinding="{Binding Nombre}"
+                        SelectedItem="{Binding SucursalSeleccionada}" Title="Selecciona una sucursal" />
+
+                <HorizontalStackLayout Spacing="12" Margin="0,12,0,0">
+                    <Button Text="Guardar inventario" Command="{Binding GuardarInventarioCommand}" BackgroundColor="ForestGreen" TextColor="White" />
+                    <Button Text="Cancelar" Command="{Binding CancelarFormularioCommand}" />
+                </HorizontalStackLayout>
+
+                <Label Text="{Binding MensajeError}"
+                       IsVisible="{Binding MensajeError, Converter={StaticResource StringNoVacioConverter}}"
+                       TextColor="Red" />
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
+
+</ContentPage>

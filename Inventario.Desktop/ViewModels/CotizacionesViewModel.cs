@@ -58,22 +58,22 @@ public partial class CotizacionesViewModel : BaseViewModel
     {
         await EjecutarAsync(async () =>
         {
-            if (SessionService.SucursalOperativaId is null)
+            if (SessionService.InventarioOperativoId is null)
             {
-                MensajeError = "No hay una sucursal activa en la sesión.";
+                MensajeError = "No hay un inventario activo en la sesión.";
                 return;
             }
 
             Cotizaciones.Clear();
-            foreach (var cotizacion in await _cotizacionApiService.ObtenerVigentesAsync(SessionService.SucursalOperativaId.Value))
+            foreach (var cotizacion in await _cotizacionApiService.ObtenerVigentesAsync(SessionService.InventarioOperativoId.Value))
             {
                 Cotizaciones.Add(cotizacion);
             }
 
-            // Se usa la primera caja de la sucursal para saber si hay un corte abierto con el que
-            // convertir cotizaciones en venta; si la sucursal maneja varias cajas, igual sirve como
+            // Se usa la primera caja del inventario para saber si hay un corte abierto con el que
+            // convertir cotizaciones en venta; si el inventario maneja varias cajas, igual sirve como
             // señal de "hay operación abierta" y el cajero puede abrir la suya desde la pantalla de Caja.
-            var cajas = await _cajaApiService.ObtenerPorSucursalAsync(SessionService.SucursalOperativaId.Value);
+            var cajas = await _cajaApiService.ObtenerPorInventarioAsync(SessionService.InventarioOperativoId.Value);
             var primeraCaja = cajas.FirstOrDefault();
             CorteAbierto = primeraCaja is null ? null : await _cajaApiService.ObtenerCorteAbiertoAsync(primeraCaja.Id);
         });
@@ -98,7 +98,13 @@ public partial class CotizacionesViewModel : BaseViewModel
     {
         await EjecutarAsync(async () =>
         {
-            var producto = await _productoApiService.ObtenerPorCodigoBarrasAsync(codigo);
+            if (SessionService.InventarioOperativoId is null)
+            {
+                MensajeError = "No hay un inventario activo en la sesión.";
+                return;
+            }
+
+            var producto = await _productoApiService.ObtenerPorCodigoBarrasAsync(codigo, SessionService.InventarioOperativoId.Value);
             if (producto is null)
             {
                 MensajeError = $"No se encontró ningún producto con el código '{codigo}'.";
@@ -129,7 +135,7 @@ public partial class CotizacionesViewModel : BaseViewModel
     [RelayCommand]
     private async Task GuardarCotizacionAsync()
     {
-        if (SessionService.SucursalOperativaId is null || SessionService.UsuarioId is null)
+        if (SessionService.InventarioOperativoId is null || SessionService.UsuarioId is null)
         {
             return;
         }
@@ -145,7 +151,7 @@ public partial class CotizacionesViewModel : BaseViewModel
             var request = new CrearCotizacionRequest(
                 ClienteNombre,
                 ClienteContacto,
-                SessionService.SucursalOperativaId.Value,
+                SessionService.InventarioOperativoId.Value,
                 SessionService.UsuarioId.Value,
                 FechaVigencia,
                 DescuentoGlobal,

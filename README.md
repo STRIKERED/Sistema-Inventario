@@ -51,7 +51,9 @@ Inventario.IntegrationTests ► Inventario.Api
 
 Cada sucursal es autónoma: su propia base SQLite local (`%AppData%\InventarioApp\inventario.db`), su propia `Inventario.Api`, y `Inventario.Web`/`Inventario.Desktop` apuntando solo a esa API en `localhost`. No hay servidor central ni se expone nada a la red.
 
-1. Corre la API desde la raíz del repo — al arrancar aplica las migraciones pendientes automáticamente (crea la base la primera vez) y siembra una sucursal inicial si no hay ninguna:
+Una Sucursal puede tener varios Inventarios independientes (p. ej. "Papelería" y "Abarrotes"), cada uno con su propio catálogo de Productos y stock. Un Usuario puede tener acceso a varios Inventarios (`UsuarioInventario`); Administrador siempre ve todos.
+
+1. Corre la API desde la raíz del repo — al arrancar aplica las migraciones pendientes automáticamente (crea la base la primera vez) y siembra una sucursal + un inventario inicial si no hay ninguno:
 
    ```bash
    dotnet run --project Inventario.Api

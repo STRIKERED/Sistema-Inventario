@@ -13,4 +13,8 @@ public interface IUsuarioRepository
     /// <summary>true si existe al menos un usuario en el sistema (sin importar Activo). Se usa para
     /// decidir si habilitar el registro del primer Administrador sin autenticación.</summary>
     Task<bool> ExisteAlgunoAsync();
+
+    /// <summary>Reemplaza por completo las filas UsuarioInventario de un usuario por la lista dada
+    /// (borra las que ya no aplican, agrega las nuevas). No falla si el usuario no tenía ninguna.</summary>
+    Task SincronizarInventariosAsync(int usuarioId, IReadOnlyList<int> inventarioIds);
 }

@@ -30,10 +30,10 @@ public class CajasController : ControllerBase
         return Ok(caja.ToDto());
     }
 
-    [HttpGet("sucursal/{sucursalId:int}")]
-    public async Task<ActionResult<IEnumerable<CajaDto>>> ObtenerPorSucursal(int sucursalId)
+    [HttpGet("inventario/{inventarioId:int}")]
+    public async Task<ActionResult<IEnumerable<CajaDto>>> ObtenerPorInventario(int inventarioId)
     {
-        var cajas = await _cajaRepository.ObtenerPorSucursalAsync(sucursalId);
+        var cajas = await _cajaRepository.ObtenerPorInventarioAsync(inventarioId);
         return Ok(cajas.ToDto());
     }
 

@@ -10,10 +10,12 @@ public class Producto
     public string? Unidad { get; set; }
     public decimal PrecioCosto { get; set; }
     public decimal PrecioVenta { get; set; }
-
-    // Columna nueva: no existía en el esquema original, se agrega vía migración
-    // porque ProductoRepository.ObtenerTodosAsync() filtra por productos activos.
     public bool Activo { get; set; } = true;
 
-    public ICollection<StockPorSucursal> Stocks { get; set; } = new List<StockPorSucursal>();
+    // Stock embebido directo en el producto: cada Producto pertenece a exactamente un Inventario
+    // (ya no hay una tabla de stock por sucursal compartida entre varios).
+    public int InventarioId { get; set; }
+    public Inventario? Inventario { get; set; }
+    public int CantidadDisponible { get; set; }
+    public int StockMinimo { get; set; }
 }

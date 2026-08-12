@@ -11,7 +11,7 @@ public static class VentaMapping
 
     public static VentaDto ToDto(this Venta venta) =>
         new(venta.Id, venta.Folio, venta.Fecha, venta.MetodoPago, venta.Subtotal, venta.Descuento, venta.Impuestos,
-            venta.Total, venta.SucursalId, venta.Sucursal?.Nombre, venta.CorteDeCajaId, venta.UsuarioId,
+            venta.Total, venta.InventarioId, venta.Inventario?.Nombre, venta.CorteDeCajaId, venta.UsuarioId,
             venta.Usuario?.NombreUsuario, venta.Cancelada, venta.Detalles.Select(d => d.ToDto()).ToList());
 
     public static IEnumerable<VentaDto> ToDto(this IEnumerable<Venta> ventas) =>

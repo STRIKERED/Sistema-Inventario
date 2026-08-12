@@ -12,8 +12,8 @@ public static class CotizacionMapping
     public static CotizacionDto ToDto(this Cotizacion cotizacion) =>
         new(cotizacion.Id, cotizacion.Folio, cotizacion.ClienteNombre, cotizacion.ClienteContacto,
             cotizacion.FechaCreacion, cotizacion.FechaVigencia, cotizacion.Estado, cotizacion.Subtotal,
-            cotizacion.Descuento, cotizacion.Impuestos, cotizacion.Total, cotizacion.SucursalId,
-            cotizacion.Sucursal?.Nombre, cotizacion.UsuarioId, cotizacion.Usuario?.NombreUsuario,
+            cotizacion.Descuento, cotizacion.Impuestos, cotizacion.Total, cotizacion.InventarioId,
+            cotizacion.Inventario?.Nombre, cotizacion.UsuarioId, cotizacion.Usuario?.NombreUsuario,
             cotizacion.Detalles.Select(d => d.ToDto()).ToList());
 
     public static IEnumerable<CotizacionDto> ToDto(this IEnumerable<Cotizacion> cotizaciones) =>

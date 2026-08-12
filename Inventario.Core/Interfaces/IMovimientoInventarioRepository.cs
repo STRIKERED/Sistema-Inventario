@@ -6,6 +6,5 @@ public interface IMovimientoInventarioRepository
 {
     Task<MovimientoInventario?> ObtenerPorIdAsync(int id);
     Task<IEnumerable<MovimientoInventario>> ObtenerPorProductoAsync(int productoId);
-    Task<IEnumerable<MovimientoInventario>> ObtenerPorSucursalAsync(int sucursalId);
     Task<MovimientoInventario> CrearAsync(MovimientoInventario movimiento);
 }

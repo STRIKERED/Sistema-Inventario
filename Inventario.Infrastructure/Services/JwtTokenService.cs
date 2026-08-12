@@ -33,10 +33,10 @@ public class JwtTokenService : IJwtTokenService
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
-        if (usuario.SucursalId is not null)
-        {
-            claims.Add(new Claim("sucursalId", usuario.SucursalId.Value.ToString()));
-        }
+        // Sin claim de inventario/sucursal: un usuario puede tener acceso a varios Inventarios
+        // (UsuarioInventario), así que ese dato ya no cabe como un único valor fijo en el token. El
+        // Inventario con el que se opera lo elige el cliente tras el login (ver LoginResponse.Inventarios)
+        // y viaja en cada request via el body/ruta, igual que ya pasaba con el resto de los recursos.
 
         var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
         var credenciales = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);

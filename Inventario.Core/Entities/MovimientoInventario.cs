@@ -10,11 +10,9 @@ public class MovimientoInventario
     public string? Motivo { get; set; }
     public DateTime Fecha { get; set; } = DateTime.UtcNow;
 
+    // Sin SucursalId/InventarioId: el Producto ya implica su Inventario.
     public int ProductoId { get; set; }
     public Producto? Producto { get; set; }
-
-    public int SucursalId { get; set; }
-    public Sucursal? Sucursal { get; set; }
 
     public int? UsuarioId { get; set; }
     public Usuario? Usuario { get; set; }

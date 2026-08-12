@@ -35,12 +35,12 @@
                 <Button Text="Ingresar" Command="{Binding IniciarSesionCommand}" IsEnabled="{Binding IsBusy, Converter={StaticResource InversoConverter}}" />
             </VerticalStackLayout>
 
-            <!-- Elegir sucursal (solo si el usuario no trae una fija, p. ej. Administrador) -->
-            <VerticalStackLayout Spacing="12" IsVisible="{Binding RequiereSeleccionSucursal}">
-                <Label Text="Elige la sucursal con la que vas a operar:" />
-                <Picker ItemsSource="{Binding Sucursales}" ItemDisplayBinding="{Binding Nombre}"
-                        SelectedItem="{Binding SucursalSeleccionada}" Title="Sucursal" />
-                <Button Text="Continuar" Command="{Binding ConfirmarSucursalCommand}" IsEnabled="{Binding IsBusy, Converter={StaticResource InversoConverter}}" />
+            <!-- Elegir inventario (solo si el usuario tiene acceso a más de uno) -->
+            <VerticalStackLayout Spacing="12" IsVisible="{Binding RequiereSeleccionInventario}">
+                <Label Text="Elige el inventario con el que vas a operar:" />
+                <Picker ItemsSource="{Binding Inventarios}" ItemDisplayBinding="{Binding Nombre}"
+                        SelectedItem="{Binding InventarioSeleccionado}" Title="Inventario" />
+                <Button Text="Continuar" Command="{Binding ConfirmarInventarioCommand}" IsEnabled="{Binding IsBusy, Converter={StaticResource InversoConverter}}" />
             </VerticalStackLayout>
 
             <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" HorizontalOptions="Center" />

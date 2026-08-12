@@ -35,6 +35,7 @@ public partial class AppShell : Shell
         // igual se oculta la pestaña: evita que Gerente/Vendedor/Cajero lleguen a un formulario que
         // de todas formas les va a fallar al guardar.
         UsuariosFlyoutItem.IsVisible = _sessionService.Rol == RolUsuario.Administrador;
+        InventariosFlyoutItem.IsVisible = _sessionService.Rol == RolUsuario.Administrador;
         RespaldoFlyoutItem.IsVisible = _sessionService.Rol == RolUsuario.Administrador;
     }
 

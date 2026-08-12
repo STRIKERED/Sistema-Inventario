@@ -16,7 +16,7 @@ public class CotizacionesController : ControllerBase
     private readonly ICotizacionRepository _cotizacionRepository;
     private readonly IVentaRepository _ventaRepository;
     private readonly IProductoRepository _productoRepository;
-    private readonly IInventarioService _inventarioService;
+    private readonly IStockService _stockService;
     private readonly IFolioService _folioService;
     private readonly ICalculadoraTotalesService _calculadoraTotales;
     private readonly ICotizacionPdfService _pdfService;
@@ -26,7 +26,7 @@ public class CotizacionesController : ControllerBase
         ICotizacionRepository cotizacionRepository,
         IVentaRepository ventaRepository,
         IProductoRepository productoRepository,
-        IInventarioService inventarioService,
+        IStockService stockService,
         IFolioService folioService,
         ICalculadoraTotalesService calculadoraTotales,
         ICotizacionPdfService pdfService,
@@ -35,7 +35,7 @@ public class CotizacionesController : ControllerBase
         _cotizacionRepository = cotizacionRepository;
         _ventaRepository = ventaRepository;
         _productoRepository = productoRepository;
-        _inventarioService = inventarioService;
+        _stockService = stockService;
         _folioService = folioService;
         _calculadoraTotales = calculadoraTotales;
         _pdfService = pdfService;
@@ -54,10 +54,10 @@ public class CotizacionesController : ControllerBase
         return Ok(cotizacion.ToDto());
     }
 
-    [HttpGet("vigentes/{sucursalId:int}")]
-    public async Task<ActionResult<IEnumerable<CotizacionDto>>> ObtenerVigentes(int sucursalId)
+    [HttpGet("vigentes/{inventarioId:int}")]
+    public async Task<ActionResult<IEnumerable<CotizacionDto>>> ObtenerVigentes(int inventarioId)
     {
-        var cotizaciones = await _cotizacionRepository.ObtenerVigentesAsync(sucursalId);
+        var cotizaciones = await _cotizacionRepository.ObtenerVigentesAsync(inventarioId);
         return Ok(cotizaciones.ToDto());
     }
 
@@ -99,7 +99,7 @@ public class CotizacionesController : ControllerBase
             Descuento = request.Descuento,
             Impuestos = impuestos,
             Total = total,
-            SucursalId = request.SucursalId,
+            InventarioId = request.InventarioId,
             UsuarioId = request.UsuarioId,
             Detalles = detalles
         };
@@ -144,13 +144,11 @@ public class CotizacionesController : ControllerBase
         // Validar disponibilidad de TODAS las líneas antes de registrar nada.
         foreach (var detalle in cotizacion.Detalles)
         {
-            var disponible = await _inventarioService.ValidarStockDisponibleAsync(
-                detalle.ProductoId, cotizacion.SucursalId, detalle.Cantidad);
+            var disponible = await _stockService.ValidarStockDisponibleAsync(detalle.ProductoId, detalle.Cantidad);
             if (!disponible)
             {
                 return Conflict(
-                    $"Stock insuficiente para el producto '{detalle.Producto?.Nombre ?? detalle.ProductoId.ToString()}' " +
-                    $"en la sucursal {cotizacion.SucursalId}.");
+                    $"Stock insuficiente para el producto '{detalle.Producto?.Nombre ?? detalle.ProductoId.ToString()}'.");
             }
         }
 
@@ -163,7 +161,7 @@ public class CotizacionesController : ControllerBase
             Descuento = cotizacion.Descuento,
             Impuestos = cotizacion.Impuestos,
             Total = cotizacion.Total,
-            SucursalId = cotizacion.SucursalId,
+            InventarioId = cotizacion.InventarioId,
             CorteDeCajaId = request.CorteDeCajaId,
             UsuarioId = request.UsuarioId,
             Detalles = cotizacion.Detalles.Select(d => new DetalleVenta
@@ -184,8 +182,8 @@ public class CotizacionesController : ControllerBase
         {
             try
             {
-                await _inventarioService.RegistrarMovimientoAsync(
-                    detalle.ProductoId, creada.SucursalId, TipoMovimientoInventario.Salida, detalle.Cantidad,
+                await _stockService.RegistrarMovimientoAsync(
+                    detalle.ProductoId, TipoMovimientoInventario.Salida, detalle.Cantidad,
                     $"Venta {folio} (desde cotización {cotizacion.Folio})", creada.UsuarioId);
             }
             catch (InvalidOperationException ex)

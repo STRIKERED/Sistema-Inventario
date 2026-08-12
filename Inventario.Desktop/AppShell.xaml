@@ -42,6 +42,11 @@
         <ShellContent ContentTemplate="{DataTemplate views:UsuariosPage}" Route="usuariosContenido" />
     </FlyoutItem>
 
+    <!-- IsVisible se controla desde AppShell.xaml.cs: solo Administrador puede crear/editar inventarios. -->
+    <FlyoutItem x:Name="InventariosFlyoutItem" Title="Inventarios" Route="inventarios" IsVisible="False">
+        <ShellContent ContentTemplate="{DataTemplate views:InventariosPage}" Route="inventariosContenido" />
+    </FlyoutItem>
+
     <!-- IsVisible se controla desde AppShell.xaml.cs: solo Administrador puede exportar/importar la base. -->
     <FlyoutItem x:Name="RespaldoFlyoutItem" Title="Respaldo" Route="respaldo" IsVisible="False">
         <ShellContent ContentTemplate="{DataTemplate views:RespaldoPage}" Route="respaldoContenido" />

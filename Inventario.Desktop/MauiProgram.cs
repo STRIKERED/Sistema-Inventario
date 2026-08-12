@@ -48,6 +48,7 @@ public static class MauiProgram
         services.AddHttpClient<ICotizacionApiService, CotizacionApiService>(ConfigurarCliente).AddHttpMessageHandler<AuthHeaderHandler>();
         services.AddHttpClient<ICajaApiService, CajaApiService>(ConfigurarCliente).AddHttpMessageHandler<AuthHeaderHandler>();
         services.AddHttpClient<ISucursalApiService, SucursalApiService>(ConfigurarCliente).AddHttpMessageHandler<AuthHeaderHandler>();
+        services.AddHttpClient<IInventarioApiService, InventarioApiService>(ConfigurarCliente).AddHttpMessageHandler<AuthHeaderHandler>();
         services.AddHttpClient<IUsuarioApiService, UsuarioApiService>(ConfigurarCliente).AddHttpMessageHandler<AuthHeaderHandler>();
         services.AddHttpClient<IBackupApiService, BackupApiService>(ConfigurarCliente).AddHttpMessageHandler<AuthHeaderHandler>();
     }
@@ -59,6 +60,7 @@ public static class MauiProgram
         services.AddTransient<CajaViewModel>();
         services.AddTransient<CotizacionesViewModel>();
         services.AddTransient<UsuariosViewModel>();
+        services.AddTransient<InventariosViewModel>();
         services.AddTransient<RespaldoViewModel>();
 
         services.AddTransient<LoginPage>();
@@ -66,6 +68,7 @@ public static class MauiProgram
         services.AddTransient<CajaPage>();
         services.AddTransient<CotizacionesPage>();
         services.AddTransient<UsuariosPage>();
+        services.AddTransient<InventariosPage>();
         services.AddTransient<RespaldoPage>();
 
         services.AddTransient<AppShell>();

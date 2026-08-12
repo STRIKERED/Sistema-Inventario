@@ -70,14 +70,14 @@ public partial class VentaViewModel : BaseViewModel
     {
         await EjecutarAsync(async () =>
         {
-            if (SessionService.SucursalOperativaId is null)
+            if (SessionService.InventarioOperativoId is null)
             {
-                MensajeError = "No hay una sucursal activa en la sesión.";
+                MensajeError = "No hay un inventario activo en la sesión.";
                 return;
             }
 
             Cajas.Clear();
-            foreach (var caja in await _cajaApiService.ObtenerPorSucursalAsync(SessionService.SucursalOperativaId.Value))
+            foreach (var caja in await _cajaApiService.ObtenerPorInventarioAsync(SessionService.InventarioOperativoId.Value))
             {
                 Cajas.Add(caja);
             }
@@ -106,7 +106,13 @@ public partial class VentaViewModel : BaseViewModel
     {
         await EjecutarAsync(async () =>
         {
-            var producto = await _productoApiService.ObtenerPorCodigoBarrasAsync(codigo);
+            if (SessionService.InventarioOperativoId is null)
+            {
+                MensajeError = "No hay un inventario activo en la sesión.";
+                return;
+            }
+
+            var producto = await _productoApiService.ObtenerPorCodigoBarrasAsync(codigo, SessionService.InventarioOperativoId.Value);
             if (producto is null)
             {
                 MensajeError = $"No se encontró ningún producto con el código '{codigo}'.";
@@ -147,7 +153,7 @@ public partial class VentaViewModel : BaseViewModel
     [RelayCommand(CanExecute = nameof(PuedeCobrar))]
     private async Task CobrarAsync()
     {
-        if (CajaSeleccionada is null || CorteAbierto is null || SessionService.UsuarioId is null || SessionService.SucursalOperativaId is null)
+        if (CajaSeleccionada is null || CorteAbierto is null || SessionService.UsuarioId is null || SessionService.InventarioOperativoId is null)
         {
             return;
         }
@@ -158,7 +164,7 @@ public partial class VentaViewModel : BaseViewModel
         {
             var request = new CrearVentaRequest(
                 MetodoPago,
-                SessionService.SucursalOperativaId.Value,
+                SessionService.InventarioOperativoId.Value,
                 CorteAbierto.Id,
                 SessionService.UsuarioId.Value,
                 Carrito.Select(l => l.AConsulta()).ToList());

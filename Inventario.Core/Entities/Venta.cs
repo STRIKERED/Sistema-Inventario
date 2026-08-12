@@ -13,8 +13,8 @@ public class Venta
     public decimal Impuestos { get; set; }
     public decimal Total { get; set; }
 
-    public int SucursalId { get; set; }
-    public Sucursal? Sucursal { get; set; }
+    public int InventarioId { get; set; }
+    public Inventario? Inventario { get; set; }
 
     public int CorteDeCajaId { get; set; }
     public CorteDeCaja? CorteDeCaja { get; set; }

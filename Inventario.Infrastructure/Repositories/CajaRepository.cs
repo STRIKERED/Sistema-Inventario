@@ -17,15 +17,15 @@ public class CajaRepository : ICajaRepository
     public async Task<Caja?> ObtenerPorIdAsync(int id)
     {
         return await _context.Cajas
-            .Include(c => c.Sucursal)
+            .Include(c => c.Inventario)
             .FirstOrDefaultAsync(c => c.Id == id);
     }
 
-    public async Task<IEnumerable<Caja>> ObtenerPorSucursalAsync(int sucursalId)
+    public async Task<IEnumerable<Caja>> ObtenerPorInventarioAsync(int inventarioId)
     {
         return await _context.Cajas
-            .Include(c => c.Sucursal)
-            .Where(c => c.SucursalId == sucursalId)
+            .Include(c => c.Inventario)
+            .Where(c => c.InventarioId == inventarioId)
             .OrderBy(c => c.Nombre)
             .ToListAsync();
     }

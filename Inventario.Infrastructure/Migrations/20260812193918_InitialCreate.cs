@@ -12,26 +12,6 @@ namespace Inventario.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Productos",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Sku = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    CodigoBarras = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    Nombre = table.Column<string>(type: "TEXT", maxLength: 400, nullable: false),
-                    Categoria = table.Column<string>(type: "TEXT", maxLength: 200, nullable: true),
-                    Unidad = table.Column<string>(type: "TEXT", maxLength: 40, nullable: true),
-                    PrecioCosto = table.Column<decimal>(type: "TEXT", nullable: false),
-                    PrecioVenta = table.Column<decimal>(type: "TEXT", nullable: false),
-                    Activo = table.Column<bool>(type: "INTEGER", nullable: false, defaultValue: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Productos", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Sucursales",
                 columns: table => new
                 {
@@ -46,53 +26,6 @@ namespace Inventario.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Cajas",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Nombre = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    SucursalId = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Cajas", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Cajas_Sucursales_SucursalId",
-                        column: x => x.SucursalId,
-                        principalTable: "Sucursales",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "StockPorSucursal",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    ProductoId = table.Column<int>(type: "INTEGER", nullable: false),
-                    SucursalId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Cantidad = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_StockPorSucursal", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_StockPorSucursal_Productos_ProductoId",
-                        column: x => x.ProductoId,
-                        principalTable: "Productos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_StockPorSucursal_Sucursales_SucursalId",
-                        column: x => x.SucursalId,
-                        principalTable: "Sucursales",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Usuarios",
                 columns: table => new
                 {
@@ -102,18 +35,141 @@ namespace Inventario.Infrastructure.Migrations
                     PasswordHash = table.Column<string>(type: "TEXT", nullable: false),
                     NombreCompleto = table.Column<string>(type: "TEXT", maxLength: 300, nullable: true),
                     Rol = table.Column<int>(type: "INTEGER", nullable: false),
-                    Activo = table.Column<bool>(type: "INTEGER", nullable: false),
-                    SucursalId = table.Column<int>(type: "INTEGER", nullable: true)
+                    Activo = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Usuarios", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Inventarios",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Nombre = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
+                    Activo = table.Column<bool>(type: "INTEGER", nullable: false, defaultValue: true),
+                    SucursalId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Inventarios", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Usuarios_Sucursales_SucursalId",
+                        name: "FK_Inventarios_Sucursales_SucursalId",
                         column: x => x.SucursalId,
                         principalTable: "Sucursales",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Cajas",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Nombre = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    InventarioId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cajas", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Cajas_Inventarios_InventarioId",
+                        column: x => x.InventarioId,
+                        principalTable: "Inventarios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Cotizaciones",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Folio = table.Column<string>(type: "TEXT", maxLength: 40, nullable: false),
+                    ClienteNombre = table.Column<string>(type: "TEXT", maxLength: 400, nullable: true),
+                    ClienteContacto = table.Column<string>(type: "TEXT", maxLength: 300, nullable: true),
+                    Fecha = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    FechaVigencia = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    Estado = table.Column<int>(type: "INTEGER", nullable: false),
+                    Subtotal = table.Column<decimal>(type: "TEXT", nullable: false),
+                    Descuento = table.Column<decimal>(type: "TEXT", nullable: false),
+                    Impuestos = table.Column<decimal>(type: "TEXT", nullable: false),
+                    Total = table.Column<decimal>(type: "TEXT", nullable: false),
+                    InventarioId = table.Column<int>(type: "INTEGER", nullable: false),
+                    UsuarioId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cotizaciones", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Cotizaciones_Inventarios_InventarioId",
+                        column: x => x.InventarioId,
+                        principalTable: "Inventarios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Cotizaciones_Usuarios_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "Usuarios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Productos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Sku = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    CodigoBarras = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Nombre = table.Column<string>(type: "TEXT", maxLength: 400, nullable: false),
+                    Categoria = table.Column<string>(type: "TEXT", maxLength: 200, nullable: true),
+                    Unidad = table.Column<string>(type: "TEXT", maxLength: 40, nullable: true),
+                    PrecioCosto = table.Column<decimal>(type: "TEXT", nullable: false),
+                    PrecioVenta = table.Column<decimal>(type: "TEXT", nullable: false),
+                    Activo = table.Column<bool>(type: "INTEGER", nullable: false, defaultValue: true),
+                    InventarioId = table.Column<int>(type: "INTEGER", nullable: false),
+                    CantidadDisponible = table.Column<int>(type: "INTEGER", nullable: false, defaultValue: 0),
+                    StockMinimo = table.Column<int>(type: "INTEGER", nullable: false, defaultValue: 0)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Productos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Productos_Inventarios_InventarioId",
+                        column: x => x.InventarioId,
+                        principalTable: "Inventarios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UsuariosInventarios",
+                columns: table => new
+                {
+                    UsuarioId = table.Column<int>(type: "INTEGER", nullable: false),
+                    InventarioId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UsuariosInventarios", x => new { x.UsuarioId, x.InventarioId });
+                    table.ForeignKey(
+                        name: "FK_UsuariosInventarios_Inventarios_InventarioId",
+                        column: x => x.InventarioId,
+                        principalTable: "Inventarios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UsuariosInventarios_Usuarios_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "Usuarios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -150,120 +206,6 @@ namespace Inventario.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Cotizaciones",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Folio = table.Column<string>(type: "TEXT", maxLength: 40, nullable: false),
-                    ClienteNombre = table.Column<string>(type: "TEXT", maxLength: 400, nullable: true),
-                    ClienteContacto = table.Column<string>(type: "TEXT", maxLength: 300, nullable: true),
-                    Fecha = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    FechaVigencia = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    Estado = table.Column<int>(type: "INTEGER", nullable: false),
-                    Subtotal = table.Column<decimal>(type: "TEXT", nullable: false),
-                    Descuento = table.Column<decimal>(type: "TEXT", nullable: false),
-                    Impuestos = table.Column<decimal>(type: "TEXT", nullable: false),
-                    Total = table.Column<decimal>(type: "TEXT", nullable: false),
-                    SucursalId = table.Column<int>(type: "INTEGER", nullable: false),
-                    UsuarioId = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Cotizaciones", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Cotizaciones_Sucursales_SucursalId",
-                        column: x => x.SucursalId,
-                        principalTable: "Sucursales",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Cotizaciones_Usuarios_UsuarioId",
-                        column: x => x.UsuarioId,
-                        principalTable: "Usuarios",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "MovimientosInventario",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    TipoMovimiento = table.Column<int>(type: "INTEGER", nullable: false),
-                    Cantidad = table.Column<int>(type: "INTEGER", nullable: false),
-                    Motivo = table.Column<string>(type: "TEXT", maxLength: 600, nullable: true),
-                    Fecha = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    ProductoId = table.Column<int>(type: "INTEGER", nullable: false),
-                    SucursalId = table.Column<int>(type: "INTEGER", nullable: false),
-                    UsuarioId = table.Column<int>(type: "INTEGER", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MovimientosInventario", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_MovimientosInventario_Productos_ProductoId",
-                        column: x => x.ProductoId,
-                        principalTable: "Productos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_MovimientosInventario_Sucursales_SucursalId",
-                        column: x => x.SucursalId,
-                        principalTable: "Sucursales",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_MovimientosInventario_Usuarios_UsuarioId",
-                        column: x => x.UsuarioId,
-                        principalTable: "Usuarios",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Ventas",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Folio = table.Column<string>(type: "TEXT", maxLength: 40, nullable: false),
-                    Fecha = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    MetodoPago = table.Column<int>(type: "INTEGER", nullable: false),
-                    Subtotal = table.Column<decimal>(type: "TEXT", nullable: false),
-                    Descuento = table.Column<decimal>(type: "TEXT", nullable: false),
-                    Impuestos = table.Column<decimal>(type: "TEXT", nullable: false),
-                    Total = table.Column<decimal>(type: "TEXT", nullable: false),
-                    SucursalId = table.Column<int>(type: "INTEGER", nullable: false),
-                    CorteDeCajaId = table.Column<int>(type: "INTEGER", nullable: false),
-                    UsuarioId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Cancelada = table.Column<bool>(type: "INTEGER", nullable: false, defaultValue: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Ventas", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Ventas_CortesDeCaja_CorteDeCajaId",
-                        column: x => x.CorteDeCajaId,
-                        principalTable: "CortesDeCaja",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Ventas_Sucursales_SucursalId",
-                        column: x => x.SucursalId,
-                        principalTable: "Sucursales",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Ventas_Usuarios_UsuarioId",
-                        column: x => x.UsuarioId,
-                        principalTable: "Usuarios",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "DetallesCotizacion",
                 columns: table => new
                 {
@@ -287,6 +229,77 @@ namespace Inventario.Infrastructure.Migrations
                         name: "FK_DetallesCotizacion_Productos_ProductoId",
                         column: x => x.ProductoId,
                         principalTable: "Productos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MovimientosInventario",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    TipoMovimiento = table.Column<int>(type: "INTEGER", nullable: false),
+                    Cantidad = table.Column<int>(type: "INTEGER", nullable: false),
+                    Motivo = table.Column<string>(type: "TEXT", maxLength: 600, nullable: true),
+                    Fecha = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ProductoId = table.Column<int>(type: "INTEGER", nullable: false),
+                    UsuarioId = table.Column<int>(type: "INTEGER", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MovimientosInventario", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MovimientosInventario_Productos_ProductoId",
+                        column: x => x.ProductoId,
+                        principalTable: "Productos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_MovimientosInventario_Usuarios_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "Usuarios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Ventas",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Folio = table.Column<string>(type: "TEXT", maxLength: 40, nullable: false),
+                    Fecha = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    MetodoPago = table.Column<int>(type: "INTEGER", nullable: false),
+                    Subtotal = table.Column<decimal>(type: "TEXT", nullable: false),
+                    Descuento = table.Column<decimal>(type: "TEXT", nullable: false),
+                    Impuestos = table.Column<decimal>(type: "TEXT", nullable: false),
+                    Total = table.Column<decimal>(type: "TEXT", nullable: false),
+                    InventarioId = table.Column<int>(type: "INTEGER", nullable: false),
+                    CorteDeCajaId = table.Column<int>(type: "INTEGER", nullable: false),
+                    UsuarioId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Cancelada = table.Column<bool>(type: "INTEGER", nullable: false, defaultValue: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ventas", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Ventas_CortesDeCaja_CorteDeCajaId",
+                        column: x => x.CorteDeCajaId,
+                        principalTable: "CortesDeCaja",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Ventas_Inventarios_InventarioId",
+                        column: x => x.InventarioId,
+                        principalTable: "Inventarios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Ventas_Usuarios_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "Usuarios",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -321,9 +334,9 @@ namespace Inventario.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cajas_SucursalId",
+                name: "IX_Cajas_InventarioId",
                 table: "Cajas",
-                column: "SucursalId");
+                column: "InventarioId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CortesDeCaja_CajaId",
@@ -342,9 +355,9 @@ namespace Inventario.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cotizaciones_SucursalId",
+                name: "IX_Cotizaciones_InventarioId",
                 table: "Cotizaciones",
-                column: "SucursalId");
+                column: "InventarioId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Cotizaciones_UsuarioId",
@@ -372,14 +385,14 @@ namespace Inventario.Infrastructure.Migrations
                 column: "VentaId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Inventarios_SucursalId",
+                table: "Inventarios",
+                column: "SucursalId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_MovimientosInventario_ProductoId",
                 table: "MovimientosInventario",
                 column: "ProductoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MovimientosInventario_SucursalId",
-                table: "MovimientosInventario",
-                column: "SucursalId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MovimientosInventario_UsuarioId",
@@ -387,27 +400,16 @@ namespace Inventario.Infrastructure.Migrations
                 column: "UsuarioId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Productos_CodigoBarras",
+                name: "IX_Productos_InventarioId_CodigoBarras",
                 table: "Productos",
-                column: "CodigoBarras",
+                columns: new[] { "InventarioId", "CodigoBarras" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Productos_Sku",
+                name: "IX_Productos_InventarioId_Sku",
                 table: "Productos",
-                column: "Sku",
+                columns: new[] { "InventarioId", "Sku" },
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_StockPorSucursal_ProductoId_SucursalId",
-                table: "StockPorSucursal",
-                columns: new[] { "ProductoId", "SucursalId" },
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_StockPorSucursal_SucursalId",
-                table: "StockPorSucursal",
-                column: "SucursalId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Usuarios_NombreUsuario",
@@ -416,9 +418,9 @@ namespace Inventario.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Usuarios_SucursalId",
-                table: "Usuarios",
-                column: "SucursalId");
+                name: "IX_UsuariosInventarios_InventarioId",
+                table: "UsuariosInventarios",
+                column: "InventarioId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Ventas_CorteDeCajaId",
@@ -432,9 +434,9 @@ namespace Inventario.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ventas_SucursalId",
+                name: "IX_Ventas_InventarioId",
                 table: "Ventas",
-                column: "SucursalId");
+                column: "InventarioId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Ventas_UsuarioId",
@@ -455,7 +457,7 @@ namespace Inventario.Infrastructure.Migrations
                 name: "MovimientosInventario");
 
             migrationBuilder.DropTable(
-                name: "StockPorSucursal");
+                name: "UsuariosInventarios");
 
             migrationBuilder.DropTable(
                 name: "Cotizaciones");
@@ -474,6 +476,9 @@ namespace Inventario.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Usuarios");
+
+            migrationBuilder.DropTable(
+                name: "Inventarios");
 
             migrationBuilder.DropTable(
                 name: "Sucursales");

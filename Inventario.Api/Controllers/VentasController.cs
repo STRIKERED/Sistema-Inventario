@@ -15,7 +15,7 @@ public class VentasController : ControllerBase
 {
     private readonly IVentaRepository _ventaRepository;
     private readonly IProductoRepository _productoRepository;
-    private readonly IInventarioService _inventarioService;
+    private readonly IStockService _stockService;
     private readonly IFolioService _folioService;
     private readonly ICalculadoraTotalesService _calculadoraTotales;
     private readonly ITicketPrintService _ticketPrintService;
@@ -24,7 +24,7 @@ public class VentasController : ControllerBase
     public VentasController(
         IVentaRepository ventaRepository,
         IProductoRepository productoRepository,
-        IInventarioService inventarioService,
+        IStockService stockService,
         IFolioService folioService,
         ICalculadoraTotalesService calculadoraTotales,
         ITicketPrintService ticketPrintService,
@@ -32,7 +32,7 @@ public class VentasController : ControllerBase
     {
         _ventaRepository = ventaRepository;
         _productoRepository = productoRepository;
-        _inventarioService = inventarioService;
+        _stockService = stockService;
         _folioService = folioService;
         _calculadoraTotales = calculadoraTotales;
         _ticketPrintService = ticketPrintService;
@@ -79,10 +79,10 @@ public class VentasController : ControllerBase
                 return BadRequest($"El descuento unitario del producto '{producto.Nombre}' no puede superar su precio de venta.");
             }
 
-            var disponible = await _inventarioService.ValidarStockDisponibleAsync(linea.ProductoId, request.SucursalId, linea.Cantidad);
+            var disponible = await _stockService.ValidarStockDisponibleAsync(linea.ProductoId, linea.Cantidad);
             if (!disponible)
             {
-                return Conflict($"Stock insuficiente para el producto '{producto.Nombre}' en la sucursal {request.SucursalId}.");
+                return Conflict($"Stock insuficiente para el producto '{producto.Nombre}'.");
             }
 
             detalles.Add(new DetalleVenta
@@ -108,7 +108,7 @@ public class VentasController : ControllerBase
             Descuento = descuento,
             Impuestos = impuestos,
             Total = total,
-            SucursalId = request.SucursalId,
+            InventarioId = request.InventarioId,
             CorteDeCajaId = request.CorteDeCajaId,
             UsuarioId = request.UsuarioId,
             Detalles = detalles
@@ -127,8 +127,8 @@ public class VentasController : ControllerBase
         {
             try
             {
-                await _inventarioService.RegistrarMovimientoAsync(
-                    detalle.ProductoId, creada.SucursalId, TipoMovimientoInventario.Salida, detalle.Cantidad,
+                await _stockService.RegistrarMovimientoAsync(
+                    detalle.ProductoId, TipoMovimientoInventario.Salida, detalle.Cantidad,
                     $"Venta {folio}", creada.UsuarioId);
             }
             catch (InvalidOperationException ex)
