@@ -11,16 +11,16 @@ public class SessionService : ISessionService
     private const string ClaveNombreUsuario = "sesion.nombreUsuario";
     private const string ClaveNombreCompleto = "sesion.nombreCompleto";
     private const string ClaveRol = "sesion.rol";
-    private const string ClaveSucursalId = "sesion.sucursalId";
+    private const string ClaveInventarioId = "sesion.inventarioId";
 
     public string? Token { get; private set; }
     public int? UsuarioId { get; private set; }
     public string? NombreUsuario { get; private set; }
     public string? NombreCompleto { get; private set; }
     public RolUsuario? Rol { get; private set; }
-    public int? SucursalOperativaId { get; private set; }
+    public int? InventarioOperativoId { get; private set; }
 
-    public bool HaySesionActiva => !string.IsNullOrEmpty(Token) && SucursalOperativaId is not null;
+    public bool HaySesionActiva => !string.IsNullOrEmpty(Token) && InventarioOperativoId is not null;
 
     public async Task IniciarSesionAsync(LoginResponse respuesta)
     {
@@ -29,7 +29,7 @@ public class SessionService : ISessionService
         NombreUsuario = respuesta.NombreUsuario;
         NombreCompleto = respuesta.NombreCompleto;
         Rol = respuesta.Rol;
-        SucursalOperativaId = respuesta.SucursalId;
+        InventarioOperativoId = null;
 
         // El token va en SecureStorage (cifrado por el SO); el resto son datos no sensibles en Preferences.
         await SecureStorage.Default.SetAsync(ClaveToken, Token);
@@ -37,21 +37,13 @@ public class SessionService : ISessionService
         Preferences.Default.Set(ClaveNombreUsuario, NombreUsuario);
         Preferences.Default.Set(ClaveNombreCompleto, NombreCompleto ?? string.Empty);
         Preferences.Default.Set(ClaveRol, Rol.Value.ToString());
-
-        if (SucursalOperativaId is not null)
-        {
-            Preferences.Default.Set(ClaveSucursalId, SucursalOperativaId.Value);
-        }
-        else
-        {
-            Preferences.Default.Remove(ClaveSucursalId);
-        }
+        Preferences.Default.Remove(ClaveInventarioId);
     }
 
-    public Task FijarSucursalOperativaAsync(int sucursalId)
+    public Task FijarInventarioOperativoAsync(int inventarioId)
     {
-        SucursalOperativaId = sucursalId;
-        Preferences.Default.Set(ClaveSucursalId, sucursalId);
+        InventarioOperativoId = inventarioId;
+        Preferences.Default.Set(ClaveInventarioId, inventarioId);
         return Task.CompletedTask;
     }
 
@@ -76,8 +68,8 @@ public class SessionService : ISessionService
         NombreUsuario = Preferences.Default.Get(ClaveNombreUsuario, string.Empty);
         NombreCompleto = Preferences.Default.Get(ClaveNombreCompleto, string.Empty);
         Rol = Enum.TryParse<RolUsuario>(Preferences.Default.Get(ClaveRol, string.Empty), out var rol) ? rol : null;
-        SucursalOperativaId = Preferences.Default.ContainsKey(ClaveSucursalId)
-            ? Preferences.Default.Get(ClaveSucursalId, 0)
+        InventarioOperativoId = Preferences.Default.ContainsKey(ClaveInventarioId)
+            ? Preferences.Default.Get(ClaveInventarioId, 0)
             : null;
 
         // Nota: no se valida aquí si el JWT ya expiró; la primera llamada a la API que devuelva 401
@@ -92,7 +84,7 @@ public class SessionService : ISessionService
         NombreUsuario = null;
         NombreCompleto = null;
         Rol = null;
-        SucursalOperativaId = null;
+        InventarioOperativoId = null;
 
         SecureStorage.Default.Remove(ClaveToken);
         Preferences.Default.Clear();

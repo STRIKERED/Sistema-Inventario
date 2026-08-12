@@ -6,7 +6,7 @@ namespace Inventario.Desktop.Services.Api;
 /// <summary>Agrupa Cajas + Cortes de Caja: en la app siempre se usan juntos (elegir caja -> ver/abrir/cerrar su corte).</summary>
 public interface ICajaApiService
 {
-    Task<IReadOnlyList<CajaDto>> ObtenerPorSucursalAsync(int sucursalId, CancellationToken ct = default);
+    Task<IReadOnlyList<CajaDto>> ObtenerPorInventarioAsync(int inventarioId, CancellationToken ct = default);
     Task<CorteDeCajaDto?> ObtenerCorteAbiertoAsync(int cajaId, CancellationToken ct = default);
     Task<IReadOnlyList<CorteDeCajaDto>> ObtenerCortesPorCajaAsync(int cajaId, CancellationToken ct = default);
     Task<CorteDeCajaDto> AbrirCorteAsync(AbrirCorteRequest request, CancellationToken ct = default);
@@ -19,8 +19,8 @@ public class CajaApiService : ApiServiceBase, ICajaApiService
     {
     }
 
-    public async Task<IReadOnlyList<CajaDto>> ObtenerPorSucursalAsync(int sucursalId, CancellationToken ct = default) =>
-        await GetAsync<List<CajaDto>>($"api/cajas/sucursal/{sucursalId}", ct);
+    public async Task<IReadOnlyList<CajaDto>> ObtenerPorInventarioAsync(int inventarioId, CancellationToken ct = default) =>
+        await GetAsync<List<CajaDto>>($"api/cajas/inventario/{inventarioId}", ct);
 
     public async Task<CorteDeCajaDto?> ObtenerCorteAbiertoAsync(int cajaId, CancellationToken ct = default)
     {

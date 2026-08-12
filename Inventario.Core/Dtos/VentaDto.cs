@@ -21,8 +21,8 @@ public record VentaDto(
     decimal Descuento,
     decimal Impuestos,
     decimal Total,
-    int SucursalId,
-    string? SucursalNombre,
+    int InventarioId,
+    string? InventarioNombre,
     int CorteDeCajaId,
     int UsuarioId,
     string? UsuarioNombre,
@@ -38,7 +38,7 @@ public record DetalleVentaRequest(
 
 public record CrearVentaRequest(
     MetodoPago MetodoPago,
-    [Range(1, int.MaxValue)] int SucursalId,
+    [Range(1, int.MaxValue)] int InventarioId,
     [Range(1, int.MaxValue)] int CorteDeCajaId,
     [Range(1, int.MaxValue)] int UsuarioId,
     [Required, MinLength(1)] List<DetalleVentaRequest> Detalles);

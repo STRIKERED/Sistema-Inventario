@@ -5,7 +5,7 @@ namespace Inventario.Core.Interfaces;
 public interface ICajaRepository
 {
     Task<Caja?> ObtenerPorIdAsync(int id);
-    Task<IEnumerable<Caja>> ObtenerPorSucursalAsync(int sucursalId);
+    Task<IEnumerable<Caja>> ObtenerPorInventarioAsync(int inventarioId);
     Task AgregarAsync(Caja caja);
     Task ActualizarAsync(Caja caja);
 }

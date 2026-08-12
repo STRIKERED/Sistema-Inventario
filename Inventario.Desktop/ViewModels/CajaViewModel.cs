@@ -41,14 +41,14 @@ public partial class CajaViewModel : BaseViewModel
     {
         await EjecutarAsync(async () =>
         {
-            if (SessionService.SucursalOperativaId is null)
+            if (SessionService.InventarioOperativoId is null)
             {
-                MensajeError = "No hay una sucursal activa en la sesión.";
+                MensajeError = "No hay un inventario activo en la sesión.";
                 return;
             }
 
             Cajas.Clear();
-            foreach (var caja in await _cajaApiService.ObtenerPorSucursalAsync(SessionService.SucursalOperativaId.Value))
+            foreach (var caja in await _cajaApiService.ObtenerPorInventarioAsync(SessionService.InventarioOperativoId.Value))
             {
                 Cajas.Add(caja);
             }

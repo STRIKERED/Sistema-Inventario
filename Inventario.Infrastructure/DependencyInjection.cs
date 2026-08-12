@@ -29,14 +29,14 @@ public static class DependencyInjection
         services.AddScoped<IVentaRepository, VentaRepository>();
         services.AddScoped<ICotizacionRepository, CotizacionRepository>();
         services.AddScoped<ISucursalRepository, SucursalRepository>();
+        services.AddScoped<IInventarioRepository, InventarioRepository>();
         services.AddScoped<IUsuarioRepository, UsuarioRepository>();
         services.AddScoped<ICajaRepository, CajaRepository>();
         services.AddScoped<ICorteDeCajaRepository, CorteDeCajaRepository>();
-        services.AddScoped<IStockPorSucursalRepository, StockPorSucursalRepository>();
         services.AddScoped<IMovimientoInventarioRepository, MovimientoInventarioRepository>();
 
         // Servicios de dominio
-        services.AddScoped<IInventarioService, InventarioService>();
+        services.AddScoped<IStockService, StockService>();
         services.AddScoped<ITicketPrintService, TicketPrintService>();
         services.AddScoped<ICotizacionPdfService, CotizacionPdfService>();
         services.AddSingleton<IPasswordHasher, PasswordHasher>();

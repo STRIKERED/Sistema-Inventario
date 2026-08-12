@@ -18,10 +18,10 @@ public class ProductosController : ControllerBase
         _productoRepository = productoRepository;
     }
 
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<ProductoDto>>> ObtenerTodos()
+    [HttpGet("inventario/{inventarioId:int}")]
+    public async Task<ActionResult<IEnumerable<ProductoDto>>> ObtenerPorInventario(int inventarioId)
     {
-        var productos = await _productoRepository.ObtenerTodosAsync();
+        var productos = await _productoRepository.ObtenerPorInventarioAsync(inventarioId);
         return Ok(productos.ToDto());
     }
 
@@ -37,10 +37,11 @@ public class ProductosController : ControllerBase
         return Ok(producto.ToDto());
     }
 
+    // El código de barras ya no es único global: hay que decir en qué Inventario se busca.
     [HttpGet("codigo-barras/{codigoBarras}")]
-    public async Task<ActionResult<ProductoDto>> ObtenerPorCodigoBarras(string codigoBarras)
+    public async Task<ActionResult<ProductoDto>> ObtenerPorCodigoBarras(string codigoBarras, [FromQuery] int inventarioId)
     {
-        var producto = await _productoRepository.ObtenerPorCodigoBarrasAsync(codigoBarras);
+        var producto = await _productoRepository.ObtenerPorCodigoBarrasAsync(codigoBarras, inventarioId);
         if (producto is null)
         {
             return NotFound();

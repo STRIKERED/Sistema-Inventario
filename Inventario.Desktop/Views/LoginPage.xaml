@@ -9,7 +9,8 @@
     <ScrollView>
         <VerticalStackLayout Padding="40" Spacing="16" MaximumWidthRequest="380" HorizontalOptions="Center" VerticalOptions="Center">
 
-            <Label Text="Inventario POS" FontSize="28" FontAttributes="Bold" HorizontalOptions="Center" />
+            <!--<Image Source="logo.jpg" HeightRequest="120" Aspect="AspectFit" HorizontalOptions="Center" Margin="0,0,0,8" />-->
+            <Label Text="Administrador de Inventario" FontSize="26" FontAttributes="Bold" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
             <Label Text="Inicia sesión para continuar" FontSize="14" Opacity="0.7" HorizontalOptions="Center" Margin="0,0,0,16"
                    IsVisible="{Binding RequiereConfiguracionInicial, Converter={StaticResource InversoConverter}}" />
 
@@ -35,12 +36,12 @@
                 <Button Text="Ingresar" Command="{Binding IniciarSesionCommand}" IsEnabled="{Binding IsBusy, Converter={StaticResource InversoConverter}}" />
             </VerticalStackLayout>
 
-            <!-- Elegir sucursal (solo si el usuario no trae una fija, p. ej. Administrador) -->
-            <VerticalStackLayout Spacing="12" IsVisible="{Binding RequiereSeleccionSucursal}">
-                <Label Text="Elige la sucursal con la que vas a operar:" />
-                <Picker ItemsSource="{Binding Sucursales}" ItemDisplayBinding="{Binding Nombre}"
-                        SelectedItem="{Binding SucursalSeleccionada}" Title="Sucursal" />
-                <Button Text="Continuar" Command="{Binding ConfirmarSucursalCommand}" IsEnabled="{Binding IsBusy, Converter={StaticResource InversoConverter}}" />
+            <!-- Elegir inventario (solo si el usuario tiene acceso a más de uno) -->
+            <VerticalStackLayout Spacing="12" IsVisible="{Binding RequiereSeleccionInventario}">
+                <Label Text="Elige el inventario con el que vas a operar:" />
+                <Picker ItemsSource="{Binding Inventarios}" ItemDisplayBinding="{Binding Nombre}"
+                        SelectedItem="{Binding InventarioSeleccionado}" Title="Inventario" />
+                <Button Text="Continuar" Command="{Binding ConfirmarInventarioCommand}" IsEnabled="{Binding IsBusy, Converter={StaticResource InversoConverter}}" />
             </VerticalStackLayout>
 
             <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" HorizontalOptions="Center" />
@@ -48,6 +49,8 @@
             <Label Text="{Binding MensajeError}"
                    IsVisible="{Binding MensajeError, Converter={StaticResource StringNoVacioConverter}}"
                    TextColor="Red" HorizontalTextAlignment="Center" />
+
+            <Label x:Name="PiePaginaLabel" FontSize="11" Opacity="0.5" HorizontalTextAlignment="Center" Margin="0,24,0,0" />
 
         </VerticalStackLayout>
     </ScrollView>

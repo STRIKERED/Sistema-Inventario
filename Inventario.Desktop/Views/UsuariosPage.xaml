@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Inventario.Desktop.ViewModels"
              xmlns:dtos="clr-namespace:Inventario.Core.Dtos;assembly=Inventario.Core"
+             xmlns:models="clr-namespace:Inventario.Desktop.Models"
              x:Class="Inventario.Desktop.Views.UsuariosPage"
              x:DataType="vm:UsuariosViewModel"
              Title="Usuarios">
@@ -58,9 +59,27 @@
                 <Label Text="Rol" FontAttributes="Bold" Margin="0,8,0,0" />
                 <Picker ItemsSource="{Binding Roles}" SelectedItem="{Binding RolSeleccionado}" Title="Selecciona un rol" />
 
-                <Label Text="Sucursal (opcional)" FontAttributes="Bold" Margin="0,8,0,0" />
-                <Picker ItemsSource="{Binding Sucursales}" ItemDisplayBinding="{Binding Nombre}"
-                        SelectedItem="{Binding SucursalSeleccionada}" Title="Sin sucursal fija" />
+                <Label Text="Inventarios a los que tiene acceso" FontAttributes="Bold" Margin="0,8,0,0" />
+                <Label Text="Administrador ve todos los inventarios sin necesidad de marcarlos aquí." FontSize="12" Opacity="0.6" />
+                <CollectionView ItemsSource="{Binding InventariosDisponibles}" HeightRequest="160">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:InventarioSeleccionable">
+                            <HorizontalStackLayout Spacing="8" Padding="0,4">
+                                <CheckBox IsChecked="{Binding Seleccionado}" />
+                                <Label VerticalOptions="Center">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="{Binding Nombre}" />
+                                            <Span Text=" (" />
+                                            <Span Text="{Binding SucursalNombre}" />
+                                            <Span Text=")" />
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                            </HorizontalStackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
 
                 <HorizontalStackLayout Spacing="12" Margin="0,12,0,0">
                     <Button Text="Guardar usuario" Command="{Binding GuardarUsuarioCommand}" BackgroundColor="ForestGreen" TextColor="White" />

@@ -23,8 +23,8 @@ public record CotizacionDto(
     decimal Descuento,
     decimal Impuestos,
     decimal Total,
-    int SucursalId,
-    string? SucursalNombre,
+    int InventarioId,
+    string? InventarioNombre,
     int UsuarioId,
     string? UsuarioNombre,
     IReadOnlyList<DetalleCotizacionDto> Detalles);
@@ -37,7 +37,7 @@ public record DetalleCotizacionRequest(
 public record CrearCotizacionRequest(
     string? ClienteNombre,
     string? ClienteContacto,
-    [Range(1, int.MaxValue)] int SucursalId,
+    [Range(1, int.MaxValue)] int InventarioId,
     [Range(1, int.MaxValue)] int UsuarioId,
     DateTime? FechaVigencia,
     [Range(0, double.MaxValue)] decimal Descuento,

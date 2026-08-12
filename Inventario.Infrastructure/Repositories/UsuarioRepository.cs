@@ -17,20 +17,21 @@ public class UsuarioRepository : IUsuarioRepository
     public async Task<Usuario?> ObtenerPorIdAsync(int id)
     {
         return await _context.Usuarios
-            .Include(u => u.Sucursal)
+            .Include(u => u.UsuarioInventarios).ThenInclude(ui => ui.Inventario!).ThenInclude(i => i.Sucursal)
             .FirstOrDefaultAsync(u => u.Id == id);
     }
 
     public async Task<Usuario?> ObtenerPorNombreUsuarioAsync(string nombreUsuario)
     {
         return await _context.Usuarios
-            .Include(u => u.Sucursal)
+            .Include(u => u.UsuarioInventarios).ThenInclude(ui => ui.Inventario!).ThenInclude(i => i.Sucursal)
             .FirstOrDefaultAsync(u => u.NombreUsuario == nombreUsuario);
     }
 
     public async Task<IEnumerable<Usuario>> ObtenerTodosAsync()
     {
         return await _context.Usuarios
+            .Include(u => u.UsuarioInventarios).ThenInclude(ui => ui.Inventario!).ThenInclude(i => i.Sucursal)
             .Where(u => u.Activo)
             .OrderBy(u => u.NombreUsuario)
             .ToListAsync();
@@ -49,4 +50,22 @@ public class UsuarioRepository : IUsuarioRepository
     }
 
     public async Task<bool> ExisteAlgunoAsync() => await _context.Usuarios.AnyAsync();
+
+    public async Task SincronizarInventariosAsync(int usuarioId, IReadOnlyList<int> inventarioIds)
+    {
+        var actuales = await _context.UsuariosInventarios
+            .Where(ui => ui.UsuarioId == usuarioId)
+            .ToListAsync();
+
+        var aQuitar = actuales.Where(ui => !inventarioIds.Contains(ui.InventarioId));
+        _context.UsuariosInventarios.RemoveRange(aQuitar);
+
+        var idsActuales = actuales.Select(ui => ui.InventarioId).ToHashSet();
+        var aAgregar = inventarioIds
+            .Where(id => !idsActuales.Contains(id))
+            .Select(id => new UsuarioInventario { UsuarioId = usuarioId, InventarioId = id });
+        await _context.UsuariosInventarios.AddRangeAsync(aAgregar);
+
+        await _context.SaveChangesAsync();
+    }
 }

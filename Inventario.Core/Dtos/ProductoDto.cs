@@ -11,7 +11,11 @@ public record ProductoDto(
     string? Unidad,
     decimal PrecioCosto,
     decimal PrecioVenta,
-    bool Activo);
+    bool Activo,
+    int InventarioId,
+    string? InventarioNombre,
+    int CantidadDisponible,
+    int StockMinimo);
 
 public record CrearProductoRequest(
     [Required, StringLength(50)] string Sku,
@@ -20,7 +24,10 @@ public record CrearProductoRequest(
     string? Categoria,
     string? Unidad,
     [Range(0, double.MaxValue)] decimal PrecioCosto,
-    [Range(0, double.MaxValue)] decimal PrecioVenta);
+    [Range(0, double.MaxValue)] decimal PrecioVenta,
+    [Range(1, int.MaxValue)] int InventarioId,
+    [Range(0, int.MaxValue)] int CantidadDisponible,
+    [Range(0, int.MaxValue)] int StockMinimo);
 
 public record ActualizarProductoRequest(
     [Required, StringLength(50)] string Sku,
@@ -30,4 +37,7 @@ public record ActualizarProductoRequest(
     string? Unidad,
     [Range(0, double.MaxValue)] decimal PrecioCosto,
     [Range(0, double.MaxValue)] decimal PrecioVenta,
-    bool Activo);
+    bool Activo,
+    [Range(1, int.MaxValue)] int InventarioId,
+    [Range(0, int.MaxValue)] int CantidadDisponible,
+    [Range(0, int.MaxValue)] int StockMinimo);

@@ -20,8 +20,8 @@ public class Cotizacion
     public decimal Impuestos { get; set; }
     public decimal Total { get; set; }
 
-    public int SucursalId { get; set; }
-    public Sucursal? Sucursal { get; set; }
+    public int InventarioId { get; set; }
+    public Inventario? Inventario { get; set; }
 
     public int UsuarioId { get; set; }
     public Usuario? Usuario { get; set; }

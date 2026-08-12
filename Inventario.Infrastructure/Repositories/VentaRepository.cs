@@ -20,7 +20,7 @@ public class VentaRepository : IVentaRepository
             .Include(v => v.Detalles)
                 .ThenInclude(d => d.Producto)
             .Include(v => v.Usuario)
-            .Include(v => v.Sucursal)
+            .Include(v => v.Inventario)
             .FirstOrDefaultAsync(v => v.Id == id);
     }
 

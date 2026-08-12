@@ -67,10 +67,11 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
+// Sin UseHttpsRedirection: esta Api corre solo por HTTP en localhost (ver ApiConfig.cs en Desktop y
+// InventarioApi:BaseUrl en Web) — no hay certificado que gestionar ni tráfico que salga de la PC.
 
-// Primero en el pipeline (tras HTTPS redirection) para capturar cualquier excepción no manejada
-// que ocurra más adelante, incluida la de los middlewares de autenticación/autorización.
+// Primero en el pipeline para capturar cualquier excepción no manejada que ocurra más adelante,
+// incluida la de los middlewares de autenticación/autorización.
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseAuthentication();

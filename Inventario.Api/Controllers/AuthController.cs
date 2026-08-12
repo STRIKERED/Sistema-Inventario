@@ -2,6 +2,7 @@ using Inventario.Core.Dtos;
 using Inventario.Core.Entities;
 using Inventario.Core.Enums;
 using Inventario.Core.Interfaces;
+using Inventario.Core.Mapping;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,15 +14,18 @@ namespace Inventario.Api.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IUsuarioRepository _usuarioRepository;
+    private readonly IInventarioRepository _inventarioRepository;
     private readonly IPasswordHasher _passwordHasher;
     private readonly IJwtTokenService _jwtTokenService;
 
     public AuthController(
         IUsuarioRepository usuarioRepository,
+        IInventarioRepository inventarioRepository,
         IPasswordHasher passwordHasher,
         IJwtTokenService jwtTokenService)
     {
         _usuarioRepository = usuarioRepository;
+        _inventarioRepository = inventarioRepository;
         _passwordHasher = passwordHasher;
         _jwtTokenService = jwtTokenService;
     }
@@ -38,6 +42,7 @@ public class AuthController : ControllerBase
         }
 
         var token = _jwtTokenService.GenerarToken(usuario);
+        var inventarios = await ObtenerInventariosAccesiblesAsync(usuario);
 
         return Ok(new LoginResponse(
             token,
@@ -45,7 +50,7 @@ public class AuthController : ControllerBase
             usuario.NombreUsuario,
             usuario.NombreCompleto,
             usuario.Rol,
-            usuario.SucursalId));
+            inventarios));
     }
 
     // Público a propósito: el cliente lo consulta ANTES de poder autenticarse, para saber si debe
@@ -85,6 +90,7 @@ public class AuthController : ControllerBase
         await _usuarioRepository.AgregarAsync(usuario);
 
         var token = _jwtTokenService.GenerarToken(usuario);
+        var inventarios = await ObtenerInventariosAccesiblesAsync(usuario);
 
         return Ok(new LoginResponse(
             token,
@@ -92,6 +98,17 @@ public class AuthController : ControllerBase
             usuario.NombreUsuario,
             usuario.NombreCompleto,
             usuario.Rol,
-            usuario.SucursalId));
+            inventarios));
+    }
+
+    // Administrador tiene acceso implícito a todos los Inventarios activos (no necesita fila en
+    // UsuarioInventario); cualquier otro rol solo ve los que le asignaron explícitamente.
+    private async Task<IReadOnlyList<InventarioDto>> ObtenerInventariosAccesiblesAsync(Usuario usuario)
+    {
+        var inventarios = usuario.Rol == RolUsuario.Administrador
+            ? await _inventarioRepository.ObtenerTodosAsync()
+            : await _inventarioRepository.ObtenerAsignadosAUsuarioAsync(usuario.Id);
+
+        return inventarios.ToDto().ToList();
     }
 }

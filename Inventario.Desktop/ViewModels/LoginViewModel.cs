@@ -10,13 +10,11 @@ namespace Inventario.Desktop.ViewModels;
 public partial class LoginViewModel : BaseViewModel
 {
     private readonly IAuthApiService _authApiService;
-    private readonly ISucursalApiService _sucursalApiService;
 
-    public LoginViewModel(IAuthApiService authApiService, ISucursalApiService sucursalApiService, ISessionService sessionService)
+    public LoginViewModel(IAuthApiService authApiService, ISessionService sessionService)
         : base(sessionService)
     {
         _authApiService = authApiService;
-        _sucursalApiService = sucursalApiService;
     }
 
     [ObservableProperty]
@@ -38,23 +36,23 @@ public partial class LoginViewModel : BaseViewModel
     [ObservableProperty]
     private bool requiereConfiguracionInicial;
 
-    // Solo se usa cuando el usuario (típicamente Administrador) no trae una sucursal fija en el JWT:
-    // hay que elegir con cuál va a operar antes de entrar al punto de venta.
+    // Se usa cuando LoginResponse.Inventarios trae más de un elemento: hay que elegir con cuál se
+    // va a operar antes de entrar al punto de venta (si trae exactamente uno, se autoselecciona).
     [ObservableProperty]
-    private bool requiereSeleccionSucursal;
+    private bool requiereSeleccionInventario;
 
     [ObservableProperty]
-    private SucursalDto? sucursalSeleccionada;
+    private InventarioDto? inventarioSeleccionado;
 
-    public ObservableCollection<SucursalDto> Sucursales { get; } = new();
+    public ObservableCollection<InventarioDto> Inventarios { get; } = new();
 
     // MostrarLoginNormal no es [ObservableProperty] porque depende de otras dos propiedades: se
     // renotifica a mano desde los partial OnXxxChanged de esas dos.
-    public bool MostrarLoginNormal => !RequiereConfiguracionInicial && !RequiereSeleccionSucursal;
+    public bool MostrarLoginNormal => !RequiereConfiguracionInicial && !RequiereSeleccionInventario;
 
     partial void OnRequiereConfiguracionInicialChanged(bool value) => OnPropertyChanged(nameof(MostrarLoginNormal));
 
-    partial void OnRequiereSeleccionSucursalChanged(bool value) => OnPropertyChanged(nameof(MostrarLoginNormal));
+    partial void OnRequiereSeleccionInventarioChanged(bool value) => OnPropertyChanged(nameof(MostrarLoginNormal));
 
     [RelayCommand]
     private async Task CargarEstadoAsync()
@@ -116,17 +114,17 @@ public partial class LoginViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    private async Task ConfirmarSucursalAsync()
+    private async Task ConfirmarInventarioAsync()
     {
-        if (SucursalSeleccionada is null)
+        if (InventarioSeleccionado is null)
         {
-            MensajeError = "Selecciona una sucursal para continuar.";
+            MensajeError = "Selecciona un inventario para continuar.";
             return;
         }
 
         await EjecutarAsync(async () =>
         {
-            await SessionService.FijarSucursalOperativaAsync(SucursalSeleccionada.Id);
+            await SessionService.FijarInventarioOperativoAsync(InventarioSeleccionado.Id);
             await IrAlPuntoDeVentaAsync();
         });
     }
@@ -138,19 +136,26 @@ public partial class LoginViewModel : BaseViewModel
         ConfirmarPassword = string.Empty;
         RequiereConfiguracionInicial = false;
 
-        if (respuesta.SucursalId is not null)
+        if (respuesta.Inventarios.Count == 1)
         {
+            await SessionService.FijarInventarioOperativoAsync(respuesta.Inventarios[0].Id);
             await IrAlPuntoDeVentaAsync();
             return;
         }
 
-        Sucursales.Clear();
-        foreach (var sucursal in await _sucursalApiService.ObtenerTodasAsync())
+        if (respuesta.Inventarios.Count == 0)
         {
-            Sucursales.Add(sucursal);
+            MensajeError = "Tu usuario no tiene ningún inventario asignado. Pide a un Administrador que te asigne uno.";
+            return;
         }
 
-        RequiereSeleccionSucursal = true;
+        Inventarios.Clear();
+        foreach (var inventario in respuesta.Inventarios)
+        {
+            Inventarios.Add(inventario);
+        }
+
+        RequiereSeleccionInventario = true;
     }
 
     private static Task IrAlPuntoDeVentaAsync() => Shell.Current.GoToAsync("//venta");

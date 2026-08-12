@@ -7,7 +7,7 @@ public interface ICotizacionApiService
 {
     Task<CotizacionDto> CrearAsync(CrearCotizacionRequest request, CancellationToken ct = default);
     Task<CotizacionDto?> ObtenerPorIdAsync(int id, CancellationToken ct = default);
-    Task<IReadOnlyList<CotizacionDto>> ObtenerVigentesAsync(int sucursalId, CancellationToken ct = default);
+    Task<IReadOnlyList<CotizacionDto>> ObtenerVigentesAsync(int inventarioId, CancellationToken ct = default);
     Task<VentaDto> ConvertirAVentaAsync(int id, ConvertirAVentaRequest request, CancellationToken ct = default);
     Task<byte[]> ObtenerPdfAsync(int id, CancellationToken ct = default);
 }
@@ -33,8 +33,8 @@ public class CotizacionApiService : ApiServiceBase, ICotizacionApiService
         }
     }
 
-    public async Task<IReadOnlyList<CotizacionDto>> ObtenerVigentesAsync(int sucursalId, CancellationToken ct = default) =>
-        await GetAsync<List<CotizacionDto>>($"api/cotizaciones/vigentes/{sucursalId}", ct);
+    public async Task<IReadOnlyList<CotizacionDto>> ObtenerVigentesAsync(int inventarioId, CancellationToken ct = default) =>
+        await GetAsync<List<CotizacionDto>>($"api/cotizaciones/vigentes/{inventarioId}", ct);
 
     public Task<VentaDto> ConvertirAVentaAsync(int id, ConvertirAVentaRequest request, CancellationToken ct = default) =>
         PostAsync<ConvertirAVentaRequest, VentaDto>($"api/cotizaciones/{id}/convertir-a-venta", request, ct);

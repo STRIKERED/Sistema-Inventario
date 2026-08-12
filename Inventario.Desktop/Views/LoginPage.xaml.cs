@@ -11,6 +11,8 @@ public partial class LoginPage : ContentPage
         InitializeComponent();
         _viewModel = viewModel;
         BindingContext = _viewModel;
+
+        PiePaginaLabel.Text = $"Creador: Haroldo Mata Velázquez — v{AppInfo.Current.VersionString}";
     }
 
     protected override void OnAppearing()

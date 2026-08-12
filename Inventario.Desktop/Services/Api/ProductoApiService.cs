@@ -5,8 +5,8 @@ namespace Inventario.Desktop.Services.Api;
 
 public interface IProductoApiService
 {
-    Task<IReadOnlyList<ProductoDto>> ObtenerTodosAsync(CancellationToken ct = default);
-    Task<ProductoDto?> ObtenerPorCodigoBarrasAsync(string codigoBarras, CancellationToken ct = default);
+    Task<IReadOnlyList<ProductoDto>> ObtenerPorInventarioAsync(int inventarioId, CancellationToken ct = default);
+    Task<ProductoDto?> ObtenerPorCodigoBarrasAsync(string codigoBarras, int inventarioId, CancellationToken ct = default);
     Task<ProductoDto?> ObtenerPorIdAsync(int id, CancellationToken ct = default);
 }
 
@@ -16,11 +16,11 @@ public class ProductoApiService : ApiServiceBase, IProductoApiService
     {
     }
 
-    public async Task<IReadOnlyList<ProductoDto>> ObtenerTodosAsync(CancellationToken ct = default) =>
-        await GetAsync<List<ProductoDto>>("api/productos", ct);
+    public async Task<IReadOnlyList<ProductoDto>> ObtenerPorInventarioAsync(int inventarioId, CancellationToken ct = default) =>
+        await GetAsync<List<ProductoDto>>($"api/productos/inventario/{inventarioId}", ct);
 
-    public Task<ProductoDto?> ObtenerPorCodigoBarrasAsync(string codigoBarras, CancellationToken ct = default) =>
-        ObtenerOpcionalAsync($"api/productos/codigo-barras/{Uri.EscapeDataString(codigoBarras)}", ct);
+    public Task<ProductoDto?> ObtenerPorCodigoBarrasAsync(string codigoBarras, int inventarioId, CancellationToken ct = default) =>
+        ObtenerOpcionalAsync($"api/productos/codigo-barras/{Uri.EscapeDataString(codigoBarras)}?inventarioId={inventarioId}", ct);
 
     public Task<ProductoDto?> ObtenerPorIdAsync(int id, CancellationToken ct = default) =>
         ObtenerOpcionalAsync($"api/productos/{id}", ct);

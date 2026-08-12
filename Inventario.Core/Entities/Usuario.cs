@@ -17,6 +17,7 @@ public class Usuario
     public RolUsuario Rol { get; set; }
     public bool Activo { get; set; } = true;
 
-    public int? SucursalId { get; set; }
-    public Sucursal? Sucursal { get; set; }
+    // Sin SucursalId directo: el acceso se deriva 100% de UsuarioInventarios. Administrador es la
+    // excepción (acceso implícito a todos los Inventarios activos, sin fila aquí — ver AuthController).
+    public ICollection<UsuarioInventario> UsuarioInventarios { get; set; } = new List<UsuarioInventario>();
 }

@@ -21,7 +21,7 @@ public class CotizacionRepository : ICotizacionRepository
             .Include(c => c.Detalles)
                 .ThenInclude(d => d.Producto)
             .Include(c => c.Usuario)
-            .Include(c => c.Sucursal)
+            .Include(c => c.Inventario)
             .FirstOrDefaultAsync(c => c.Id == id);
     }
 
@@ -32,11 +32,11 @@ public class CotizacionRepository : ICotizacionRepository
         return cotizacion;
     }
 
-    public async Task<IEnumerable<Cotizacion>> ObtenerVigentesAsync(int sucursalId)
+    public async Task<IEnumerable<Cotizacion>> ObtenerVigentesAsync(int inventarioId)
     {
         return await _context.Cotizaciones
             .Include(c => c.Detalles)
-            .Where(c => c.SucursalId == sucursalId
+            .Where(c => c.InventarioId == inventarioId
                      && c.Estado == EstadoCotizacion.Vigente
                      && c.FechaVigencia >= DateTime.UtcNow)
             .OrderByDescending(c => c.FechaCreacion)

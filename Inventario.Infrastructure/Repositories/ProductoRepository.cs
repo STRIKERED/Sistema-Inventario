@@ -17,21 +17,21 @@ public class ProductoRepository : IProductoRepository
     public async Task<Producto?> ObtenerPorIdAsync(int id)
     {
         return await _context.Productos
-            .Include(p => p.Stocks)
+            .Include(p => p.Inventario)
             .FirstOrDefaultAsync(p => p.Id == id);
     }
 
-    public async Task<Producto?> ObtenerPorCodigoBarrasAsync(string codigoBarras)
+    public async Task<Producto?> ObtenerPorCodigoBarrasAsync(string codigoBarras, int inventarioId)
     {
         return await _context.Productos
-            .Include(p => p.Stocks)
-            .FirstOrDefaultAsync(p => p.CodigoBarras == codigoBarras);
+            .Include(p => p.Inventario)
+            .FirstOrDefaultAsync(p => p.CodigoBarras == codigoBarras && p.InventarioId == inventarioId);
     }
 
-    public async Task<IEnumerable<Producto>> ObtenerTodosAsync()
+    public async Task<IEnumerable<Producto>> ObtenerPorInventarioAsync(int inventarioId)
     {
         return await _context.Productos
-            .Where(p => p.Activo)
+            .Where(p => p.Activo && p.InventarioId == inventarioId)
             .OrderBy(p => p.Nombre)
             .ToListAsync();
     }

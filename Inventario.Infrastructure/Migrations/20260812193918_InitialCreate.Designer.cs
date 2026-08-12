@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Inventario.Infrastructure.Migrations
 {
     [DbContext(typeof(InventarioDbContext))]
-    [Migration("20260812185614_InitialCreate")]
+    [Migration("20260812193918_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -26,17 +26,17 @@ namespace Inventario.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("InventarioId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("SucursalId")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("SucursalId");
+                    b.HasIndex("InventarioId");
 
                     b.ToTable("Cajas");
                 });
@@ -118,11 +118,11 @@ namespace Inventario.Infrastructure.Migrations
                     b.Property<decimal>("Impuestos")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("InventarioId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<decimal>("Subtotal")
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("SucursalId")
-                        .HasColumnType("INTEGER");
 
                     b.Property<decimal>("Total")
                         .HasColumnType("TEXT");
@@ -135,7 +135,7 @@ namespace Inventario.Infrastructure.Migrations
                     b.HasIndex("Folio")
                         .IsUnique();
 
-                    b.HasIndex("SucursalId");
+                    b.HasIndex("InventarioId");
 
                     b.HasIndex("UsuarioId");
 
@@ -199,6 +199,32 @@ namespace Inventario.Infrastructure.Migrations
                     b.ToTable("DetallesVenta");
                 });
 
+            modelBuilder.Entity("Inventario.Core.Entities.Inventario", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("Activo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("SucursalId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SucursalId");
+
+                    b.ToTable("Inventarios");
+                });
+
             modelBuilder.Entity("Inventario.Core.Entities.MovimientoInventario", b =>
                 {
                     b.Property<int>("Id")
@@ -218,9 +244,6 @@ namespace Inventario.Infrastructure.Migrations
                     b.Property<int>("ProductoId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("SucursalId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("TipoMovimiento")
                         .HasColumnType("INTEGER");
 
@@ -230,8 +253,6 @@ namespace Inventario.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ProductoId");
-
-                    b.HasIndex("SucursalId");
 
                     b.HasIndex("UsuarioId");
 
@@ -249,6 +270,11 @@ namespace Inventario.Infrastructure.Migrations
                         .HasColumnType("INTEGER")
                         .HasDefaultValue(true);
 
+                    b.Property<int>("CantidadDisponible")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(0);
+
                     b.Property<string>("Categoria")
                         .HasMaxLength(200)
                         .HasColumnType("TEXT");
@@ -257,6 +283,9 @@ namespace Inventario.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("InventarioId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
@@ -274,44 +303,24 @@ namespace Inventario.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("StockMinimo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(0);
+
                     b.Property<string>("Unidad")
                         .HasMaxLength(40)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CodigoBarras")
+                    b.HasIndex("InventarioId", "CodigoBarras")
                         .IsUnique();
 
-                    b.HasIndex("Sku")
+                    b.HasIndex("InventarioId", "Sku")
                         .IsUnique();
 
                     b.ToTable("Productos");
-                });
-
-            modelBuilder.Entity("Inventario.Core.Entities.StockPorSucursal", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Cantidad")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("ProductoId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("SucursalId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SucursalId");
-
-                    b.HasIndex("ProductoId", "SucursalId")
-                        .IsUnique();
-
-                    b.ToTable("StockPorSucursal");
                 });
 
             modelBuilder.Entity("Inventario.Core.Entities.Sucursal", b =>
@@ -359,17 +368,27 @@ namespace Inventario.Infrastructure.Migrations
                     b.Property<int>("Rol")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("SucursalId")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("Id");
 
                     b.HasIndex("NombreUsuario")
                         .IsUnique();
 
-                    b.HasIndex("SucursalId");
-
                     b.ToTable("Usuarios");
+                });
+
+            modelBuilder.Entity("Inventario.Core.Entities.UsuarioInventario", b =>
+                {
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("InventarioId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("UsuarioId", "InventarioId");
+
+                    b.HasIndex("InventarioId");
+
+                    b.ToTable("UsuariosInventarios");
                 });
 
             modelBuilder.Entity("Inventario.Core.Entities.Venta", b =>
@@ -400,14 +419,14 @@ namespace Inventario.Infrastructure.Migrations
                     b.Property<decimal>("Impuestos")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("InventarioId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("MetodoPago")
                         .HasColumnType("INTEGER");
 
                     b.Property<decimal>("Subtotal")
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("SucursalId")
-                        .HasColumnType("INTEGER");
 
                     b.Property<decimal>("Total")
                         .HasColumnType("TEXT");
@@ -422,7 +441,7 @@ namespace Inventario.Infrastructure.Migrations
                     b.HasIndex("Folio")
                         .IsUnique();
 
-                    b.HasIndex("SucursalId");
+                    b.HasIndex("InventarioId");
 
                     b.HasIndex("UsuarioId");
 
@@ -431,13 +450,13 @@ namespace Inventario.Infrastructure.Migrations
 
             modelBuilder.Entity("Inventario.Core.Entities.Caja", b =>
                 {
-                    b.HasOne("Inventario.Core.Entities.Sucursal", "Sucursal")
+                    b.HasOne("Inventario.Core.Entities.Inventario", "Inventario")
                         .WithMany()
-                        .HasForeignKey("SucursalId")
+                        .HasForeignKey("InventarioId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Sucursal");
+                    b.Navigation("Inventario");
                 });
 
             modelBuilder.Entity("Inventario.Core.Entities.CorteDeCaja", b =>
@@ -461,9 +480,9 @@ namespace Inventario.Infrastructure.Migrations
 
             modelBuilder.Entity("Inventario.Core.Entities.Cotizacion", b =>
                 {
-                    b.HasOne("Inventario.Core.Entities.Sucursal", "Sucursal")
+                    b.HasOne("Inventario.Core.Entities.Inventario", "Inventario")
                         .WithMany()
-                        .HasForeignKey("SucursalId")
+                        .HasForeignKey("InventarioId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -473,7 +492,7 @@ namespace Inventario.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Sucursal");
+                    b.Navigation("Inventario");
 
                     b.Navigation("Usuario");
                 });
@@ -516,17 +535,22 @@ namespace Inventario.Infrastructure.Migrations
                     b.Navigation("Venta");
                 });
 
+            modelBuilder.Entity("Inventario.Core.Entities.Inventario", b =>
+                {
+                    b.HasOne("Inventario.Core.Entities.Sucursal", "Sucursal")
+                        .WithMany("Inventarios")
+                        .HasForeignKey("SucursalId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Sucursal");
+                });
+
             modelBuilder.Entity("Inventario.Core.Entities.MovimientoInventario", b =>
                 {
                     b.HasOne("Inventario.Core.Entities.Producto", "Producto")
                         .WithMany()
                         .HasForeignKey("ProductoId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Inventario.Core.Entities.Sucursal", "Sucursal")
-                        .WithMany()
-                        .HasForeignKey("SucursalId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -537,38 +561,37 @@ namespace Inventario.Infrastructure.Migrations
 
                     b.Navigation("Producto");
 
-                    b.Navigation("Sucursal");
-
                     b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("Inventario.Core.Entities.StockPorSucursal", b =>
+            modelBuilder.Entity("Inventario.Core.Entities.Producto", b =>
                 {
-                    b.HasOne("Inventario.Core.Entities.Producto", "Producto")
-                        .WithMany("Stocks")
-                        .HasForeignKey("ProductoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Inventario.Core.Entities.Sucursal", "Sucursal")
+                    b.HasOne("Inventario.Core.Entities.Inventario", "Inventario")
                         .WithMany()
-                        .HasForeignKey("SucursalId")
+                        .HasForeignKey("InventarioId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Producto");
-
-                    b.Navigation("Sucursal");
+                    b.Navigation("Inventario");
                 });
 
-            modelBuilder.Entity("Inventario.Core.Entities.Usuario", b =>
+            modelBuilder.Entity("Inventario.Core.Entities.UsuarioInventario", b =>
                 {
-                    b.HasOne("Inventario.Core.Entities.Sucursal", "Sucursal")
-                        .WithMany()
-                        .HasForeignKey("SucursalId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                    b.HasOne("Inventario.Core.Entities.Inventario", "Inventario")
+                        .WithMany("UsuarioInventarios")
+                        .HasForeignKey("InventarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Sucursal");
+                    b.HasOne("Inventario.Core.Entities.Usuario", "Usuario")
+                        .WithMany("UsuarioInventarios")
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Inventario");
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("Inventario.Core.Entities.Venta", b =>
@@ -579,9 +602,9 @@ namespace Inventario.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Inventario.Core.Entities.Sucursal", "Sucursal")
+                    b.HasOne("Inventario.Core.Entities.Inventario", "Inventario")
                         .WithMany()
-                        .HasForeignKey("SucursalId")
+                        .HasForeignKey("InventarioId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -593,7 +616,7 @@ namespace Inventario.Infrastructure.Migrations
 
                     b.Navigation("CorteDeCaja");
 
-                    b.Navigation("Sucursal");
+                    b.Navigation("Inventario");
 
                     b.Navigation("Usuario");
                 });
@@ -603,9 +626,19 @@ namespace Inventario.Infrastructure.Migrations
                     b.Navigation("Detalles");
                 });
 
-            modelBuilder.Entity("Inventario.Core.Entities.Producto", b =>
+            modelBuilder.Entity("Inventario.Core.Entities.Inventario", b =>
                 {
-                    b.Navigation("Stocks");
+                    b.Navigation("UsuarioInventarios");
+                });
+
+            modelBuilder.Entity("Inventario.Core.Entities.Sucursal", b =>
+                {
+                    b.Navigation("Inventarios");
+                });
+
+            modelBuilder.Entity("Inventario.Core.Entities.Usuario", b =>
+                {
+                    b.Navigation("UsuarioInventarios");
                 });
 
             modelBuilder.Entity("Inventario.Core.Entities.Venta", b =>
