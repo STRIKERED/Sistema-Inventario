@@ -4,8 +4,8 @@ using Inventario.Core.Enums;
 namespace Inventario.Core.Dtos;
 
 public record LoginRequest(
-    [property: Required] string NombreUsuario,
-    [property: Required] string Password);
+    [Required] string NombreUsuario,
+    [Required] string Password);
 
 public record LoginResponse(
     string Token,
@@ -22,6 +22,6 @@ public record EstadoSistemaResponse(bool HayUsuarios);
 // Sin Rol ni SucursalId: el primer usuario del sistema siempre se crea como Administrador y sin
 // sucursal fija (la elige él mismo tras iniciar sesión, como cualquier Administrador).
 public record RegistrarUsuarioInicialRequest(
-    [property: Required, StringLength(50)] string NombreUsuario,
-    [property: Required, MinLength(6)] string Password,
+    [Required, StringLength(50)] string NombreUsuario,
+    [Required, MinLength(6)] string Password,
     string? NombreCompleto);

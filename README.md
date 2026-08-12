@@ -7,7 +7,7 @@ Sistema de gestión de inventario compuesto por una Web API, una app de escritor
 - .NET 10
 - ASP.NET Core Web API (controllers) + autenticación JWT
 - ASP.NET Core Razor Pages para el cliente web, con el theme [SmartAdmin](https://smartadmin.dev/) (Bootstrap)
-- Entity Framework Core (SQL Server) para la persistencia
+- Entity Framework Core (SQLite) para la persistencia — cada sucursal tiene su propio archivo local, no hay servidor de base de datos compartido
 - QuestPDF para la generación de reportes/documentos en PDF
 - .NET MAUI para el cliente de escritorio (Windows / Android / iOS / Mac Catalyst)
 - MSTest + Moq + FluentAssertions para las pruebas
@@ -43,34 +43,47 @@ Inventario.IntegrationTests ► Inventario.Api
 | Proyecto | Paquetes |
 |---|---|
 | `Inventario.Api` | `Microsoft.AspNetCore.Authentication.JwtBearer` |
-| `Inventario.Infrastructure` | `Microsoft.EntityFrameworkCore.SqlServer`, `Microsoft.EntityFrameworkCore.Tools`, `Microsoft.EntityFrameworkCore.Design`, `QuestPDF` |
+| `Inventario.Infrastructure` | `Microsoft.EntityFrameworkCore.Sqlite`, `Microsoft.EntityFrameworkCore.Tools`, `Microsoft.EntityFrameworkCore.Design`, `QuestPDF` |
 | `Inventario.UnitTests` | `Moq`, `FluentAssertions` |
 | `Inventario.Web` | Ninguno adicional — usa `IHttpClientFactory` (incluido en el SDK web) y los assets estáticos del theme SmartAdmin en `wwwroot/` |
 
 ## Cómo correrlo
 
-1. Configura la cadena de conexión en `Inventario.Api/appsettings.json` (`ConnectionStrings:DefaultConnection`) apuntando a tu instancia de SQL Server.
-2. Aplica las migraciones de EF Core:
+Cada sucursal es autónoma: su propia base SQLite local (`%AppData%\InventarioApp\inventario.db`), su propia `Inventario.Api`, y `Inventario.Web`/`Inventario.Desktop` apuntando solo a esa API en `localhost`. No hay servidor central ni se expone nada a la red.
 
-   ```bash
-   dotnet ef database update --project Inventario.Infrastructure --startup-project Inventario.Api
-   ```
-
-3. Corre la API desde la raíz del repo:
+1. Corre la API desde la raíz del repo — al arrancar aplica las migraciones pendientes automáticamente (crea la base la primera vez) y siembra una sucursal inicial si no hay ninguna:
 
    ```bash
    dotnet run --project Inventario.Api
    ```
 
-4. Corre el cliente web (necesita la API corriendo; la URL base se configura en `Inventario.Web/appsettings.json` → `InventarioApi:BaseUrl`):
+   `ConnectionStrings:DefaultConnection` en `appsettings.json` normalmente se deja vacío (usa el `%AppData%` de arriba); solo se define para apuntar a otra ruta.
+
+2. La primera vez, abre `Inventario.Desktop` (o pega la URL de la Api) y usa la pantalla de login para dar de alta el primer Administrador (`POST /api/auth/registro-inicial`, sin autenticación mientras no exista ningún usuario).
+
+3. Corre el cliente web (necesita la API corriendo; la URL base se configura en `Inventario.Web/appsettings.json` → `InventarioApi:BaseUrl`, por defecto `http://localhost:5025`):
 
    ```bash
    dotnet run --project Inventario.Web
    ```
 
-5. Abre `Inventario.Desktop` desde Visual Studio y ejecútalo apuntando al perfil de Windows (o Android/iOS) para probar el cliente de escritorio.
+4. Abre `Inventario.Desktop` desde Visual Studio y ejecútalo apuntando al perfil de Windows (o Android/iOS) para probar el cliente de escritorio.
 
 También puede abrirse `Sistema-Inventario.slnx` directamente en Visual Studio y correr `Inventario.Api` (y opcionalmente `Inventario.Web`) como proyectos de inicio.
+
+### Instalar la Api como servicio en una sucursal
+
+Para producción, `Inventario.Api` corre como Windows Service (independiente del Desktop) en la PC de cada sucursal:
+
+```powershell
+scripts\install-api-service.ps1
+```
+
+Publica la Api en `C:\InventarioApp\Api`, crea/actualiza el servicio `InventarioApi` (arranque automático) y lo deja escuchando en `http://localhost:5025` (ver `Inventario.Api/appsettings.json` → `Urls`). Ver los comentarios del script para parámetros (`-ServiceName`, `-InstallPath`, `-SelfContained`).
+
+### Respaldo entre sucursales
+
+Un Administrador puede exportar/importar la base completa desde `Inventario.Desktop` → menú "Respaldo" (o directamente `GET`/`POST /api/backup/exportar` y `/api/backup/importar`). Exportar genera un `.zip` con `inventario.db` + un manifiesto de versión de esquema; importar rechaza respaldos de un esquema distinto salvo que se confirme "forzar", y siempre deja una copia `.bak` del archivo reemplazado.
 
 ## Pruebas
 

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Inventario.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialBaseline : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,15 +15,16 @@ namespace Inventario.Infrastructure.Migrations
                 name: "Productos",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Sku = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    CodigoBarras = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Nombre = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false),
-                    Categoria = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    Unidad = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: true),
-                    PrecioCosto = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    PrecioVenta = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Sku = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    CodigoBarras = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Nombre = table.Column<string>(type: "TEXT", maxLength: 400, nullable: false),
+                    Categoria = table.Column<string>(type: "TEXT", maxLength: 200, nullable: true),
+                    Unidad = table.Column<string>(type: "TEXT", maxLength: 40, nullable: true),
+                    PrecioCosto = table.Column<decimal>(type: "TEXT", nullable: false),
+                    PrecioVenta = table.Column<decimal>(type: "TEXT", nullable: false),
+                    Activo = table.Column<bool>(type: "INTEGER", nullable: false, defaultValue: true)
                 },
                 constraints: table =>
                 {
@@ -34,10 +35,10 @@ namespace Inventario.Infrastructure.Migrations
                 name: "Sucursales",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    Direccion = table.Column<string>(type: "nvarchar(600)", maxLength: 600, nullable: true)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Nombre = table.Column<string>(type: "TEXT", maxLength: 300, nullable: false),
+                    Direccion = table.Column<string>(type: "TEXT", maxLength: 600, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -48,10 +49,10 @@ namespace Inventario.Infrastructure.Migrations
                 name: "Cajas",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    SucursalId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Nombre = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    SucursalId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -68,11 +69,11 @@ namespace Inventario.Infrastructure.Migrations
                 name: "StockPorSucursal",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductoId = table.Column<int>(type: "int", nullable: false),
-                    SucursalId = table.Column<int>(type: "int", nullable: false),
-                    Cantidad = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ProductoId = table.Column<int>(type: "INTEGER", nullable: false),
+                    SucursalId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Cantidad = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -95,14 +96,14 @@ namespace Inventario.Infrastructure.Migrations
                 name: "Usuarios",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    NombreUsuario = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    NombreCompleto = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
-                    Rol = table.Column<int>(type: "int", nullable: false),
-                    Activo = table.Column<bool>(type: "bit", nullable: false),
-                    SucursalId = table.Column<int>(type: "int", nullable: true)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    NombreUsuario = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    PasswordHash = table.Column<string>(type: "TEXT", nullable: false),
+                    NombreCompleto = table.Column<string>(type: "TEXT", maxLength: 300, nullable: true),
+                    Rol = table.Column<int>(type: "INTEGER", nullable: false),
+                    Activo = table.Column<bool>(type: "INTEGER", nullable: false),
+                    SucursalId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -119,17 +120,17 @@ namespace Inventario.Infrastructure.Migrations
                 name: "CortesDeCaja",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    MontoInicial = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    MontoFinalContado = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    MontoFinalSistema = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Diferencia = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Estado = table.Column<int>(type: "int", nullable: false),
-                    FechaApertura = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FechaCierre = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CajaId = table.Column<int>(type: "int", nullable: false),
-                    UsuarioId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    MontoInicial = table.Column<decimal>(type: "TEXT", nullable: false),
+                    MontoFinalContado = table.Column<decimal>(type: "TEXT", nullable: false),
+                    MontoFinalSistema = table.Column<decimal>(type: "TEXT", nullable: false),
+                    Diferencia = table.Column<decimal>(type: "TEXT", nullable: false),
+                    Estado = table.Column<int>(type: "INTEGER", nullable: false),
+                    FechaApertura = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    FechaCierre = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    CajaId = table.Column<int>(type: "INTEGER", nullable: false),
+                    UsuarioId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -152,20 +153,20 @@ namespace Inventario.Infrastructure.Migrations
                 name: "Cotizaciones",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Folio = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
-                    ClienteNombre = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: true),
-                    ClienteContacto = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
-                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FechaVigencia = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Estado = table.Column<int>(type: "int", nullable: false),
-                    Subtotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Descuento = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Impuestos = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    SucursalId = table.Column<int>(type: "int", nullable: false),
-                    UsuarioId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Folio = table.Column<string>(type: "TEXT", maxLength: 40, nullable: false),
+                    ClienteNombre = table.Column<string>(type: "TEXT", maxLength: 400, nullable: true),
+                    ClienteContacto = table.Column<string>(type: "TEXT", maxLength: 300, nullable: true),
+                    Fecha = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    FechaVigencia = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    Estado = table.Column<int>(type: "INTEGER", nullable: false),
+                    Subtotal = table.Column<decimal>(type: "TEXT", nullable: false),
+                    Descuento = table.Column<decimal>(type: "TEXT", nullable: false),
+                    Impuestos = table.Column<decimal>(type: "TEXT", nullable: false),
+                    Total = table.Column<decimal>(type: "TEXT", nullable: false),
+                    SucursalId = table.Column<int>(type: "INTEGER", nullable: false),
+                    UsuarioId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -188,15 +189,15 @@ namespace Inventario.Infrastructure.Migrations
                 name: "MovimientosInventario",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TipoMovimiento = table.Column<int>(type: "int", nullable: false),
-                    Cantidad = table.Column<int>(type: "int", nullable: false),
-                    Motivo = table.Column<string>(type: "nvarchar(600)", maxLength: 600, nullable: true),
-                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ProductoId = table.Column<int>(type: "int", nullable: false),
-                    SucursalId = table.Column<int>(type: "int", nullable: false),
-                    UsuarioId = table.Column<int>(type: "int", nullable: true)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    TipoMovimiento = table.Column<int>(type: "INTEGER", nullable: false),
+                    Cantidad = table.Column<int>(type: "INTEGER", nullable: false),
+                    Motivo = table.Column<string>(type: "TEXT", maxLength: 600, nullable: true),
+                    Fecha = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ProductoId = table.Column<int>(type: "INTEGER", nullable: false),
+                    SucursalId = table.Column<int>(type: "INTEGER", nullable: false),
+                    UsuarioId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -225,18 +226,19 @@ namespace Inventario.Infrastructure.Migrations
                 name: "Ventas",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Folio = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
-                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    MetodoPago = table.Column<int>(type: "int", nullable: false),
-                    Subtotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Descuento = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Impuestos = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    SucursalId = table.Column<int>(type: "int", nullable: false),
-                    CorteDeCajaId = table.Column<int>(type: "int", nullable: false),
-                    UsuarioId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Folio = table.Column<string>(type: "TEXT", maxLength: 40, nullable: false),
+                    Fecha = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    MetodoPago = table.Column<int>(type: "INTEGER", nullable: false),
+                    Subtotal = table.Column<decimal>(type: "TEXT", nullable: false),
+                    Descuento = table.Column<decimal>(type: "TEXT", nullable: false),
+                    Impuestos = table.Column<decimal>(type: "TEXT", nullable: false),
+                    Total = table.Column<decimal>(type: "TEXT", nullable: false),
+                    SucursalId = table.Column<int>(type: "INTEGER", nullable: false),
+                    CorteDeCajaId = table.Column<int>(type: "INTEGER", nullable: false),
+                    UsuarioId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Cancelada = table.Column<bool>(type: "INTEGER", nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {
@@ -265,12 +267,12 @@ namespace Inventario.Infrastructure.Migrations
                 name: "DetallesCotizacion",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Cantidad = table.Column<int>(type: "int", nullable: false),
-                    PrecioUnitario = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    CotizacionId = table.Column<int>(type: "int", nullable: false),
-                    ProductoId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Cantidad = table.Column<int>(type: "INTEGER", nullable: false),
+                    PrecioUnitario = table.Column<decimal>(type: "TEXT", nullable: false),
+                    CotizacionId = table.Column<int>(type: "INTEGER", nullable: false),
+                    ProductoId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -293,13 +295,13 @@ namespace Inventario.Infrastructure.Migrations
                 name: "DetallesVenta",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Cantidad = table.Column<int>(type: "int", nullable: false),
-                    PrecioUnitario = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    DescuentoUnitario = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    VentaId = table.Column<int>(type: "int", nullable: false),
-                    ProductoId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Cantidad = table.Column<int>(type: "INTEGER", nullable: false),
+                    PrecioUnitario = table.Column<decimal>(type: "TEXT", nullable: false),
+                    DescuentoUnitario = table.Column<decimal>(type: "TEXT", nullable: false),
+                    VentaId = table.Column<int>(type: "INTEGER", nullable: false),
+                    ProductoId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
