@@ -32,13 +32,13 @@ public record VentaDto(
 // Sin Folio (lo genera el servidor tras el insert) ni PrecioUnitario (se toma de Producto.PrecioVenta
 // en el momento de la venta, para que el cliente no pueda manipular el precio).
 public record DetalleVentaRequest(
-    [property: Range(1, int.MaxValue)] int ProductoId,
-    [property: Range(1, int.MaxValue)] int Cantidad,
-    [property: Range(0, double.MaxValue)] decimal DescuentoUnitario);
+    [Range(1, int.MaxValue)] int ProductoId,
+    [Range(1, int.MaxValue)] int Cantidad,
+    [Range(0, double.MaxValue)] decimal DescuentoUnitario);
 
 public record CrearVentaRequest(
     MetodoPago MetodoPago,
-    [property: Range(1, int.MaxValue)] int SucursalId,
-    [property: Range(1, int.MaxValue)] int CorteDeCajaId,
-    [property: Range(1, int.MaxValue)] int UsuarioId,
-    [property: Required, MinLength(1)] List<DetalleVentaRequest> Detalles);
+    [Range(1, int.MaxValue)] int SucursalId,
+    [Range(1, int.MaxValue)] int CorteDeCajaId,
+    [Range(1, int.MaxValue)] int UsuarioId,
+    [Required, MinLength(1)] List<DetalleVentaRequest> Detalles);

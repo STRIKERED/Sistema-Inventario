@@ -50,8 +50,6 @@ public class InventarioDbContext : DbContext
             entity.Property(p => p.Nombre).HasMaxLength(400).IsRequired();
             entity.Property(p => p.Categoria).HasMaxLength(200);
             entity.Property(p => p.Unidad).HasMaxLength(40);
-            entity.Property(p => p.PrecioCosto).HasColumnType("decimal(18,2)");
-            entity.Property(p => p.PrecioVenta).HasColumnType("decimal(18,2)");
             entity.Property(p => p.Activo).HasDefaultValue(true);
             entity.HasIndex(p => p.Sku).IsUnique();
             entity.HasIndex(p => p.CodigoBarras).IsUnique();
@@ -81,10 +79,6 @@ public class InventarioDbContext : DbContext
 
         modelBuilder.Entity<CorteDeCaja>(entity =>
         {
-            entity.Property(c => c.MontoInicial).HasColumnType("decimal(18,2)");
-            entity.Property(c => c.MontoFinalContado).HasColumnType("decimal(18,2)");
-            entity.Property(c => c.MontoFinalSistema).HasColumnType("decimal(18,2)");
-            entity.Property(c => c.Diferencia).HasColumnType("decimal(18,2)");
             entity.HasOne(c => c.Caja)
                 .WithMany()
                 .HasForeignKey(c => c.CajaId)
@@ -98,10 +92,6 @@ public class InventarioDbContext : DbContext
         modelBuilder.Entity<Venta>(entity =>
         {
             entity.Property(v => v.Folio).HasMaxLength(40).IsRequired();
-            entity.Property(v => v.Subtotal).HasColumnType("decimal(18,2)");
-            entity.Property(v => v.Descuento).HasColumnType("decimal(18,2)");
-            entity.Property(v => v.Impuestos).HasColumnType("decimal(18,2)");
-            entity.Property(v => v.Total).HasColumnType("decimal(18,2)");
             entity.Property(v => v.Cancelada).HasDefaultValue(false);
             entity.HasIndex(v => v.Folio).IsUnique();
             entity.HasOne(v => v.Sucursal)
@@ -120,8 +110,6 @@ public class InventarioDbContext : DbContext
 
         modelBuilder.Entity<DetalleVenta>(entity =>
         {
-            entity.Property(d => d.PrecioUnitario).HasColumnType("decimal(18,2)");
-            entity.Property(d => d.DescuentoUnitario).HasColumnType("decimal(18,2)");
             entity.HasOne(d => d.Venta)
                 .WithMany(v => v.Detalles)
                 .HasForeignKey(d => d.VentaId)
@@ -138,10 +126,6 @@ public class InventarioDbContext : DbContext
             entity.Property(c => c.ClienteNombre).HasMaxLength(400);
             entity.Property(c => c.ClienteContacto).HasMaxLength(300);
             entity.Property(c => c.FechaCreacion).HasColumnName("Fecha");
-            entity.Property(c => c.Subtotal).HasColumnType("decimal(18,2)");
-            entity.Property(c => c.Descuento).HasColumnType("decimal(18,2)");
-            entity.Property(c => c.Impuestos).HasColumnType("decimal(18,2)");
-            entity.Property(c => c.Total).HasColumnType("decimal(18,2)");
             entity.HasIndex(c => c.Folio).IsUnique();
             entity.HasOne(c => c.Sucursal)
                 .WithMany()
@@ -155,7 +139,6 @@ public class InventarioDbContext : DbContext
 
         modelBuilder.Entity<DetalleCotizacion>(entity =>
         {
-            entity.Property(d => d.PrecioUnitario).HasColumnType("decimal(18,2)");
             entity.HasOne(d => d.Cotizacion)
                 .WithMany(c => c.Detalles)
                 .HasForeignKey(d => d.CotizacionId)

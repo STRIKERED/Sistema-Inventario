@@ -31,19 +31,19 @@ public record CotizacionDto(
 
 // Sin PrecioUnitario: se toma de Producto.PrecioVenta al momento de crear la cotización.
 public record DetalleCotizacionRequest(
-    [property: Range(1, int.MaxValue)] int ProductoId,
-    [property: Range(1, int.MaxValue)] int Cantidad);
+    [Range(1, int.MaxValue)] int ProductoId,
+    [Range(1, int.MaxValue)] int Cantidad);
 
 public record CrearCotizacionRequest(
     string? ClienteNombre,
     string? ClienteContacto,
-    [property: Range(1, int.MaxValue)] int SucursalId,
-    [property: Range(1, int.MaxValue)] int UsuarioId,
+    [Range(1, int.MaxValue)] int SucursalId,
+    [Range(1, int.MaxValue)] int UsuarioId,
     DateTime? FechaVigencia,
-    [property: Range(0, double.MaxValue)] decimal Descuento,
-    [property: Required, MinLength(1)] List<DetalleCotizacionRequest> Detalles);
+    [Range(0, double.MaxValue)] decimal Descuento,
+    [Required, MinLength(1)] List<DetalleCotizacionRequest> Detalles);
 
 public record ConvertirAVentaRequest(
-    [property: Range(1, int.MaxValue)] int UsuarioId,
-    [property: Range(1, int.MaxValue)] int CorteDeCajaId,
+    [Range(1, int.MaxValue)] int UsuarioId,
+    [Range(1, int.MaxValue)] int CorteDeCajaId,
     MetodoPago MetodoPago);

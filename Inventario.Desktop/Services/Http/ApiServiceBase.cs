@@ -62,6 +62,17 @@ public abstract class ApiServiceBase
         return await response.Content.ReadAsByteArrayAsync(ct);
     }
 
+    /// <summary>POST multipart/form-data (p. ej. subir un archivo). No espera un cuerpo de respuesta JSON.</summary>
+    protected async Task PostFileAsync(string url, string nombreCampo, string nombreArchivo, Stream contenido, CancellationToken ct = default)
+    {
+        using var form = new MultipartFormDataContent();
+        using var streamContent = new StreamContent(contenido);
+        form.Add(streamContent, nombreCampo, nombreArchivo);
+
+        using var response = await Http.PostAsync(url, form, ct);
+        await AsegurarExitoAsync(response, ct);
+    }
+
     private async Task<T> EnviarAsync<T>(HttpRequestMessage request, CancellationToken ct)
     {
         using var response = await Http.SendAsync(request, ct);

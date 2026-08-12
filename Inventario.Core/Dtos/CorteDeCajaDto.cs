@@ -18,9 +18,9 @@ public record CorteDeCajaDto(
     string? UsuarioNombre);
 
 public record AbrirCorteRequest(
-    [property: Range(1, int.MaxValue)] int CajaId,
-    [property: Range(1, int.MaxValue)] int UsuarioId,
-    [property: Range(0, double.MaxValue)] decimal MontoInicial);
+    [Range(1, int.MaxValue)] int CajaId,
+    [Range(1, int.MaxValue)] int UsuarioId,
+    [Range(0, double.MaxValue)] decimal MontoInicial);
 
 public record CerrarCorteRequest(
-    [property: Range(0, double.MaxValue)] decimal MontoFinalContado);
+    [Range(0, double.MaxValue)] decimal MontoFinalContado);

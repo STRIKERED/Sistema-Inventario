@@ -19,17 +19,17 @@ public record MovimientoInventarioDto(
 // Sin [Range] en Cantidad: para Ajuste representa un delta con signo (puede ser negativo).
 // La validación de positividad para Entrada/Salida ya la hace IInventarioService.
 public record RegistrarMovimientoRequest(
-    [property: Range(1, int.MaxValue)] int ProductoId,
-    [property: Range(1, int.MaxValue)] int SucursalId,
+    [Range(1, int.MaxValue)] int ProductoId,
+    [Range(1, int.MaxValue)] int SucursalId,
     TipoMovimientoInventario Tipo,
     int Cantidad,
     string? Motivo,
     int? UsuarioId);
 
 public record TransferirStockRequest(
-    [property: Range(1, int.MaxValue)] int ProductoId,
-    [property: Range(1, int.MaxValue)] int SucursalOrigenId,
-    [property: Range(1, int.MaxValue)] int SucursalDestinoId,
-    [property: Range(1, int.MaxValue)] int Cantidad,
+    [Range(1, int.MaxValue)] int ProductoId,
+    [Range(1, int.MaxValue)] int SucursalOrigenId,
+    [Range(1, int.MaxValue)] int SucursalDestinoId,
+    [Range(1, int.MaxValue)] int Cantidad,
     int? UsuarioId,
     string? Motivo);

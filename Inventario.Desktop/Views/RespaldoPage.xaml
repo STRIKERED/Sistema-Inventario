@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Inventario.Desktop.ViewModels"
+             x:Class="Inventario.Desktop.Views.RespaldoPage"
+             x:DataType="vm:RespaldoViewModel"
+             Title="Respaldo">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="16" MaximumWidthRequest="560">
+
+            <Label Text="Respaldo de la base de datos" FontSize="22" FontAttributes="Bold" />
+            <Label Opacity="0.7"
+                   Text="Exporta un .zip con toda la base de datos local de esta sucursal, o importa uno para reemplazarla (por ejemplo, al migrar de PC)." />
+
+            <Border Padding="16" StrokeShape="RoundRectangle 8">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Exportar" FontAttributes="Bold" FontSize="16" />
+                    <Label Opacity="0.7" Text="Genera un .zip con fecha y lo guarda en la carpeta local de respaldos." />
+                    <Button Text="Exportar respaldo" Command="{Binding ExportarCommand}" BackgroundColor="ForestGreen" TextColor="White" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Padding="16" StrokeShape="RoundRectangle 8">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Importar" FontAttributes="Bold" FontSize="16" />
+                    <Label Opacity="0.7" TextColor="Red"
+                           Text="Reemplaza TODOS los datos locales de esta sucursal por los del archivo elegido. Se pedirá confirmación." />
+                    <Button Text="Importar respaldo" Command="{Binding ImportarCommand}" BackgroundColor="Firebrick" TextColor="White" />
+                </VerticalStackLayout>
+            </Border>
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+
+            <Label Text="{Binding MensajeError}"
+                   IsVisible="{Binding MensajeError, Converter={StaticResource StringNoVacioConverter}}"
+                   TextColor="Red" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

@@ -14,20 +14,20 @@ public record ProductoDto(
     bool Activo);
 
 public record CrearProductoRequest(
-    [property: Required, StringLength(50)] string Sku,
-    [property: Required, StringLength(50)] string CodigoBarras,
-    [property: Required, StringLength(200)] string Nombre,
+    [Required, StringLength(50)] string Sku,
+    [Required, StringLength(50)] string CodigoBarras,
+    [Required, StringLength(200)] string Nombre,
     string? Categoria,
     string? Unidad,
-    [property: Range(0, double.MaxValue)] decimal PrecioCosto,
-    [property: Range(0, double.MaxValue)] decimal PrecioVenta);
+    [Range(0, double.MaxValue)] decimal PrecioCosto,
+    [Range(0, double.MaxValue)] decimal PrecioVenta);
 
 public record ActualizarProductoRequest(
-    [property: Required, StringLength(50)] string Sku,
-    [property: Required, StringLength(50)] string CodigoBarras,
-    [property: Required, StringLength(200)] string Nombre,
+    [Required, StringLength(50)] string Sku,
+    [Required, StringLength(50)] string CodigoBarras,
+    [Required, StringLength(200)] string Nombre,
     string? Categoria,
     string? Unidad,
-    [property: Range(0, double.MaxValue)] decimal PrecioCosto,
-    [property: Range(0, double.MaxValue)] decimal PrecioVenta,
+    [Range(0, double.MaxValue)] decimal PrecioCosto,
+    [Range(0, double.MaxValue)] decimal PrecioVenta,
     bool Activo);
