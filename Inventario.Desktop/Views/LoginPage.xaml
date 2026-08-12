@@ -9,7 +9,8 @@
     <ScrollView>
         <VerticalStackLayout Padding="40" Spacing="16" MaximumWidthRequest="380" HorizontalOptions="Center" VerticalOptions="Center">
 
-            <Label Text="Inventario POS" FontSize="28" FontAttributes="Bold" HorizontalOptions="Center" />
+            <!--<Image Source="logo.jpg" HeightRequest="120" Aspect="AspectFit" HorizontalOptions="Center" Margin="0,0,0,8" />-->
+            <Label Text="Administrador de Inventario" FontSize="26" FontAttributes="Bold" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
             <Label Text="Inicia sesión para continuar" FontSize="14" Opacity="0.7" HorizontalOptions="Center" Margin="0,0,0,16"
                    IsVisible="{Binding RequiereConfiguracionInicial, Converter={StaticResource InversoConverter}}" />
 
@@ -48,6 +49,8 @@
             <Label Text="{Binding MensajeError}"
                    IsVisible="{Binding MensajeError, Converter={StaticResource StringNoVacioConverter}}"
                    TextColor="Red" HorizontalTextAlignment="Center" />
+
+            <Label x:Name="PiePaginaLabel" FontSize="11" Opacity="0.5" HorizontalTextAlignment="Center" Margin="0,24,0,0" />
 
         </VerticalStackLayout>
     </ScrollView>

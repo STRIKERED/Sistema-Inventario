@@ -12,6 +12,8 @@ public partial class AppShell : Shell
         InitializeComponent();
         _sessionService = sessionService;
 
+        VersionLabel.Text = $"v{AppInfo.Current.VersionString}";
+
         Navigated += (_, _) => ActualizarEncabezado();
         Loaded += async (_, _) => await InicializarAsync();
     }
@@ -29,7 +31,7 @@ public partial class AppShell : Shell
     {
         EncabezadoUsuarioLabel.Text = _sessionService.HaySesionActiva
             ? _sessionService.NombreCompleto is { Length: > 0 } nombre ? nombre : _sessionService.NombreUsuario
-            : "Inventario POS";
+            : "Administrador de Inventario";
 
         // La API ya rechaza con 403 a quien no sea Administrador en /api/usuarios (POST/PUT), pero
         // igual se oculta la pestaña: evita que Gerente/Vendedor/Cajero lleguen a un formulario que
