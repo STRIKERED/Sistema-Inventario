@@ -1,0 +1,66 @@
+@page "/cotizaciones/{id:int}/editar"
+@model Inventario.Web.Pages.Cotizaciones.EditarModel
+@using Inventario.Core.Enums
+
+@{
+    ViewBag.Title = "Editar cotización";
+}
+
+@section styles
+{
+
+}
+
+@await Html.PartialAsync("~/Pages/Shared/Partials/_PageTitle.cshtml", new {
+pageTitle = $"Editar {Model.Folio}",
+pageSubTitle1 = "Inventario",
+pageSubTitle2 = "Cotizaciones",
+pageSubText = (string?)null
+})
+
+<div class="main-content">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card shadow-0 mb-g">
+                <div class="card-body">
+
+                    @if (!string.IsNullOrEmpty(Model.ErrorMensaje))
+                    {
+                        <div class="alert alert-danger" role="alert">@Model.ErrorMensaje</div>
+                    }
+
+                    <div class="alert alert-info">
+                        Solo se pueden editar los datos del cliente, la vigencia y el estado. Para
+                        cambiar los productos, cancela esta cotización y crea una nueva.
+                    </div>
+
+                    <form method="post">
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="mb-3">
+                            <label asp-for="ClienteNombre" class="form-label">Cliente</label>
+                            <input asp-for="ClienteNombre" class="form-control" />
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="ClienteContacto" class="form-label">Contacto</label>
+                            <input asp-for="ClienteContacto" class="form-control" />
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="FechaVigencia" class="form-label">Vigente hasta</label>
+                            <input asp-for="FechaVigencia" class="form-control" type="date" />
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Estado" class="form-label">Estado</label>
+                            <select asp-for="Estado" class="form-select" asp-items="Html.GetEnumSelectList<EstadoCotizacion>()"></select>
+                        </div>
+
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                            <a asp-page="/Cotizaciones/Detalle" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

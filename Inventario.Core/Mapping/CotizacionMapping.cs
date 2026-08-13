@@ -18,4 +18,12 @@ public static class CotizacionMapping
 
     public static IEnumerable<CotizacionDto> ToDto(this IEnumerable<Cotizacion> cotizaciones) =>
         cotizaciones.Select(c => c.ToDto());
+
+    public static void AplicarA(this ActualizarCotizacionRequest request, Cotizacion cotizacion)
+    {
+        cotizacion.ClienteNombre = request.ClienteNombre;
+        cotizacion.ClienteContacto = request.ClienteContacto;
+        cotizacion.FechaVigencia = request.FechaVigencia;
+        cotizacion.Estado = request.Estado;
+    }
 }

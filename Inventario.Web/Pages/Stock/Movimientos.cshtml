@@ -1,0 +1,118 @@
+@page "/stock/movimientos"
+@model Inventario.Web.Pages.Stock.MovimientosModel
+@using Inventario.Core.Enums
+
+@{
+    ViewBag.Title = "Movimientos de inventario";
+}
+
+@section styles
+{
+
+}
+
+@await Html.PartialAsync("~/Pages/Shared/Partials/_PageTitle.cshtml", new {
+pageTitle = "Movimientos",
+pageSubTitle1 = "Inventario",
+pageSubTitle2 = "Stock",
+pageSubText = (string?)null
+})
+
+<div class="main-content">
+    @if (!string.IsNullOrEmpty(Model.ErrorMensaje))
+    {
+        <div class="alert alert-danger" role="alert">@Model.ErrorMensaje</div>
+    }
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card shadow-0 mb-g">
+                <div class="card-header">
+                    <div class="card-title">Filtrar historial</div>
+                </div>
+                <div class="card-body">
+                    <form method="get" class="row g-3 align-items-end">
+                        <div class="col-auto">
+                            <label asp-for="Desde" class="form-label">Desde</label>
+                            <input asp-for="Desde" class="form-control" type="date" />
+                        </div>
+                        <div class="col-auto">
+                            <label asp-for="Hasta" class="form-label">Hasta</label>
+                            <input asp-for="Hasta" class="form-control" type="date" />
+                        </div>
+                        <div class="col-auto">
+                            <label asp-for="Tipo" class="form-label">Tipo</label>
+                            <select asp-for="Tipo" class="form-select" asp-items="Html.GetEnumSelectList<TipoMovimientoInventario>()">
+                                <option value="">Todos</option>
+                            </select>
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-primary">Filtrar</button>
+                            <a asp-page="/Stock/Movimientos" class="btn btn-outline-secondary">Limpiar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card shadow-0 mb-g">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div class="card-title">Historial (@Model.Movimientos.Count)</div>
+                    <a asp-page="/Stock/Index" class="btn btn-outline-secondary btn-sm">Ver stock actual</a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Producto</th>
+                                    <th>Tipo</th>
+                                    <th>Cantidad</th>
+                                    <th>Motivo</th>
+                                    <th>Usuario</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Movimientos.Count == 0)
+                                {
+                                    <tr>
+                                        <td colspan="6" class="text-center">No hay movimientos con estos filtros.</td>
+                                    </tr>
+                                }
+                                @foreach (var movimiento in Model.Movimientos)
+                                {
+                                    <tr>
+                                        <td>@movimiento.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
+                                        <td>
+                                            <a asp-page="/Productos/Detalle" asp-route-id="@movimiento.ProductoId">
+                                                @(movimiento.ProductoNombre ?? $"Producto #{movimiento.ProductoId}")
+                                            </a>
+                                        </td>
+                                        <td>
+                                            @{
+                                                var claseBadge = movimiento.TipoMovimiento switch
+                                                {
+                                                    TipoMovimientoInventario.Entrada => "bg-success",
+                                                    TipoMovimientoInventario.Salida => "bg-danger",
+                                                    _ => "bg-secondary"
+                                                };
+                                            }
+                                            <span class="badge @claseBadge">@movimiento.TipoMovimiento</span>
+                                        </td>
+                                        <td>@movimiento.Cantidad</td>
+                                        <td>@(movimiento.Motivo ?? "—")</td>
+                                        <td>@(movimiento.UsuarioNombre ?? "—")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

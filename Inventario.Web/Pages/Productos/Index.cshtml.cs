@@ -1,33 +1,36 @@
-using System.Net.Http.Json;
-using Inventario.Core.Entities;
+using Inventario.Core.Dtos;
+using Inventario.Web.Services.Api;
+using Inventario.Web.Services.Http;
+using Inventario.Web.Services.Sesion;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Inventario.Web.Pages.Productos
 {
     public class IndexModel : PageModel
     {
-        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IProductoApiService _productoApiService;
+        private readonly ICurrentSessionAccessor _sesionActual;
 
-        public IndexModel(IHttpClientFactory httpClientFactory)
+        public IndexModel(IProductoApiService productoApiService, ICurrentSessionAccessor sesionActual)
         {
-            _httpClientFactory = httpClientFactory;
+            _productoApiService = productoApiService;
+            _sesionActual = sesionActual;
         }
 
-        public List<Producto> Productos { get; private set; } = new();
+        public IReadOnlyList<ProductoDto> Productos { get; private set; } = [];
         public string? ErrorMensaje { get; private set; }
 
         public async Task OnGetAsync()
         {
-            var client = _httpClientFactory.CreateClient("InventarioApi");
+            var inventarioId = _sesionActual.InventarioOperativoId!.Value;
 
             try
             {
-                var productos = await client.GetFromJsonAsync<List<Producto>>("api/productos");
-                Productos = productos ?? new List<Producto>();
+                Productos = await _productoApiService.ObtenerPorInventarioAsync(inventarioId);
             }
-            catch (HttpRequestException ex)
+            catch (ApiException ex) when (ex.StatusCode != 401)
             {
-                ErrorMensaje = $"No se pudo conectar con Inventario.Api: {ex.Message}";
+                ErrorMensaje = ex.Message;
             }
         }
     }

@@ -61,6 +61,20 @@ public class VentasController : ControllerBase
         return Ok(ventas.ToDto());
     }
 
+    // Sin desde/hasta: por defecto trae las ventas de hoy (lo que necesita el Dashboard). El
+    // historial de ventas con filtros propios (Inventario.Web) pasa su propio rango. cancelada=false
+    // por default (historial normal); Inventario.Web pide cancelada=true para la vista dedicada.
+    [HttpGet("inventario/{inventarioId:int}")]
+    public async Task<ActionResult<IEnumerable<VentaDto>>> ObtenerPorInventario(
+        int inventarioId, [FromQuery] DateTime? desde, [FromQuery] DateTime? hasta, [FromQuery] bool cancelada = false)
+    {
+        var rangoDesde = (desde ?? DateTime.Today).Date;
+        var rangoHasta = (hasta ?? DateTime.Today).Date.AddDays(1).AddTicks(-1);
+
+        var ventas = await _ventaRepository.ObtenerPorInventarioAsync(inventarioId, rangoDesde, rangoHasta, cancelada);
+        return Ok(ventas.ToDto());
+    }
+
     [HttpPost]
     [Authorize(Roles = "Administrador,Gerente,Cajero,Vendedor")]
     public async Task<ActionResult<VentaDto>> Crear(CrearVentaRequest request)

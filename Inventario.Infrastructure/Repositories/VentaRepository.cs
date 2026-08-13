@@ -40,6 +40,18 @@ public class VentaRepository : IVentaRepository
             .ToListAsync();
     }
 
+    public async Task<IEnumerable<Venta>> ObtenerPorInventarioAsync(
+        int inventarioId, DateTime desde, DateTime hasta, bool cancelada = false)
+    {
+        return await _context.Ventas
+            .Include(v => v.Detalles)
+                .ThenInclude(d => d.Producto)
+            .Include(v => v.Usuario)
+            .Where(v => v.InventarioId == inventarioId && v.Cancelada == cancelada && v.Fecha >= desde && v.Fecha <= hasta)
+            .OrderByDescending(v => v.Fecha)
+            .ToListAsync();
+    }
+
     public async Task ActualizarFolioAsync(int id, string folio)
     {
         // FindAsync reutiliza la instancia ya trackeada por el DbContext (misma request/scope) si la venta

@@ -1,0 +1,165 @@
+@page "/cotizaciones/{id:int}"
+@model Inventario.Web.Pages.Cotizaciones.DetalleModel
+@using Inventario.Core.Enums
+
+@{
+    ViewBag.Title = Model.Cotizacion?.Folio ?? "Cotización";
+}
+
+@section styles
+{
+
+}
+
+@await Html.PartialAsync("~/Pages/Shared/Partials/_PageTitle.cshtml", new {
+pageTitle = Model.Cotizacion?.Folio,
+pageSubTitle1 = "Inventario",
+pageSubTitle2 = "Cotizaciones",
+pageSubText = (string?)null
+})
+
+<div class="main-content">
+    @if (!string.IsNullOrEmpty(Model.ErrorMensaje))
+    {
+        <div class="alert alert-danger" role="alert">@Model.ErrorMensaje</div>
+    }
+
+    @if (Model.Cotizacion is { } cotizacion)
+    {
+        var claseBadge = cotizacion.Estado switch
+        {
+            EstadoCotizacion.Vigente => "bg-success",
+            EstadoCotizacion.Convertida => "bg-primary",
+            EstadoCotizacion.Vencida => "bg-warning text-dark",
+            _ => "bg-secondary"
+        };
+
+        <div class="row">
+            <div class="col-lg-5">
+                <div class="card shadow-0 mb-g">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div class="card-title">Datos de la cotización</div>
+                        <span class="badge @claseBadge">@cotizacion.Estado</span>
+                    </div>
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            <dt class="col-5">Cliente</dt>
+                            <dd class="col-7">@(cotizacion.ClienteNombre ?? "—")</dd>
+
+                            <dt class="col-5">Contacto</dt>
+                            <dd class="col-7">@(cotizacion.ClienteContacto ?? "—")</dd>
+
+                            <dt class="col-5">Fecha</dt>
+                            <dd class="col-7">@cotizacion.FechaCreacion.ToString("dd/MM/yyyy")</dd>
+
+                            <dt class="col-5">Vigente hasta</dt>
+                            <dd class="col-7">@(cotizacion.FechaVigencia?.ToString("dd/MM/yyyy") ?? "—")</dd>
+
+                            <dt class="col-5">Usuario</dt>
+                            <dd class="col-7">@(cotizacion.UsuarioNombre ?? "—")</dd>
+                        </dl>
+
+                        <div class="d-flex gap-2 mt-2">
+                            <a asp-page="/Cotizaciones/Editar" asp-route-id="@cotizacion.Id" class="btn btn-outline-primary btn-sm">Editar</a>
+                            <a asp-page="/Cotizaciones/Detalle" asp-route-id="@cotizacion.Id" asp-page-handler="Pdf" class="btn btn-outline-secondary btn-sm">Descargar PDF</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="card shadow-0 mb-g">
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            <dt class="col-7">Subtotal</dt>
+                            <dd class="col-5 text-end">@cotizacion.Subtotal.ToString("C2")</dd>
+
+                            <dt class="col-7">Descuento</dt>
+                            <dd class="col-5 text-end">@cotizacion.Descuento.ToString("C2")</dd>
+
+                            <dt class="col-7">Impuestos</dt>
+                            <dd class="col-5 text-end">@cotizacion.Impuestos.ToString("C2")</dd>
+
+                            <dt class="col-7 fw-bold fs-lg">Total</dt>
+                            <dd class="col-5 text-end fw-bold fs-lg">@cotizacion.Total.ToString("C2")</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                @if (cotizacion.Estado == EstadoCotizacion.Vigente)
+                {
+                    <div class="card shadow-0 mb-g">
+                        <div class="card-header">
+                            <div class="card-title">Convertir a venta</div>
+                        </div>
+                        <div class="card-body">
+                            @if (Model.CajasConCorteAbierto.Count == 0)
+                            {
+                                <div class="alert alert-warning mb-0">
+                                    No hay ninguna caja abierta. Abre un corte de caja para poder cobrar esta cotización.
+                                </div>
+                            }
+                            else
+                            {
+                                <form method="post" asp-page-handler="Convertir">
+                                    <div class="mb-2">
+                                        <label asp-for="CorteDeCajaId" class="form-label">Caja</label>
+                                        <select asp-for="CorteDeCajaId" class="form-select">
+                                            @foreach (var (caja, corte) in Model.CajasConCorteAbierto)
+                                            {
+                                                <option value="@corte.Id">@caja.Nombre</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label asp-for="MetodoPago" class="form-label">Método de pago</label>
+                                        <select asp-for="MetodoPago" class="form-select" asp-items="Html.GetEnumSelectList<MetodoPago>()"></select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100">Convertir a venta</button>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                }
+                <a asp-page="/Cotizaciones/Index" class="btn btn-outline-secondary w-100">Volver a cotizaciones</a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card shadow-0 mb-g">
+                    <div class="card-header">
+                        <div class="card-title">Productos</div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Cantidad</th>
+                                        <th>Precio unitario</th>
+                                        <th>Importe</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var detalle in cotizacion.Detalles)
+                                    {
+                                        <tr>
+                                            <td>@(detalle.ProductoNombre ?? $"Producto #{detalle.ProductoId}")</td>
+                                            <td>@detalle.Cantidad</td>
+                                            <td>@detalle.PrecioUnitario.ToString("C2")</td>
+                                            <td>@detalle.ImporteLinea.ToString("C2")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

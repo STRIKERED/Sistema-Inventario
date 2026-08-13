@@ -2,7 +2,7 @@
 @model Inventario.Web.Pages.Dashboard.IndexModel
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Inicio";
 }
 
 @section styles
@@ -11,85 +11,202 @@
 }
 
 @await Html.PartialAsync("~/Pages/Shared/Partials/_PageTitle.cshtml", new {
-pageTitle = "Blank Page",
-pageSubTitle1 = "SmartAdmin",
+pageTitle = "Inicio",
+pageSubTitle1 = "Inventario",
 pageSubTitle2 = (string?)null,
 pageSubText = (string?)null
 })
 
-<h1 class="subheader-title mt-4">
-    <small> Can be the starting page for your application...
-
-        <button class="btn btn-sm btn-outline-secondary" data-action="playsound" data-soundfile="blank_.mp3"
-            data-soundpath="media/sound/" type="button">
-            <svg class="sa-icon">
-                <use href="img/sprite.svg#volume-2"></use>
-            </svg>
-        </button>
-    </small>
-</h1>
 <div class="main-content">
-    <div class="info-container">
-        You can start building your application by using this page as a starting point.
-    </div>
+    @if (!string.IsNullOrEmpty(Model.ErrorMensaje))
+    {
+        <div class="alert alert-danger" role="alert">@Model.ErrorMensaje</div>
+    }
+
     <div class="row">
-        <div class="col-sm-12">
+
+        <!-- Ventas de hoy -->
+        <div class="col-sm-6 col-xl-3">
             <div class="card shadow-0 mb-g">
-                <div class="card-header">
-                    <div class="card-title">Card title</div>
+                <div class="card-body d-flex align-items-center">
+                    <svg class="sa-icon sa-icon-2x text-success me-3">
+                        <use href="icons/sprite.svg#dollar-sign"></use>
+                    </svg>
+                    <div>
+                        <div class="fs-xl fw-bold">@Model.TotalVentasDeHoy.ToString("C2")</div>
+                        <div class="text-muted fs-sm">Ventas de hoy (@Model.VentasDeHoy.Count)</div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <p class="card-text">Some quick example text to build on the card title and make
-                        up the bulk of the card's content.</p>
+            </div>
+        </div>
+
+        <!-- Stock bajo -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="card shadow-0 mb-g">
+                <div class="card-body d-flex align-items-center">
+                    <svg class="sa-icon sa-icon-2x text-warning me-3">
+                        <use href="icons/sprite.svg#alert-triangle"></use>
+                    </svg>
+                    <div>
+                        <div class="fs-xl fw-bold">@Model.ProductosConStockBajo.Count</div>
+                        <div class="text-muted fs-sm">Productos con stock bajo</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Caja -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="card shadow-0 mb-g">
+                <div class="card-body d-flex align-items-center">
+                    <svg class="sa-icon sa-icon-2x text-info me-3">
+                        <use href="icons/sprite.svg#shopping-bag"></use>
+                    </svg>
+                    <div>
+                        <div class="fs-xl fw-bold">@Model.CajasAbiertas / @Model.Cajas.Count</div>
+                        <div class="text-muted fs-sm">Cajas abiertas</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cotizaciones por vencer -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="card shadow-0 mb-g">
+                <div class="card-body d-flex align-items-center">
+                    <svg class="sa-icon sa-icon-2x text-primary me-3">
+                        <use href="icons/sprite.svg#clock"></use>
+                    </svg>
+                    <div>
+                        <div class="fs-xl fw-bold">@Model.CotizacionesVigentes.Count</div>
+                        <div class="text-muted fs-sm">Cotizaciones vigentes</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+
+        <!-- Detalle de stock bajo -->
+        <div class="col-lg-6">
+            <div class="card shadow-0 mb-g">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div class="card-title">Stock bajo</div>
+                    <a href="/stock?SoloStockBajo=true" class="btn btn-outline-secondary btn-sm">Ver todo</a>
+                </div>
+                <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-bordered table-striped table-hover mb-0">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Phone</th>
-                                    <th>Address</th>
-                                    <th>City</th>
-                                    <th>State</th>
-                                    <th>Zip</th>
-                                    <th>Country</th>
-                                    <th>Action</th>
+                                    <th>Producto</th>
+                                    <th>Disponible</th>
+                                    <th>Mínimo</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                @if (Model.ProductosConStockBajo.Count == 0)
+                                {
+                                    <tr>
+                                        <td colspan="3" class="text-center">Sin alertas de stock.</td>
+                                    </tr>
+                                }
+                                @foreach (var producto in Model.ProductosConStockBajo)
+                                {
+                                    <tr>
+                                        <td><a asp-page="/Productos/Detalle" asp-route-id="@producto.Id">@producto.Nombre</a></td>
+                                        <td>@producto.CantidadDisponible</td>
+                                        <td>@producto.StockMinimo</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estado de caja -->
+        <div class="col-lg-6">
+            <div class="card shadow-0 mb-g">
+                <div class="card-header">
+                    <div class="card-title">Estado de caja</div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover mb-0">
+                            <thead>
                                 <tr>
-                                    <td>John Doe</td>
-                                    <td>john.doe@example.com</td>
-                                    <td>123-456-7890</td>
-                                    <td>123 Main St</td>
-                                    <td>Anytown</td>
-                                    <td>CA</td>
-                                    <td>12345</td>
-                                    <td>USA</td>
-                                    <td>Edit</td>
+                                    <th>Caja</th>
+                                    <th>Estado</th>
+                                    <th>Monto inicial</th>
                                 </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Cajas.Count == 0)
+                                {
+                                    <tr>
+                                        <td colspan="3" class="text-center">Este Inventario no tiene cajas registradas.</td>
+                                    </tr>
+                                }
+                                @foreach (var (caja, corte) in Model.Cajas)
+                                {
+                                    <tr>
+                                        <td>@caja.Nombre</td>
+                                        <td>
+                                            @if (corte is not null)
+                                            {
+                                                <span class="badge bg-success">Abierta</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">Cerrada</span>
+                                            }
+                                        </td>
+                                        <td>@(corte is not null ? corte.MontoInicial.ToString("C2") : "—")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cotizaciones vigentes -->
+        <div class="col-sm-12">
+            <div class="card shadow-0 mb-g">
+                <div class="card-header">
+                    <div class="card-title">Cotizaciones vigentes</div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover mb-0">
+                            <thead>
                                 <tr>
-                                    <td>Jane Smith</td>
-                                    <td>jane.smith@example.com</td>
-                                    <td>987-654-3210</td>
-                                    <td>123 Main St</td>
-                                    <td>Anytown</td>
-                                    <td>CA</td>
-                                    <td>12345</td>
-                                    <td>USA</td>
-                                    <td>Edit</td>
+                                    <th>Folio</th>
+                                    <th>Cliente</th>
+                                    <th>Vigente hasta</th>
+                                    <th>Total</th>
                                 </tr>
-                                <tr>
-                                    <td>Bob Johnson</td>
-                                    <td>bob.johnson@example.com</td>
-                                    <td>555-123-4567</td>
-                                    <td>123 Main St</td>
-                                    <td>Anytown</td>
-                                    <td>CA</td>
-                                    <td>12345</td>
-                                    <td>USA</td>
-                                    <td>Edit</td>
-                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.CotizacionesVigentes.Count == 0)
+                                {
+                                    <tr>
+                                        <td colspan="4" class="text-center">No hay cotizaciones vigentes.</td>
+                                    </tr>
+                                }
+                                @foreach (var cotizacion in Model.CotizacionesVigentes)
+                                {
+                                    <tr>
+                                        <td>@cotizacion.Folio</td>
+                                        <td>@(cotizacion.ClienteNombre ?? "—")</td>
+                                        <td>@(cotizacion.FechaVigencia?.ToString("dd/MM/yyyy") ?? "—")</td>
+                                        <td>@cotizacion.Total.ToString("C2")</td>
+                                    </tr>
+                                }
                             </tbody>
                         </table>
                     </div>
@@ -98,9 +215,3 @@ pageSubText = (string?)null
         </div>
     </div>
 </div>
-
-
-@section scripts
-{
-    <script src="~/scripts/pages/blank.js"></script>
-}

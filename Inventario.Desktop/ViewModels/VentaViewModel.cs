@@ -188,13 +188,7 @@ public partial class VentaViewModel : BaseViewModel
             return;
         }
 
-        var impresora = await Shell.Current.DisplayPromptAsync("Imprimir ticket", "Nombre de la impresora térmica:");
-        if (string.IsNullOrWhiteSpace(impresora))
-        {
-            return;
-        }
-
-        await EjecutarAsync(() => _ventaApiService.ImprimirAsync(ventaCreada.Id, impresora));
+        await EjecutarAsync(() => _ventaApiService.ImprimirAsync(ventaCreada.Id));
     }
 
     private void RecalcularTotales()

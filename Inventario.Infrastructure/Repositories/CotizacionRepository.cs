@@ -43,6 +43,16 @@ public class CotizacionRepository : ICotizacionRepository
             .ToListAsync();
     }
 
+    public async Task<IEnumerable<Cotizacion>> ObtenerPorInventarioAsync(int inventarioId)
+    {
+        return await _context.Cotizaciones
+            .Include(c => c.Detalles)
+            .Include(c => c.Usuario)
+            .Where(c => c.InventarioId == inventarioId)
+            .OrderByDescending(c => c.FechaCreacion)
+            .ToListAsync();
+    }
+
     public async Task ActualizarAsync(Cotizacion cotizacion)
     {
         _context.Cotizaciones.Update(cotizacion);

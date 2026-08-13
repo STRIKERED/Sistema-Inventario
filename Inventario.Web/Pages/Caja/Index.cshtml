@@ -1,0 +1,98 @@
+@page "/caja"
+@model Inventario.Web.Pages.Caja.IndexModel
+@using Inventario.Core.Enums
+@inject Inventario.Web.Services.Sesion.ICurrentSessionAccessor Sesion
+
+@{
+    ViewBag.Title = "Caja";
+}
+
+@section styles
+{
+
+}
+
+@await Html.PartialAsync("~/Pages/Shared/Partials/_PageTitle.cshtml", new {
+pageTitle = "Estado de caja",
+pageSubTitle1 = "Inventario",
+pageSubTitle2 = "Caja",
+pageSubText = (string?)null
+})
+
+<div class="main-content">
+    @if (!string.IsNullOrEmpty(Model.ErrorMensaje))
+    {
+        <div class="alert alert-danger" role="alert">@Model.ErrorMensaje</div>
+    }
+
+    <div class="row">
+        @if (Model.Cajas.Count == 0)
+        {
+            <div class="col-sm-12">
+                <div class="alert alert-info">Este Inventario todavía no tiene cajas registradas.</div>
+            </div>
+        }
+        @foreach (var (caja, corte) in Model.Cajas)
+        {
+            <div class="col-lg-6">
+                <div class="card shadow-0 mb-g">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div class="card-title">@caja.Nombre</div>
+                        <a asp-page="/Caja/Historial" asp-route-cajaId="@caja.Id" class="btn btn-outline-secondary btn-sm">Historial de cortes</a>
+                    </div>
+                    <div class="card-body">
+                        @if (corte is null)
+                        {
+                            <span class="badge bg-secondary mb-3">Cerrada</span>
+                            <form method="post" asp-page-handler="Abrir">
+                                <input type="hidden" name="CajaId" value="@caja.Id" />
+                                <div class="mb-2">
+                                    <label class="form-label">Monto inicial</label>
+                                    <input name="MontoInicial" class="form-control" type="number" step="0.01" min="0" value="0" />
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-sm">Abrir corte</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success mb-3">Abierta desde @corte.FechaApertura.ToString("dd/MM/yyyy HH:mm")</span>
+                            <dl class="row mb-3">
+                                <dt class="col-6">Monto inicial</dt>
+                                <dd class="col-6 text-end">@corte.MontoInicial.ToString("C2")</dd>
+                            </dl>
+                            <a asp-page="/Caja/DetalleCorte" asp-route-id="@corte.Id" class="btn btn-outline-secondary btn-sm mb-3">Ver ventas del turno</a>
+
+                            <form method="post" asp-page-handler="Cerrar">
+                                <input type="hidden" name="CorteDeCajaId" value="@corte.Id" />
+                                <div class="mb-2">
+                                    <label class="form-label">Monto final contado</label>
+                                    <input name="MontoFinalContado" class="form-control" type="number" step="0.01" min="0" value="0" />
+                                </div>
+                                <button type="submit" class="btn btn-danger btn-sm">Cerrar corte</button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (Sesion.Rol is RolUsuario.Administrador or RolUsuario.Gerente)
+    {
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card shadow-0 mb-g">
+                    <div class="card-header">
+                        <div class="card-title">Nueva caja</div>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" asp-page-handler="NuevaCaja" class="d-flex gap-2">
+                            <input name="NuevaCajaNombre" class="form-control" placeholder="Nombre de la caja, ej. Caja 1" />
+                            <button type="submit" class="btn btn-primary text-nowrap">Crear caja</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

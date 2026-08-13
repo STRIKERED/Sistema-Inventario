@@ -1,0 +1,73 @@
+@page "/stock/ajustar"
+@model Inventario.Web.Pages.Stock.AjustarModel
+@using Inventario.Core.Enums
+
+@{
+    ViewBag.Title = "Registrar ajuste";
+}
+
+@section styles
+{
+
+}
+
+@await Html.PartialAsync("~/Pages/Shared/Partials/_PageTitle.cshtml", new {
+pageTitle = "Registrar ajuste",
+pageSubTitle1 = "Inventario",
+pageSubTitle2 = "Stock",
+pageSubText = (string?)null
+})
+
+<div class="main-content">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card shadow-0 mb-g">
+                <div class="card-body">
+
+                    @if (!string.IsNullOrEmpty(Model.ErrorMensaje))
+                    {
+                        <div class="alert alert-danger" role="alert">@Model.ErrorMensaje</div>
+                    }
+
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                    <form method="post">
+                        <div class="mb-3">
+                            <label asp-for="ProductoId" class="form-label">Producto</label>
+                            <select asp-for="ProductoId" class="form-select">
+                                <option value="">Selecciona un producto…</option>
+                                @foreach (var producto in Model.Productos)
+                                {
+                                    <option value="@producto.Id">@producto.Sku — @producto.Nombre (disponible: @producto.CantidadDisponible)</option>
+                                }
+                            </select>
+                            <span asp-validation-for="ProductoId" class="text-danger fs-sm"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Tipo" class="form-label">Tipo de movimiento</label>
+                            <select asp-for="Tipo" class="form-select" asp-items="Html.GetEnumSelectList<TipoMovimientoInventario>()"></select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Cantidad" class="form-label">Cantidad</label>
+                            <input asp-for="Cantidad" class="form-control" type="number" />
+                            <div class="form-text">Entrada/Salida: siempre positiva. Ajuste: admite negativos para restar existencia (mermas, conteos a la baja).</div>
+                            <span asp-validation-for="Cantidad" class="text-danger fs-sm"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Motivo" class="form-label">Motivo (opcional)</label>
+                            <input asp-for="Motivo" class="form-control" placeholder="Ej. compra a proveedor, merma, conteo físico..." />
+                        </div>
+
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary">Registrar movimiento</button>
+                            <a asp-page="/Stock/Index" class="btn btn-outline-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

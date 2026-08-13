@@ -1,4 +1,5 @@
 using Inventario.Core.Entities;
+using Inventario.Core.Enums;
 using Inventario.Core.Interfaces;
 using Inventario.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,32 @@ public class MovimientoInventarioRepository : IMovimientoInventarioRepository
             .Where(m => m.ProductoId == productoId)
             .OrderByDescending(m => m.Fecha)
             .ToListAsync();
+    }
+
+    public async Task<IEnumerable<MovimientoInventario>> ObtenerPorInventarioAsync(
+        int inventarioId, DateTime? desde = null, DateTime? hasta = null, TipoMovimientoInventario? tipo = null)
+    {
+        var query = _context.MovimientosInventario
+            .Include(m => m.Producto)
+            .Include(m => m.Usuario)
+            .Where(m => m.Producto!.InventarioId == inventarioId);
+
+        if (desde is not null)
+        {
+            query = query.Where(m => m.Fecha >= desde.Value);
+        }
+
+        if (hasta is not null)
+        {
+            query = query.Where(m => m.Fecha <= hasta.Value);
+        }
+
+        if (tipo is not null)
+        {
+            query = query.Where(m => m.TipoMovimiento == tipo.Value);
+        }
+
+        return await query.OrderByDescending(m => m.Fecha).ToListAsync();
     }
 
     public async Task<MovimientoInventario> CrearAsync(MovimientoInventario movimiento)

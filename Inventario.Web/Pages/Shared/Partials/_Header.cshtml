@@ -1,3 +1,5 @@
+@inject Inventario.Web.Services.Sesion.ICurrentSessionAccessor Sesion
+
 <header class="app-header">
     <!-- Collapse icon -->
     <div class="d-flex flex-grow-1 w-100 me-auto align-items-center">
@@ -20,9 +22,24 @@
             </svg>
         </button>
 
-        <form class="app-search" role="search" action="apps-search" autocomplete="off">
-            <input type="text" class="form-control" placeholder="Search for anything">
-        </form>
+        @if (Sesion.HaySesionActiva)
+        {
+            <!-- Selector de Inventario activo: cambia el contexto de todas las páginas scoped. -->
+            <div class="d-flex align-items-center fs-sm">
+                <span class="text-muted me-1 d-none d-md-inline">Trabajando en:</span>
+                @if (Sesion.InventariosDisponibles.Count > 1)
+                {
+                    <a class="fw-bold text-decoration-none"
+                        href="/Auth/SeleccionarInventario?returnUrl=@Uri.EscapeDataString(Context.Request.Path + Context.Request.QueryString)">
+                        @Sesion.InventarioOperativoNombre ▾
+                    </a>
+                }
+                else
+                {
+                    <span class="fw-bold">@Sesion.InventarioOperativoNombre</span>
+                }
+            </div>
+        }
     </div>
 
     <!-- Settings -->
@@ -76,11 +93,11 @@
     @await Html.PartialAsync("~/Pages/Shared/Partials/_Notifications.cshtml")
 
     <!-- Profile -->
-    <button type="button" data-bs-toggle="dropdown" title="drlantern@getwebora.com"
+    <button type="button" data-bs-toggle="dropdown" title="@(Sesion.NombreCompleto ?? Sesion.NombreUsuario)"
         class="btn-system bg-transparent d-flex flex-shrink-0 align-items-center justify-content-center"
         aria-label="Open Profile Dropdown">
         <img src="~/img/demo/avatars/avatar-admin.png" class="profile-image profile-image-md rounded-circle"
-            alt="Sunny A.">
+            alt="Avatar">
     </button>
 
     <!-- Profile dropdown -->
@@ -88,11 +105,11 @@
         <div class="notification-header rounded-top mb-2">
             <div class="d-flex flex-row align-items-center mt-1 mb-1 color-white">
                 <span class="status status-success d-inline-block me-2">
-                    <img src="~/img/demo/avatars/avatar-admin.png" class="profile-image rounded-circle" alt="Sunny A.">
+                    <img src="~/img/demo/avatars/avatar-admin.png" class="profile-image rounded-circle" alt="Avatar">
                 </span>
                 <div class="info-card-text">
-                    <div class="fs-lg text-truncate text-truncate-lg">Sunny A.</div>
-                    <span class="text-truncate text-truncate-md opacity-80 fs-sm">sunnya@sadim.com</span>
+                    <div class="fs-lg text-truncate text-truncate-lg">@(Sesion.NombreCompleto ?? Sesion.NombreUsuario)</div>
+                    <span class="text-truncate text-truncate-md opacity-80 fs-sm">@Sesion.Rol</span>
                 </div>
             </div>
         </div>
@@ -148,9 +165,11 @@
 
         <div class="dropdown-divider m-0"></div>
 
-        <a class="dropdown-item py-3 fw-500 d-flex justify-content-between" href="auth-login">
-            <span class="text-danger" data-i18n="drpdwn.page-logout">Logout</span>
-            <span class="d-block text-truncate text-truncate-sm">@("sunnyahmed")</span>
-        </a>
+        <form method="post" asp-page="/Auth/Logout" class="m-0">
+            <button type="submit" class="dropdown-item py-3 fw-500 d-flex justify-content-between border-0 bg-transparent w-100 text-start">
+                <span class="text-danger">Cerrar sesión</span>
+                <span class="d-block text-truncate text-truncate-sm">@Sesion.NombreUsuario</span>
+            </button>
+        </form>
     </div>
 </header>
