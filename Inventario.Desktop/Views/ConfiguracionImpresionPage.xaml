@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Inventario.Desktop.ViewModels"
+             x:Class="Inventario.Desktop.Views.ConfiguracionImpresionPage"
+             x:DataType="vm:ConfiguracionImpresionViewModel"
+             Title="Configuración de impresión">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="16" MaximumWidthRequest="560">
+
+            <Label Text="Impresora de tickets y cotizaciones" FontSize="22" FontAttributes="Bold" />
+            <Label Opacity="0.7"
+                   Text="Configura la impresora térmica y los datos que aparecen en el ticket de venta y en el PDF de cotizaciones para el inventario con el que estás operando." />
+
+            <Label Text="Nombre de la impresora" FontAttributes="Bold" />
+            <Entry Placeholder="Nombre exacto tal como aparece en Windows, ej. POS-80" Text="{Binding NombreImpresora}" />
+
+            <Label Text="Ancho del rollo" FontAttributes="Bold" Margin="0,8,0,0" />
+            <Picker ItemsSource="{Binding AnchosDisponiblesMm}" SelectedItem="{Binding AnchoTicketMm}" Title="Selecciona el ancho" />
+
+            <Label Text="Encabezado del ticket" FontAttributes="Bold" Margin="0,8,0,0" />
+            <Entry Placeholder="Ej. nombre del negocio (opcional)" Text="{Binding EncabezadoTicket}" />
+
+            <Label Text="Pie de página del ticket" FontAttributes="Bold" Margin="0,8,0,0" />
+            <Entry Placeholder="Ej. Gracias por su compra (opcional)" Text="{Binding PiePaginaTicket}" />
+
+            <Label Text="Logo para cotizaciones en PDF" FontAttributes="Bold" Margin="0,8,0,0" />
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                <Entry Grid.Column="0" Placeholder="Ruta al archivo de imagen (opcional)" Text="{Binding LogoRutaPdf}" />
+                <Button Grid.Column="1" Text="Examinar..." Command="{Binding ElegirLogoCommand}" />
+            </Grid>
+
+            <HorizontalStackLayout Spacing="12" Margin="0,12,0,0">
+                <Button Text="Guardar" Command="{Binding GuardarCommand}" BackgroundColor="ForestGreen" TextColor="White" />
+                <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+            </HorizontalStackLayout>
+
+            <Label Text="{Binding MensajeError}"
+                   IsVisible="{Binding MensajeError, Converter={StaticResource StringNoVacioConverter}}"
+                   TextColor="Red" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

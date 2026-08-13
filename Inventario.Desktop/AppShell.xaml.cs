@@ -39,6 +39,8 @@ public partial class AppShell : Shell
         UsuariosFlyoutItem.IsVisible = _sessionService.Rol == RolUsuario.Administrador;
         InventariosFlyoutItem.IsVisible = _sessionService.Rol == RolUsuario.Administrador;
         RespaldoFlyoutItem.IsVisible = _sessionService.Rol == RolUsuario.Administrador;
+        ConfiguracionImpresionFlyoutItem.IsVisible =
+            _sessionService.Rol is RolUsuario.Administrador or RolUsuario.Gerente;
     }
 
     private async void OnCerrarSesionClicked(object? sender, EventArgs e)

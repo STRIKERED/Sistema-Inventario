@@ -9,20 +9,37 @@ public class TicketPrintService : ITicketPrintService
 {
     private const byte Esc = 0x1B;
     private const byte Gs = 0x1D;
-    private const int AnchoTicket = 32; // caracteres por línea, típico en impresoras térmicas de 58mm
+    private const int AnchoTicketPorDefecto = 32; // caracteres por línea, típico en impresoras térmicas de 58mm
+    private const string EncabezadoPorDefecto = "TICKET DE VENTA";
+    private const string PiePaginaPorDefecto = "Gracias por su compra";
 
-    public byte[] GenerarTicketEscPos(Venta venta)
+    private readonly IConfiguracionImpresionRepository _configuracionRepository;
+
+    public TicketPrintService(IConfiguracionImpresionRepository configuracionRepository)
     {
+        _configuracionRepository = configuracionRepository;
+    }
+
+    public byte[] GenerarTicketEscPos(Venta venta, ConfiguracionImpresion? configuracion = null)
+    {
+        var anchoTicket = AnchoEnCaracteres(configuracion?.AnchoTicketMm);
+        var encabezado = string.IsNullOrWhiteSpace(configuracion?.EncabezadoTicket)
+            ? EncabezadoPorDefecto
+            : configuracion!.EncabezadoTicket!;
+        var piePagina = string.IsNullOrWhiteSpace(configuracion?.PiePaginaTicket)
+            ? PiePaginaPorDefecto
+            : configuracion!.PiePaginaTicket!;
+
         using var ms = new MemoryStream();
 
         // Inicializar impresora
         ms.WriteByte(Esc);
         ms.WriteByte(0x40);
 
-        EscribirCentrado(ms, "TICKET DE VENTA");
+        EscribirCentrado(ms, encabezado, anchoTicket);
         EscribirLinea(ms, $"Folio: {venta.Folio}");
         EscribirLinea(ms, $"Fecha: {venta.Fecha:dd/MM/yyyy HH:mm}");
-        EscribirSeparador(ms);
+        EscribirSeparador(ms, anchoTicket);
 
         foreach (var detalle in venta.Detalles)
         {
@@ -33,23 +50,23 @@ public class TicketPrintService : ITicketPrintService
             EscribirLinea(ms, $"  {detalle.Cantidad} x {detalle.PrecioUnitario:C2} = {importe:C2}");
         }
 
-        EscribirSeparador(ms);
-        EscribirLineaDerecha(ms, $"Subtotal: {venta.Subtotal:C2}");
-        EscribirLineaDerecha(ms, $"Descuento: {venta.Descuento:C2}");
-        EscribirLineaDerecha(ms, $"Impuestos: {venta.Impuestos:C2}");
+        EscribirSeparador(ms, anchoTicket);
+        EscribirLineaDerecha(ms, $"Subtotal: {venta.Subtotal:C2}", anchoTicket);
+        EscribirLineaDerecha(ms, $"Descuento: {venta.Descuento:C2}", anchoTicket);
+        EscribirLineaDerecha(ms, $"Impuestos: {venta.Impuestos:C2}", anchoTicket);
 
         // Total en negritas
         ms.WriteByte(Esc);
         ms.WriteByte(0x45);
         ms.WriteByte(0x01);
-        EscribirLineaDerecha(ms, $"TOTAL: {venta.Total:C2}");
+        EscribirLineaDerecha(ms, $"TOTAL: {venta.Total:C2}", anchoTicket);
         ms.WriteByte(Esc);
         ms.WriteByte(0x45);
         ms.WriteByte(0x00);
 
         EscribirLinea(ms, $"Metodo de pago: {venta.MetodoPago}");
-        EscribirSeparador(ms);
-        EscribirCentrado(ms, "Gracias por su compra");
+        EscribirSeparador(ms, anchoTicket);
+        EscribirCentrado(ms, piePagina, anchoTicket);
 
         // Avanzar papel y cortar (corte parcial)
         ms.WriteByte(Esc);
@@ -62,11 +79,16 @@ public class TicketPrintService : ITicketPrintService
         return ms.ToArray();
     }
 
-    public Task ImprimirTicketAsync(Venta venta, string nombreImpresora)
+    public async Task ImprimirTicketAsync(Venta venta)
     {
-        if (string.IsNullOrWhiteSpace(nombreImpresora))
+        var configuracion = await _configuracionRepository.ObtenerPorInventarioAsync(venta.InventarioId)
+            ?? throw new InvalidOperationException(
+                $"No hay configuración de impresión para el Inventario #{venta.InventarioId}.");
+
+        if (string.IsNullOrWhiteSpace(configuracion.NombreImpresora))
         {
-            throw new ArgumentException("Debe indicar el nombre de la impresora.", nameof(nombreImpresora));
+            throw new InvalidOperationException(
+                $"La configuración de impresión del Inventario #{venta.InventarioId} no tiene una impresora asignada.");
         }
 
         if (!OperatingSystem.IsWindows())
@@ -76,8 +98,18 @@ public class TicketPrintService : ITicketPrintService
                 "Use GenerarTicketEscPos para obtener los bytes y enviarlos por otro medio (red, USB, etc.).");
         }
 
-        var datos = GenerarTicketEscPos(venta);
-        return Task.Run(() => RawPrinterHelper.EnviarBytes(nombreImpresora, datos, $"Ticket-{venta.Folio}"));
+        var datos = GenerarTicketEscPos(venta, configuracion);
+        await Task.Run(() => RawPrinterHelper.EnviarBytes(configuracion.NombreImpresora, datos, $"Ticket-{venta.Folio}"));
+    }
+
+    private static int AnchoEnCaracteres(int? anchoTicketMm)
+    {
+        return anchoTicketMm switch
+        {
+            null => AnchoTicketPorDefecto,
+            58 => 32,
+            _ => 42, // 80mm (y cualquier otro ancho no contemplado explícitamente)
+        };
     }
 
     private static void EscribirLinea(Stream stream, string texto)
@@ -86,20 +118,20 @@ public class TicketPrintService : ITicketPrintService
         stream.Write(bytes, 0, bytes.Length);
     }
 
-    private static void EscribirCentrado(Stream stream, string texto)
+    private static void EscribirCentrado(Stream stream, string texto, int anchoTicket)
     {
-        var relleno = Math.Max(0, (AnchoTicket - texto.Length) / 2);
+        var relleno = Math.Max(0, (anchoTicket - texto.Length) / 2);
         EscribirLinea(stream, new string(' ', relleno) + texto);
     }
 
-    private static void EscribirLineaDerecha(Stream stream, string texto)
+    private static void EscribirLineaDerecha(Stream stream, string texto, int anchoTicket)
     {
-        var relleno = Math.Max(0, AnchoTicket - texto.Length);
+        var relleno = Math.Max(0, anchoTicket - texto.Length);
         EscribirLinea(stream, new string(' ', relleno) + texto);
     }
 
-    private static void EscribirSeparador(Stream stream)
+    private static void EscribirSeparador(Stream stream, int anchoTicket)
     {
-        EscribirLinea(stream, new string('-', AnchoTicket));
+        EscribirLinea(stream, new string('-', anchoTicket));
     }
 }

@@ -59,4 +59,10 @@
         <ShellContent ContentTemplate="{DataTemplate views:RespaldoPage}" Route="respaldoContenido" />
     </FlyoutItem>
 
+    <!-- IsVisible se controla desde AppShell.xaml.cs: solo Administrador/Gerente pueden configurar la impresora
+         (la Api restringe el POST/PUT de ConfiguracionesImpresion a esos mismos roles). -->
+    <FlyoutItem x:Name="ConfiguracionImpresionFlyoutItem" Title="Impresión" Route="configuracionImpresion" IsVisible="False">
+        <ShellContent ContentTemplate="{DataTemplate views:ConfiguracionImpresionPage}" Route="configuracionImpresionContenido" />
+    </FlyoutItem>
+
 </Shell>

@@ -51,6 +51,7 @@ public static class MauiProgram
         services.AddHttpClient<IInventarioApiService, InventarioApiService>(ConfigurarCliente).AddHttpMessageHandler<AuthHeaderHandler>();
         services.AddHttpClient<IUsuarioApiService, UsuarioApiService>(ConfigurarCliente).AddHttpMessageHandler<AuthHeaderHandler>();
         services.AddHttpClient<IBackupApiService, BackupApiService>(ConfigurarCliente).AddHttpMessageHandler<AuthHeaderHandler>();
+        services.AddHttpClient<IConfiguracionImpresionApiService, ConfiguracionImpresionApiService>(ConfigurarCliente).AddHttpMessageHandler<AuthHeaderHandler>();
     }
 
     private static void RegistrarViewModelsYPaginas(IServiceCollection services)
@@ -62,6 +63,7 @@ public static class MauiProgram
         services.AddTransient<UsuariosViewModel>();
         services.AddTransient<InventariosViewModel>();
         services.AddTransient<RespaldoViewModel>();
+        services.AddTransient<ConfiguracionImpresionViewModel>();
 
         services.AddTransient<LoginPage>();
         services.AddTransient<VentaPage>();
@@ -70,6 +72,7 @@ public static class MauiProgram
         services.AddTransient<UsuariosPage>();
         services.AddTransient<InventariosPage>();
         services.AddTransient<RespaldoPage>();
+        services.AddTransient<ConfiguracionImpresionPage>();
 
         services.AddTransient<AppShell>();
     }

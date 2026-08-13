@@ -23,6 +23,7 @@ public class InventarioDbContext : DbContext
     public DbSet<Cotizacion> Cotizaciones => Set<Cotizacion>();
     public DbSet<DetalleCotizacion> DetallesCotizacion => Set<DetalleCotizacion>();
     public DbSet<MovimientoInventario> MovimientosInventario => Set<MovimientoInventario>();
+    public DbSet<ConfiguracionImpresion> ConfiguracionesImpresion => Set<ConfiguracionImpresion>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

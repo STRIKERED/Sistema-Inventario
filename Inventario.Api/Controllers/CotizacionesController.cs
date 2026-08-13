@@ -122,7 +122,7 @@ public class CotizacionesController : ControllerBase
             return NotFound();
         }
 
-        var pdf = _pdfService.GenerarPdf(cotizacion);
+        var pdf = await _pdfService.GenerarPdfAsync(cotizacion);
         return File(pdf, "application/pdf", $"cotizacion-{cotizacion.Folio}.pdf");
     }
 

@@ -9,13 +9,22 @@ namespace Inventario.Infrastructure.Services;
 /// <summary>Genera el PDF de una cotización usando QuestPDF.</summary>
 public class CotizacionPdfService : ICotizacionPdfService
 {
+    private readonly IConfiguracionImpresionRepository _configuracionRepository;
+
     static CotizacionPdfService()
     {
         QuestPDF.Settings.License = LicenseType.Community;
     }
 
-    public byte[] GenerarPdf(Cotizacion cotizacion)
+    public CotizacionPdfService(IConfiguracionImpresionRepository configuracionRepository)
     {
+        _configuracionRepository = configuracionRepository;
+    }
+
+    public async Task<byte[]> GenerarPdfAsync(Cotizacion cotizacion)
+    {
+        var configuracion = await _configuracionRepository.ObtenerPorInventarioAsync(cotizacion.InventarioId);
+
         var documento = Document.Create(container =>
         {
             container.Page(page =>
@@ -24,26 +33,37 @@ public class CotizacionPdfService : ICotizacionPdfService
                 page.Margin(30);
                 page.DefaultTextStyle(x => x.FontSize(11));
 
-                page.Header().Column(column =>
+                page.Header().Row(row =>
                 {
-                    column.Item().Text("Cotización").FontSize(20).Bold();
-                    column.Item().Text($"Folio: {cotizacion.Folio}");
-                    column.Item().Text($"Fecha: {cotizacion.FechaCreacion:dd/MM/yyyy}");
-
-                    if (!string.IsNullOrWhiteSpace(cotizacion.ClienteNombre))
+                    if (!string.IsNullOrWhiteSpace(configuracion?.LogoRutaPdf) && File.Exists(configuracion.LogoRutaPdf))
                     {
-                        column.Item().Text($"Cliente: {cotizacion.ClienteNombre}");
+                        row.ConstantItem(60).Image(configuracion.LogoRutaPdf);
                     }
 
-                    if (!string.IsNullOrWhiteSpace(cotizacion.ClienteContacto))
+                    row.RelativeItem().Column(column =>
                     {
-                        column.Item().Text($"Contacto: {cotizacion.ClienteContacto}");
-                    }
+                        column.Item().Text(string.IsNullOrWhiteSpace(configuracion?.EncabezadoTicket)
+                                ? "Cotización"
+                                : configuracion.EncabezadoTicket)
+                            .FontSize(20).Bold();
+                        column.Item().Text($"Folio: {cotizacion.Folio}");
+                        column.Item().Text($"Fecha: {cotizacion.FechaCreacion:dd/MM/yyyy}");
 
-                    if (cotizacion.FechaVigencia is not null)
-                    {
-                        column.Item().Text($"Vigente hasta: {cotizacion.FechaVigencia:dd/MM/yyyy}");
-                    }
+                        if (!string.IsNullOrWhiteSpace(cotizacion.ClienteNombre))
+                        {
+                            column.Item().Text($"Cliente: {cotizacion.ClienteNombre}");
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(cotizacion.ClienteContacto))
+                        {
+                            column.Item().Text($"Contacto: {cotizacion.ClienteContacto}");
+                        }
+
+                        if (cotizacion.FechaVigencia is not null)
+                        {
+                            column.Item().Text($"Vigente hasta: {cotizacion.FechaVigencia:dd/MM/yyyy}");
+                        }
+                    });
                 });
 
                 page.Content().PaddingVertical(15).Table(table =>
@@ -76,12 +96,20 @@ public class CotizacionPdfService : ICotizacionPdfService
                     }
                 });
 
-                page.Footer().AlignRight().Column(column =>
+                page.Footer().Column(column =>
                 {
-                    column.Item().Text($"Subtotal: {cotizacion.Subtotal:C2}");
-                    column.Item().Text($"Descuento: {cotizacion.Descuento:C2}");
-                    column.Item().Text($"Impuestos: {cotizacion.Impuestos:C2}");
-                    column.Item().Text($"Total: {cotizacion.Total:C2}").Bold().FontSize(13);
+                    column.Item().AlignRight().Column(totales =>
+                    {
+                        totales.Item().Text($"Subtotal: {cotizacion.Subtotal:C2}");
+                        totales.Item().Text($"Descuento: {cotizacion.Descuento:C2}");
+                        totales.Item().Text($"Impuestos: {cotizacion.Impuestos:C2}");
+                        totales.Item().Text($"Total: {cotizacion.Total:C2}").Bold().FontSize(13);
+                    });
+
+                    if (!string.IsNullOrWhiteSpace(configuracion?.PiePaginaTicket))
+                    {
+                        column.Item().PaddingTop(10).AlignCenter().Text(configuracion.PiePaginaTicket);
+                    }
                 });
             });
         });
