@@ -1,0 +1,73 @@
+@page "/auth-seleccionar-inventario"
+@model Inventario.Web.Pages.Auth.SeleccionarInventarioModel
+
+@{
+    ViewBag.Title = "Selecciona un Inventario";
+    Layout = "~/Pages/Shared/_BaseLayout.cshtml";
+}
+
+@section styles
+{
+
+}
+
+<nav class="navbar navbar-expand-lg navbar-dark position-fixed w-100 py-3" style="z-index: 1000;">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <img alt="logo" src="img/logo-light.svg" />
+        </a>
+        <div class="ms-auto">
+            <form method="post" asp-page="/Auth/Logout">
+                <button class="btn btn-link text-white border-0 text-decoration-none" type="submit">Cerrar sesión</button>
+            </form>
+        </div>
+    </div>
+</nav>
+<section class="hero-section position-relative overflow-hidden">
+    <div class="container" style="position: relative; z-index: 1;">
+        <div class="row justify-content-center">
+            <div class="col-11 col-md-8 col-lg-6">
+                <div class="login-card p-4 p-md-6 bg-dark bg-opacity-50 translucent-dark rounded-4">
+                    <h2 class="text-center mb-2">¿Con qué Inventario quieres trabajar?</h2>
+                    <p class="text-center text-white opacity-50 mb-4">Puedes cambiarlo después desde el menú superior.</p>
+
+                    @if (!string.IsNullOrEmpty(Model.MensajeError))
+                    {
+                        <div class="alert alert-danger" role="alert">@Model.MensajeError</div>
+                    }
+
+                    @if (Model.Inventarios.Count == 0)
+                    {
+                        <div class="alert alert-warning" role="alert">
+                            Tu usuario no tiene ningún Inventario asignado. Pide a un Administrador que te dé acceso.
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="d-grid gap-2">
+                            @foreach (var inventario in Model.Inventarios)
+                            {
+                                <form method="post">
+                                    <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
+                                    <input type="hidden" name="InventarioId" value="@inventario.Id" />
+                                    <button type="submit" class="btn btn-outline-light btn-lg w-100 text-start">
+                                        @inventario.Nombre
+                                        @if (!string.IsNullOrEmpty(inventario.SucursalNombre))
+                                        {
+                                            <span class="d-block fs-sm opacity-50">@inventario.SucursalNombre</span>
+                                        }
+                                    </button>
+                                </form>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section scripts
+{
+    <script src="~/plugins/bootstrap/bootstrap.bundle.min.js"></script>
+}

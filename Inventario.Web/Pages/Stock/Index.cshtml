@@ -1,0 +1,106 @@
+@page "/stock"
+@model Inventario.Web.Pages.Stock.IndexModel
+@using Inventario.Core.Enums
+@inject Inventario.Web.Services.Sesion.ICurrentSessionAccessor Sesion
+
+@{
+    ViewBag.Title = "Stock actual";
+}
+
+@section styles
+{
+
+}
+
+@await Html.PartialAsync("~/Pages/Shared/Partials/_PageTitle.cshtml", new {
+pageTitle = "Stock actual",
+pageSubTitle1 = "Inventario",
+pageSubTitle2 = "Stock",
+pageSubText = (string?)null
+})
+
+<div class="main-content">
+    @if (!string.IsNullOrEmpty(Model.ErrorMensaje))
+    {
+        <div class="alert alert-danger" role="alert">@Model.ErrorMensaje</div>
+    }
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card shadow-0 mb-g">
+                <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <div class="card-title">Existencias por producto</div>
+
+                    <div class="d-flex align-items-center gap-3 flex-wrap">
+                        <form method="get" class="d-flex align-items-center gap-2">
+                            <div class="form-check form-switch mb-0">
+                                <input class="form-check-input" type="checkbox" role="switch" id="SoloStockBajo"
+                                    name="SoloStockBajo" value="true" onchange="this.form.submit()"
+                                    checked="@(Model.SoloStockBajo ? "checked" : null)" />
+                                <label class="form-check-label" for="SoloStockBajo">Solo stock bajo</label>
+                            </div>
+                        </form>
+
+                        <a asp-page="/Stock/Movimientos" class="btn btn-outline-secondary btn-sm">Ver movimientos</a>
+
+                        @if (Sesion.Rol is RolUsuario.Administrador or RolUsuario.Gerente)
+                        {
+                            <a asp-page="/Stock/Ajustar" class="btn btn-primary btn-sm">Registrar ajuste</a>
+                        }
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>SKU</th>
+                                    <th>Producto</th>
+                                    <th>Categoría</th>
+                                    <th>Disponible</th>
+                                    <th>Mínimo</th>
+                                    <th>Estado</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Productos.Count == 0)
+                                {
+                                    <tr>
+                                        <td colspan="7" class="text-center">
+                                            @(Model.SoloStockBajo ? "No hay productos con stock bajo." : "No hay productos registrados en este Inventario.")
+                                        </td>
+                                    </tr>
+                                }
+                                @foreach (var producto in Model.Productos)
+                                {
+                                    var bajo = producto.CantidadDisponible <= producto.StockMinimo;
+                                    <tr>
+                                        <td>@producto.Sku</td>
+                                        <td>@producto.Nombre</td>
+                                        <td>@(producto.Categoria ?? "—")</td>
+                                        <td>@producto.CantidadDisponible</td>
+                                        <td>@producto.StockMinimo</td>
+                                        <td>
+                                            @if (bajo)
+                                            {
+                                                <span class="badge bg-warning text-dark">Bajo</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-success">OK</span>
+                                            }
+                                        </td>
+                                        <td class="text-end">
+                                            <a asp-page="/Productos/Detalle" asp-route-id="@producto.Id" class="btn btn-outline-secondary btn-sm">Ver</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

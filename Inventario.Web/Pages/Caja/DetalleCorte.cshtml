@@ -1,0 +1,111 @@
+@page "/caja/cortes/{id:int}"
+@model Inventario.Web.Pages.Caja.DetalleCorteModel
+@using Inventario.Core.Enums
+
+@{
+    ViewBag.Title = "Detalle de corte";
+}
+
+@section styles
+{
+
+}
+
+@await Html.PartialAsync("~/Pages/Shared/Partials/_PageTitle.cshtml", new {
+pageTitle = "Detalle de corte",
+pageSubTitle1 = "Inventario",
+pageSubTitle2 = "Caja",
+pageSubText = (string?)null
+})
+
+<div class="main-content">
+    @if (Model.Corte is { } corte)
+    {
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card shadow-0 mb-g">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div class="card-title">@corte.CajaNombre</div>
+                        @if (corte.Estado == EstadoCorteDeCaja.Abierto)
+                        {
+                            <span class="badge bg-success">Abierto</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Cerrado</span>
+                        }
+                    </div>
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            <dt class="col-6">Apertura</dt>
+                            <dd class="col-6 text-end">@corte.FechaApertura.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                            <dt class="col-6">Cierre</dt>
+                            <dd class="col-6 text-end">@(corte.FechaCierre?.ToString("dd/MM/yyyy HH:mm") ?? "—")</dd>
+
+                            <dt class="col-6">Usuario</dt>
+                            <dd class="col-6 text-end">@(corte.UsuarioNombre ?? "—")</dd>
+
+                            <dt class="col-6">Monto inicial</dt>
+                            <dd class="col-6 text-end">@corte.MontoInicial.ToString("C2")</dd>
+
+                            <dt class="col-6">Monto final (sistema)</dt>
+                            <dd class="col-6 text-end">@corte.MontoFinalSistema.ToString("C2")</dd>
+
+                            <dt class="col-6">Monto final (contado)</dt>
+                            <dd class="col-6 text-end">@corte.MontoFinalContado.ToString("C2")</dd>
+
+                            <dt class="col-6 fw-bold">Diferencia</dt>
+                            <dd class="col-6 text-end fw-bold @(corte.Diferencia != 0 ? "text-danger" : "")">@corte.Diferencia.ToString("C2")</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card shadow-0 mb-g">
+                    <div class="card-header">
+                        <div class="card-title">Ventas del turno (@Model.Ventas.Count) — Total: @Model.Ventas.Sum(v => v.Total).ToString("C2")</div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Folio</th>
+                                        <th>Fecha</th>
+                                        <th>Método de pago</th>
+                                        <th>Total</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.Ventas.Count == 0)
+                                    {
+                                        <tr>
+                                            <td colspan="5" class="text-center">Sin ventas en este turno.</td>
+                                        </tr>
+                                    }
+                                    @foreach (var venta in Model.Ventas)
+                                    {
+                                        <tr>
+                                            <td>@venta.Folio</td>
+                                            <td>@venta.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
+                                            <td>@venta.MetodoPago</td>
+                                            <td>@venta.Total.ToString("C2")</td>
+                                            <td class="text-end">
+                                                <a asp-page="/Ventas/Detalle" asp-route-id="@venta.Id" class="btn btn-outline-secondary btn-sm">Ver</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

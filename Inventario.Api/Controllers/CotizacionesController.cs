@@ -61,6 +61,34 @@ public class CotizacionesController : ControllerBase
         return Ok(cotizaciones.ToDto());
     }
 
+    [HttpGet("inventario/{inventarioId:int}")]
+    public async Task<ActionResult<IEnumerable<CotizacionDto>>> ObtenerPorInventario(int inventarioId)
+    {
+        var cotizaciones = await _cotizacionRepository.ObtenerPorInventarioAsync(inventarioId);
+        return Ok(cotizaciones.ToDto());
+    }
+
+    // Mismos roles que Crear: quien puede cotizar puede corregir datos de encabezado o cancelarla.
+    [HttpPut("{id:int}")]
+    [Authorize(Roles = "Administrador,Gerente,Cajero,Vendedor")]
+    public async Task<IActionResult> Actualizar(int id, ActualizarCotizacionRequest request)
+    {
+        var existente = await _cotizacionRepository.ObtenerPorIdAsync(id);
+        if (existente is null)
+        {
+            return NotFound();
+        }
+
+        if (existente.Estado == EstadoCotizacion.Convertida)
+        {
+            return Conflict($"La cotización {id} ya se convirtió en venta y no se puede modificar.");
+        }
+
+        request.AplicarA(existente);
+        await _cotizacionRepository.ActualizarAsync(existente);
+        return NoContent();
+    }
+
     [HttpPost]
     [Authorize(Roles = "Administrador,Gerente,Cajero,Vendedor")]
     public async Task<ActionResult<CotizacionDto>> Crear(CrearCotizacionRequest request)

@@ -1,0 +1,108 @@
+@page "/caja/historial"
+@model Inventario.Web.Pages.Caja.HistorialModel
+@using Inventario.Core.Enums
+
+@{
+    ViewBag.Title = "Historial de cortes";
+}
+
+@section styles
+{
+
+}
+
+@await Html.PartialAsync("~/Pages/Shared/Partials/_PageTitle.cshtml", new {
+pageTitle = "Historial de cortes",
+pageSubTitle1 = "Inventario",
+pageSubTitle2 = "Caja",
+pageSubText = (string?)null
+})
+
+<div class="main-content">
+    @if (!string.IsNullOrEmpty(Model.ErrorMensaje))
+    {
+        <div class="alert alert-danger" role="alert">@Model.ErrorMensaje</div>
+    }
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card shadow-0 mb-g">
+                <div class="card-body">
+                    <form method="get" class="row g-3 align-items-end">
+                        <div class="col-auto">
+                            <label asp-for="CajaId" class="form-label">Caja</label>
+                            <select asp-for="CajaId" class="form-select" onchange="this.form.submit()">
+                                @foreach (var caja in Model.Cajas)
+                                {
+                                    <option value="@caja.Id">@caja.Nombre</option>
+                                }
+                            </select>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card shadow-0 mb-g">
+                <div class="card-header">
+                    <div class="card-title">Cortes (@Model.Cortes.Count)</div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Apertura</th>
+                                    <th>Cierre</th>
+                                    <th>Estado</th>
+                                    <th>Monto inicial</th>
+                                    <th>Monto final (sistema)</th>
+                                    <th>Monto final (contado)</th>
+                                    <th>Diferencia</th>
+                                    <th>Usuario</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Cortes.Count == 0)
+                                {
+                                    <tr>
+                                        <td colspan="9" class="text-center">Esta caja no tiene cortes registrados.</td>
+                                    </tr>
+                                }
+                                @foreach (var corte in Model.Cortes)
+                                {
+                                    <tr>
+                                        <td>@corte.FechaApertura.ToString("dd/MM/yyyy HH:mm")</td>
+                                        <td>@(corte.FechaCierre?.ToString("dd/MM/yyyy HH:mm") ?? "—")</td>
+                                        <td>
+                                            @if (corte.Estado == EstadoCorteDeCaja.Abierto)
+                                            {
+                                                <span class="badge bg-success">Abierto</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">Cerrado</span>
+                                            }
+                                        </td>
+                                        <td>@corte.MontoInicial.ToString("C2")</td>
+                                        <td>@corte.MontoFinalSistema.ToString("C2")</td>
+                                        <td>@corte.MontoFinalContado.ToString("C2")</td>
+                                        <td class="@(corte.Diferencia != 0 ? "text-danger fw-bold" : "")">@corte.Diferencia.ToString("C2")</td>
+                                        <td>@(corte.UsuarioNombre ?? "—")</td>
+                                        <td class="text-end">
+                                            <a asp-page="/Caja/DetalleCorte" asp-route-id="@corte.Id" class="btn btn-outline-secondary btn-sm">Ver</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

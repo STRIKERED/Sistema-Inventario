@@ -47,3 +47,11 @@ public record ConvertirAVentaRequest(
     [Range(1, int.MaxValue)] int UsuarioId,
     [Range(1, int.MaxValue)] int CorteDeCajaId,
     MetodoPago MetodoPago);
+
+// Sin Detalles/InventarioId: una vez creada, las líneas y el importe de una cotización no se tocan
+// (para eso se cancela y se hace una nueva) — esto solo edita los datos de "encabezado".
+public record ActualizarCotizacionRequest(
+    string? ClienteNombre,
+    string? ClienteContacto,
+    DateTime? FechaVigencia,
+    EstadoCotizacion Estado);

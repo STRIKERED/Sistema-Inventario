@@ -1,0 +1,103 @@
+@page "/ventas"
+@model Inventario.Web.Pages.Ventas.IndexModel
+
+@{
+    ViewBag.Title = "Ventas";
+}
+
+@section styles
+{
+
+}
+
+@await Html.PartialAsync("~/Pages/Shared/Partials/_PageTitle.cshtml", new {
+pageTitle = "Historial de ventas",
+pageSubTitle1 = "Inventario",
+pageSubTitle2 = "Ventas",
+pageSubText = (string?)null
+})
+
+<div class="main-content">
+    @if (!string.IsNullOrEmpty(Model.ErrorMensaje))
+    {
+        <div class="alert alert-danger" role="alert">@Model.ErrorMensaje</div>
+    }
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card shadow-0 mb-g">
+                <div class="card-body">
+                    <form method="get" class="row g-3 align-items-end">
+                        <div class="col-auto">
+                            <label asp-for="Desde" class="form-label">Desde</label>
+                            <input asp-for="Desde" class="form-control" type="date" />
+                        </div>
+                        <div class="col-auto">
+                            <label asp-for="Hasta" class="form-label">Hasta</label>
+                            <input asp-for="Hasta" class="form-control" type="date" />
+                        </div>
+                        <div class="col-auto">
+                            <div class="form-check form-switch mb-2">
+                                <input asp-for="SoloCanceladas" class="form-check-input" role="switch" />
+                                <label asp-for="SoloCanceladas" class="form-check-label">Solo canceladas</label>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-primary">Filtrar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card shadow-0 mb-g">
+                <div class="card-header">
+                    <div class="card-title">
+                        @(Model.SoloCanceladas ? "Ventas canceladas" : "Ventas") (@Model.Ventas.Count)
+                        — Total: @Model.Ventas.Sum(v => v.Total).ToString("C2")
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Folio</th>
+                                    <th>Fecha</th>
+                                    <th>Método de pago</th>
+                                    <th>Usuario</th>
+                                    <th>Total</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Ventas.Count == 0)
+                                {
+                                    <tr>
+                                        <td colspan="6" class="text-center">No hay ventas con estos filtros.</td>
+                                    </tr>
+                                }
+                                @foreach (var venta in Model.Ventas)
+                                {
+                                    <tr>
+                                        <td>@venta.Folio</td>
+                                        <td>@venta.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
+                                        <td>@venta.MetodoPago</td>
+                                        <td>@(venta.UsuarioNombre ?? "—")</td>
+                                        <td>@venta.Total.ToString("C2")</td>
+                                        <td class="text-end">
+                                            <a asp-page="/Ventas/Detalle" asp-route-id="@venta.Id" class="btn btn-outline-secondary btn-sm">Ver</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

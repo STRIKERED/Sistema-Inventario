@@ -1,0 +1,135 @@
+@page "/productos/{id:int}"
+@model Inventario.Web.Pages.Productos.DetalleModel
+
+@{
+    ViewBag.Title = Model.Producto?.Nombre ?? "Producto";
+}
+
+@section styles
+{
+
+}
+
+@await Html.PartialAsync("~/Pages/Shared/Partials/_PageTitle.cshtml", new {
+pageTitle = Model.Producto?.Nombre,
+pageSubTitle1 = "Inventario",
+pageSubTitle2 = "Productos",
+pageSubText = (string?)null
+})
+
+<div class="main-content">
+    @if (!string.IsNullOrEmpty(Model.ErrorMensaje))
+    {
+        <div class="alert alert-danger" role="alert">@Model.ErrorMensaje</div>
+    }
+
+    @if (Model.Producto is { } producto)
+    {
+        <div class="row">
+            <div class="col-lg-5">
+                <div class="card shadow-0 mb-g">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div class="card-title">Datos del producto</div>
+                        <a asp-page="/Productos/Editar" asp-route-id="@producto.Id" class="btn btn-outline-primary btn-sm">Editar</a>
+                    </div>
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            <dt class="col-5">SKU</dt>
+                            <dd class="col-7">@producto.Sku</dd>
+
+                            <dt class="col-5">Código de barras</dt>
+                            <dd class="col-7">@producto.CodigoBarras</dd>
+
+                            <dt class="col-5">Categoría</dt>
+                            <dd class="col-7">@(producto.Categoria ?? "—")</dd>
+
+                            <dt class="col-5">Unidad</dt>
+                            <dd class="col-7">@(producto.Unidad ?? "—")</dd>
+
+                            <dt class="col-5">Precio de costo</dt>
+                            <dd class="col-7">@producto.PrecioCosto.ToString("C2")</dd>
+
+                            <dt class="col-5">Precio de venta</dt>
+                            <dd class="col-7">@producto.PrecioVenta.ToString("C2")</dd>
+
+                            <dt class="col-5">Activo</dt>
+                            <dd class="col-7">
+                                @if (producto.Activo)
+                                {
+                                    <span class="badge bg-success">Sí</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">No</span>
+                                }
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="card shadow-0 mb-g">
+                    <div class="card-body text-center">
+                        <div class="fs-2 fw-bold @(producto.CantidadDisponible <= producto.StockMinimo ? "text-warning" : "")">
+                            @producto.CantidadDisponible
+                        </div>
+                        <div class="text-muted">En existencia</div>
+                        <div class="fs-sm text-muted mt-2">Mínimo: @producto.StockMinimo</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card shadow-0 mb-g h-100">
+                    <div class="card-body d-flex flex-column justify-content-center">
+                        <a asp-page="/Productos/Index" class="btn btn-outline-secondary">Volver al catálogo</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card shadow-0 mb-g">
+                    <div class="card-header">
+                        <div class="card-title">Historial de movimientos</div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Tipo</th>
+                                        <th>Cantidad</th>
+                                        <th>Motivo</th>
+                                        <th>Usuario</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.Movimientos.Count == 0)
+                                    {
+                                        <tr>
+                                            <td colspan="5" class="text-center">Sin movimientos registrados.</td>
+                                        </tr>
+                                    }
+                                    @foreach (var movimiento in Model.Movimientos.OrderByDescending(m => m.Fecha))
+                                    {
+                                        <tr>
+                                            <td>@movimiento.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
+                                            <td>@movimiento.TipoMovimiento</td>
+                                            <td>@movimiento.Cantidad</td>
+                                            <td>@(movimiento.Motivo ?? "—")</td>
+                                            <td>@(movimiento.UsuarioNombre ?? "—")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

@@ -1,4 +1,5 @@
 using Inventario.Core.Dtos;
+using Inventario.Core.Enums;
 using Inventario.Core.Interfaces;
 using Inventario.Core.Mapping;
 using Microsoft.AspNetCore.Authorization;
@@ -34,6 +35,18 @@ public class StockController : ControllerBase
     public async Task<ActionResult<IEnumerable<MovimientoInventarioDto>>> ObtenerMovimientosPorProducto(int productoId)
     {
         var movimientos = await _movimientoRepository.ObtenerPorProductoAsync(productoId);
+        return Ok(movimientos.ToDto());
+    }
+
+    // Filtros todos opcionales: el historial de Inventario.Web los arma según lo que el usuario elija.
+    // "hasta" se trata como fecha (sin hora) inclusive de todo ese día, igual que
+    // VentasController.ObtenerPorInventario — así un filtro "hasta hoy" sí incluye lo de hoy.
+    [HttpGet("movimientos/inventario/{inventarioId:int}")]
+    public async Task<ActionResult<IEnumerable<MovimientoInventarioDto>>> ObtenerMovimientosPorInventario(
+        int inventarioId, [FromQuery] DateTime? desde, [FromQuery] DateTime? hasta, [FromQuery] TipoMovimientoInventario? tipo)
+    {
+        var hastaInclusive = hasta?.Date.AddDays(1).AddTicks(-1);
+        var movimientos = await _movimientoRepository.ObtenerPorInventarioAsync(inventarioId, desde, hastaInclusive, tipo);
         return Ok(movimientos.ToDto());
     }
 

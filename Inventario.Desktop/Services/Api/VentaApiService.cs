@@ -9,7 +9,10 @@ public interface IVentaApiService
     Task<VentaDto?> ObtenerPorIdAsync(int id, CancellationToken ct = default);
     Task<IReadOnlyList<VentaDto>> ObtenerPorCorteDeCajaAsync(int corteDeCajaId, CancellationToken ct = default);
     Task<byte[]> ObtenerTicketAsync(int id, CancellationToken ct = default);
-    Task ImprimirAsync(int id, string impresora, CancellationToken ct = default);
+
+    /// <summary>Imprime en la impresora configurada para el Inventario de la venta
+    /// (ver ConfiguracionImpresion); ya no se elige por nombre en cada impresión.</summary>
+    Task ImprimirAsync(int id, CancellationToken ct = default);
 }
 
 public class VentaApiService : ApiServiceBase, IVentaApiService
@@ -39,6 +42,6 @@ public class VentaApiService : ApiServiceBase, IVentaApiService
     public Task<byte[]> ObtenerTicketAsync(int id, CancellationToken ct = default) =>
         GetBytesAsync($"api/ventas/{id}/ticket", ct);
 
-    public Task ImprimirAsync(int id, string impresora, CancellationToken ct = default) =>
-        PostAsync($"api/ventas/{id}/imprimir?impresora={Uri.EscapeDataString(impresora)}", ct);
+    public Task ImprimirAsync(int id, CancellationToken ct = default) =>
+        PostAsync($"api/ventas/{id}/imprimir", ct);
 }
