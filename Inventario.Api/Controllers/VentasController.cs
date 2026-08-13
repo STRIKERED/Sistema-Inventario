@@ -19,6 +19,7 @@ public class VentasController : ControllerBase
     private readonly IFolioService _folioService;
     private readonly ICalculadoraTotalesService _calculadoraTotales;
     private readonly ITicketPrintService _ticketPrintService;
+    private readonly IConfiguracionImpresionRepository _configuracionImpresionRepository;
     private readonly ILogger<VentasController> _logger;
 
     public VentasController(
@@ -28,6 +29,7 @@ public class VentasController : ControllerBase
         IFolioService folioService,
         ICalculadoraTotalesService calculadoraTotales,
         ITicketPrintService ticketPrintService,
+        IConfiguracionImpresionRepository configuracionImpresionRepository,
         ILogger<VentasController> logger)
     {
         _ventaRepository = ventaRepository;
@@ -36,6 +38,7 @@ public class VentasController : ControllerBase
         _folioService = folioService;
         _calculadoraTotales = calculadoraTotales;
         _ticketPrintService = ticketPrintService;
+        _configuracionImpresionRepository = configuracionImpresionRepository;
         _logger = logger;
     }
 
@@ -152,12 +155,13 @@ public class VentasController : ControllerBase
             return NotFound();
         }
 
-        var bytes = _ticketPrintService.GenerarTicketEscPos(venta);
+        var configuracion = await _configuracionImpresionRepository.ObtenerPorInventarioAsync(venta.InventarioId);
+        var bytes = _ticketPrintService.GenerarTicketEscPos(venta, configuracion);
         return File(bytes, "application/octet-stream", $"ticket-{venta.Folio}.bin");
     }
 
     [HttpPost("{id:int}/imprimir")]
-    public async Task<IActionResult> ImprimirTicket(int id, [FromQuery] string impresora)
+    public async Task<IActionResult> ImprimirTicket(int id)
     {
         var venta = await _ventaRepository.ObtenerPorIdAsync(id);
         if (venta is null)
@@ -167,7 +171,7 @@ public class VentasController : ControllerBase
 
         try
         {
-            await _ticketPrintService.ImprimirTicketAsync(venta, impresora);
+            await _ticketPrintService.ImprimirTicketAsync(venta);
             return NoContent();
         }
         catch (PlatformNotSupportedException ex)
