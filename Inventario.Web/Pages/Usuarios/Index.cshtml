@@ -1,0 +1,118 @@
+@page "/usuarios"
+@model Inventario.Web.Pages.Usuarios.IndexModel
+@using Inventario.Core.Enums
+@inject Inventario.Web.Services.Sesion.ICurrentSessionAccessor Sesion
+
+@{
+    ViewBag.Title = "Usuarios";
+    var esAdministrador = Sesion.Rol == RolUsuario.Administrador;
+}
+
+@section styles
+{
+
+}
+
+@await Html.PartialAsync("~/Pages/Shared/Partials/_PageTitle.cshtml", new {
+pageTitle = "Usuarios",
+pageSubTitle1 = "Administración",
+pageSubTitle2 = (string?)null,
+pageSubText = (string?)null
+})
+
+<div class="main-content">
+    @if (!string.IsNullOrEmpty(Model.ErrorMensaje))
+    {
+        <div class="alert alert-danger" role="alert">@Model.ErrorMensaje</div>
+    }
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card shadow-0 mb-g">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div class="card-title">Usuarios (@Model.Usuarios.Count)</div>
+                    @if (esAdministrador)
+                    {
+                        <a asp-page="/Usuarios/Crear" class="btn btn-primary btn-sm">Nuevo usuario</a>
+                    }
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Usuario</th>
+                                    <th>Nombre completo</th>
+                                    <th>Rol</th>
+                                    <th>Inventarios</th>
+                                    <th>Activo</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Usuarios.Count == 0)
+                                {
+                                    <tr>
+                                        <td colspan="6" class="text-center">No hay usuarios registrados.</td>
+                                    </tr>
+                                }
+                                @foreach (var usuario in Model.Usuarios)
+                                {
+                                    <tr>
+                                        <td>@usuario.NombreUsuario</td>
+                                        <td>@(usuario.NombreCompleto ?? "—")</td>
+                                        <td><span class="badge bg-info text-dark">@usuario.Rol</span></td>
+                                        <td>
+                                            @if (usuario.Rol == RolUsuario.Administrador)
+                                            {
+                                                <span class="fs-sm text-muted fst-italic">Todos (implícito)</span>
+                                            }
+                                            else if (usuario.Inventarios.Count == 0)
+                                            {
+                                                <span class="fs-sm text-muted">Sin acceso asignado</span>
+                                            }
+                                            else
+                                            {
+                                                foreach (var inventario in usuario.Inventarios)
+                                                {
+                                                    <span class="badge bg-secondary me-1">@inventario.Nombre</span>
+                                                }
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (esAdministrador)
+                                            {
+                                                <form method="post" asp-page-handler="CambiarActivo">
+                                                    <input type="hidden" name="UsuarioId" value="@usuario.Id" />
+                                                    <div class="form-check form-switch mb-0">
+                                                        <input class="form-check-input" type="checkbox" role="switch"
+                                                            onchange="this.form.submit()"
+                                                            checked="@(usuario.Activo ? "checked" : null)" />
+                                                    </div>
+                                                </form>
+                                            }
+                                            else if (usuario.Activo)
+                                            {
+                                                <span class="badge bg-success">Sí</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">No</span>
+                                            }
+                                        </td>
+                                        <td class="text-end">
+                                            @if (esAdministrador)
+                                            {
+                                                <a asp-page="/Usuarios/Editar" asp-route-id="@usuario.Id" class="btn btn-outline-primary btn-sm">Editar</a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

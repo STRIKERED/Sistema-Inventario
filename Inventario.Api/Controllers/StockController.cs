@@ -1,3 +1,4 @@
+using Inventario.Api;
 using Inventario.Core.Dtos;
 using Inventario.Core.Enums;
 using Inventario.Core.Interfaces;
@@ -45,8 +46,10 @@ public class StockController : ControllerBase
     public async Task<ActionResult<IEnumerable<MovimientoInventarioDto>>> ObtenerMovimientosPorInventario(
         int inventarioId, [FromQuery] DateTime? desde, [FromQuery] DateTime? hasta, [FromQuery] TipoMovimientoInventario? tipo)
     {
-        var hastaInclusive = hasta?.Date.AddDays(1).AddTicks(-1);
-        var movimientos = await _movimientoRepository.ObtenerPorInventarioAsync(inventarioId, desde, hastaInclusive, tipo);
+        var desdeUtc = RangoFechaLocalHelper.InicioDiaAUtc(desde);
+        var hastaUtc = RangoFechaLocalHelper.FinDiaAUtc(hasta);
+
+        var movimientos = await _movimientoRepository.ObtenerPorInventarioAsync(inventarioId, desdeUtc, hastaUtc, tipo);
         return Ok(movimientos.ToDto());
     }
 

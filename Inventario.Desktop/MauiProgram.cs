@@ -1,5 +1,6 @@
 using Inventario.Desktop.Configuracion;
 using Inventario.Desktop.Services.Api;
+using Inventario.Desktop.Services.Backup;
 using Inventario.Desktop.Services.Http;
 using Inventario.Desktop.Services.Sesion;
 using Inventario.Desktop.ViewModels;
@@ -52,6 +53,10 @@ public static class MauiProgram
         services.AddHttpClient<IUsuarioApiService, UsuarioApiService>(ConfigurarCliente).AddHttpMessageHandler<AuthHeaderHandler>();
         services.AddHttpClient<IBackupApiService, BackupApiService>(ConfigurarCliente).AddHttpMessageHandler<AuthHeaderHandler>();
         services.AddHttpClient<IConfiguracionImpresionApiService, ConfiguracionImpresionApiService>(ConfigurarCliente).AddHttpMessageHandler<AuthHeaderHandler>();
+
+        // No es un cliente Api (no habla HTTP directo): exporta leyendo el .db local y delega el
+        // importar a IBackupApiService de arriba. Se registra aparte, tras sus dependencias.
+        services.AddScoped<IBackupService, BackupService>();
     }
 
     private static void RegistrarViewModelsYPaginas(IServiceCollection services)

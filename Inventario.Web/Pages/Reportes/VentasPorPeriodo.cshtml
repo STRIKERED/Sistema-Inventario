@@ -1,0 +1,95 @@
+@page "/reportes/ventas-por-periodo"
+@model Inventario.Web.Pages.Reportes.VentasPorPeriodoModel
+
+@{
+    ViewBag.Title = "Ventas por periodo";
+}
+
+@section styles
+{
+
+}
+
+@await Html.PartialAsync("~/Pages/Shared/Partials/_PageTitle.cshtml", new {
+pageTitle = "Ventas por periodo",
+pageSubTitle1 = "Inventario",
+pageSubTitle2 = "Reportes",
+pageSubText = (string?)null
+})
+
+<div class="main-content">
+    @if (!string.IsNullOrEmpty(Model.ErrorMensaje))
+    {
+        <div class="alert alert-danger" role="alert">@Model.ErrorMensaje</div>
+    }
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card shadow-0 mb-g">
+                <div class="card-body">
+                    <form method="get" class="row g-3 align-items-end">
+                        <div class="col-auto">
+                            <label asp-for="Desde" class="form-label">Desde</label>
+                            <input asp-for="Desde" class="form-control" type="date" />
+                        </div>
+                        <div class="col-auto">
+                            <label asp-for="Hasta" class="form-label">Hasta</label>
+                            <input asp-for="Hasta" class="form-control" type="date" />
+                        </div>
+                        @if (Model.PuedeConsolidar)
+                        {
+                            <div class="col-auto">
+                                <div class="form-check form-switch mb-2">
+                                    <input asp-for="Consolidado" class="form-check-input" role="switch" />
+                                    <label asp-for="Consolidado" class="form-check-label">Consolidado (toda la tienda)</label>
+                                </div>
+                            </div>
+                        }
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-primary">Filtrar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card shadow-0 mb-g">
+                <div class="card-header">
+                    <div class="card-title">Total: @Model.TotalGeneral.ToString("C2") — @Model.CantidadGeneral venta(s)</div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Inventario</th>
+                                    <th>Ventas</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Resultados.Count == 0)
+                                {
+                                    <tr>
+                                        <td colspan="3" class="text-center">Sin datos para este periodo.</td>
+                                    </tr>
+                                }
+                                @foreach (var fila in Model.Resultados)
+                                {
+                                    <tr>
+                                        <td>@fila.Inventario.Nombre</td>
+                                        <td>@fila.Ventas.Count</td>
+                                        <td>@fila.Ventas.Sum(v => v.Total).ToString("C2")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

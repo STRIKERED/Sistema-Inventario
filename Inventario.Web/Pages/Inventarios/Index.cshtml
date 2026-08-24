@@ -1,0 +1,104 @@
+@page "/inventarios"
+@model Inventario.Web.Pages.Inventarios.IndexModel
+
+@{
+    ViewBag.Title = "Inventarios";
+}
+
+@section styles
+{
+
+}
+
+@await Html.PartialAsync("~/Pages/Shared/Partials/_PageTitle.cshtml", new {
+pageTitle = "Inventarios",
+pageSubTitle1 = "Administración",
+pageSubTitle2 = (string?)null,
+pageSubText = (string?)null
+})
+
+<div class="main-content">
+    @if (!string.IsNullOrEmpty(Model.ErrorMensaje))
+    {
+        <div class="alert alert-danger" role="alert">@Model.ErrorMensaje</div>
+    }
+
+    <div class="row">
+        <div class="col-lg-7">
+            <div class="card shadow-0 mb-g">
+                <div class="card-header">
+                    <div class="card-title">Inventarios (@Model.Inventarios.Count)</div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Sucursal</th>
+                                    <th>Activo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Inventarios.Count == 0)
+                                {
+                                    <tr>
+                                        <td colspan="3" class="text-center">No hay inventarios registrados.</td>
+                                    </tr>
+                                }
+                                @foreach (var inventario in Model.Inventarios)
+                                {
+                                    <tr>
+                                        <td>@inventario.Nombre</td>
+                                        <td>@(inventario.SucursalNombre ?? "—")</td>
+                                        <td>
+                                            <form method="post" asp-page-handler="CambiarActivo">
+                                                <input type="hidden" name="InventarioId" value="@inventario.Id" />
+                                                <div class="form-check form-switch mb-0">
+                                                    <input class="form-check-input" type="checkbox" role="switch"
+                                                        onchange="this.form.submit()"
+                                                        checked="@(inventario.Activo ? "checked" : null)" />
+                                                </div>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="card shadow-0 mb-g">
+                <div class="card-header">
+                    <div class="card-title">Nuevo inventario</div>
+                </div>
+                <div class="card-body">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                    <form method="post" asp-page-handler="Crear">
+                        <div class="mb-3">
+                            <label asp-for="Nombre" class="form-label">Nombre</label>
+                            <input asp-for="Nombre" class="form-control" placeholder="Ej. Papelería, Abarrotes" />
+                            <span asp-validation-for="Nombre" class="text-danger fs-sm"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="SucursalId" class="form-label">Sucursal</label>
+                            <select asp-for="SucursalId" class="form-select">
+                                <option value="">Selecciona una sucursal…</option>
+                                @foreach (var sucursal in Model.Sucursales)
+                                {
+                                    <option value="@sucursal.Id">@sucursal.Nombre</option>
+                                }
+                            </select>
+                            <span asp-validation-for="SucursalId" class="text-danger fs-sm"></span>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Guardar inventario</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

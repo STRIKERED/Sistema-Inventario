@@ -1,6 +1,7 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Inventario.Core.Configuracion;
-using Inventario.Desktop.Services.Api;
+using Inventario.Desktop.Services.Backup;
 using Inventario.Desktop.Services.Http;
 using Inventario.Desktop.Services.Sesion;
 using Microsoft.Maui.Storage;
@@ -8,31 +9,47 @@ using Microsoft.Maui.Storage;
 namespace Inventario.Desktop.ViewModels;
 
 /// <summary>
-/// Exportar/importar el archivo SQLite completo de esta sucursal (ver BackupController en la Api).
-/// Solo visible para Administrador (AppShell.xaml.cs controla el FlyoutItem).
+/// Exportar/importar el archivo SQLite completo de esta sucursal, para migrar entre PCs.
+/// Exportar lee inventario.db directo (IBackupService.ExportarRespaldoAsync); importar siempre pasa
+/// por la Api (solo ese proceso puede liberar su propio pool de conexiones antes de sobrescribir el
+/// archivo con seguridad). Solo visible para Administrador (AppShell.xaml.cs controla el FlyoutItem).
 /// </summary>
 public partial class RespaldoViewModel : BaseViewModel
 {
-    private readonly IBackupApiService _backupApiService;
+    private const string ClaveUltimoRespaldoLocal = "respaldo.ultimaExportacionLocal";
 
-    public RespaldoViewModel(IBackupApiService backupApiService, ISessionService sessionService)
+    private readonly IBackupService _backupService;
+
+    public RespaldoViewModel(IBackupService backupService, ISessionService sessionService)
         : base(sessionService)
     {
-        _backupApiService = backupApiService;
+        _backupService = backupService;
+
+        if (Preferences.Default.ContainsKey(ClaveUltimoRespaldoLocal))
+        {
+            UltimoRespaldoLocal = Preferences.Default.Get(ClaveUltimoRespaldoLocal, DateTime.MinValue);
+        }
     }
+
+    [ObservableProperty]
+    private DateTime? ultimoRespaldoLocal;
+
+    partial void OnUltimoRespaldoLocalChanged(DateTime? value) => OnPropertyChanged(nameof(UltimoRespaldoLocalTexto));
+
+    public string UltimoRespaldoLocalTexto => UltimoRespaldoLocal is { } fecha
+        ? $"Último respaldo exportado desde este equipo: {fecha:dd/MM/yyyy HH:mm}"
+        : "Todavía no se ha exportado ningún respaldo desde este equipo.";
 
     [RelayCommand]
     private async Task ExportarAsync()
     {
         await EjecutarAsync(async () =>
         {
-            var bytes = await _backupApiService.ExportarAsync();
-
             var carpetaBackups = Path.Combine(AppPaths.DataDirectory, "Backups");
-            Directory.CreateDirectory(carpetaBackups);
+            var ruta = await _backupService.ExportarRespaldoAsync(carpetaBackups);
 
-            var ruta = Path.Combine(carpetaBackups, $"inventario_{DateTime.Now:yyyy-MM-dd_HHmmss}.zip");
-            await File.WriteAllBytesAsync(ruta, bytes);
+            UltimoRespaldoLocal = DateTime.Now;
+            Preferences.Default.Set(ClaveUltimoRespaldoLocal, UltimoRespaldoLocal.Value);
 
             if (Shell.Current is not null)
             {
@@ -63,28 +80,42 @@ public partial class RespaldoViewModel : BaseViewModel
             return;
         }
 
+        var mensaje = $"Esto reemplaza TODOS los datos locales de esta sucursal por el contenido de '{archivo.FileName}'. " +
+                      "Esta acción no se puede deshacer.";
+
+        // Mejor esfuerzo: si es un .zip con manifest.json (el formato que exportan tanto esta pantalla
+        // como BackupController), se muestra de qué sucursal/fecha es antes de confirmar. Un .db suelto
+        // (sin zip) no tiene manifest — se sigue permitiendo importar, solo sin esta vista previa.
+        try
+        {
+            var info = await _backupService.InspeccionarRespaldoAsync(archivo.FullPath);
+            mensaje += $"\n\nSucursal del respaldo: {info.NombreSucursal ?? "desconocida"}" +
+                       $"\nExportado: {(info.FechaExportacionUtc == DateTime.MinValue ? "desconocido" : info.FechaExportacionUtc.ToLocalTime().ToString("dd/MM/yyyy HH:mm"))}";
+        }
+        catch
+        {
+            // Sin vista previa disponible (no es un .zip válido con manifest) — no es motivo para
+            // bloquear la importación, la Api hace su propia validación al recibir el archivo.
+        }
+
         var confirmar = await Shell.Current.DisplayAlertAsync(
-            "Importar respaldo",
-            $"Esto reemplaza TODOS los datos locales de esta sucursal por el contenido de '{archivo.FileName}'. " +
-            "Esta acción no se puede deshacer. ¿Continuar?",
-            "Importar", "Cancelar");
+            "Importar respaldo", mensaje + "\n\n¿Continuar?", "Importar", "Cancelar");
 
         if (!confirmar)
         {
             return;
         }
 
-        await EjecutarAsync(() => ImportarConReintentoAsync(archivo, forzar: false));
+        await EjecutarAsync(() => ImportarConReintentoAsync(archivo.FullPath, forzar: false));
     }
 
     // Separado de ImportarAsync para poder reintentar con forzar=true tras el 409 de "esquema
-    // distinto" sin duplicar la lectura del archivo elegido ni el manejo de IsBusy/errores de EjecutarAsync.
-    private async Task ImportarConReintentoAsync(FileResult archivo, bool forzar)
+    // distinto" sin duplicar el manejo de IsBusy/errores de EjecutarAsync.
+    private async Task ImportarConReintentoAsync(string rutaArchivo, bool forzar)
     {
         try
         {
-            await using var stream = await archivo.OpenReadAsync();
-            await _backupApiService.ImportarAsync(archivo.FileName, stream, forzar);
+            await _backupService.ImportarRespaldoAsync(rutaArchivo, forzar);
         }
         catch (ApiException ex) when (ex.StatusCode == 409 && !forzar)
         {
@@ -98,7 +129,7 @@ public partial class RespaldoViewModel : BaseViewModel
                 return;
             }
 
-            await ImportarConReintentoAsync(archivo, forzar: true);
+            await ImportarConReintentoAsync(rutaArchivo, forzar: true);
             return;
         }
 
