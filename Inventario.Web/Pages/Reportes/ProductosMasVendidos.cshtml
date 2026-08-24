@@ -1,0 +1,89 @@
+@page "/reportes/productos-mas-vendidos"
+@model Inventario.Web.Pages.Reportes.ProductosMasVendidosModel
+
+@{
+    ViewBag.Title = "Productos más vendidos";
+}
+
+@section styles
+{
+
+}
+
+@await Html.PartialAsync("~/Pages/Shared/Partials/_PageTitle.cshtml", new {
+pageTitle = "Productos más vendidos",
+pageSubTitle1 = "Inventario",
+pageSubTitle2 = "Reportes",
+pageSubText = (string?)null
+})
+
+<div class="main-content">
+    @if (!string.IsNullOrEmpty(Model.ErrorMensaje))
+    {
+        <div class="alert alert-danger" role="alert">@Model.ErrorMensaje</div>
+    }
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card shadow-0 mb-g">
+                <div class="card-body">
+                    <form method="get" class="row g-3 align-items-end">
+                        <div class="col-auto">
+                            <label asp-for="Desde" class="form-label">Desde</label>
+                            <input asp-for="Desde" class="form-control" type="date" />
+                        </div>
+                        <div class="col-auto">
+                            <label asp-for="Hasta" class="form-label">Hasta</label>
+                            <input asp-for="Hasta" class="form-control" type="date" />
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-primary">Filtrar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card shadow-0 mb-g">
+                <div class="card-header">
+                    <div class="card-title">Ranking (@Model.Filas.Count producto(s))</div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Producto</th>
+                                    <th>Unidades vendidas</th>
+                                    <th>Importe total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Filas.Count == 0)
+                                {
+                                    <tr>
+                                        <td colspan="4" class="text-center">Sin ventas en este periodo.</td>
+                                    </tr>
+                                }
+                                @{ var posicion = 1; }
+                                @foreach (var fila in Model.Filas)
+                                {
+                                    <tr>
+                                        <td>@(posicion++)</td>
+                                        <td>@fila.Producto</td>
+                                        <td>@fila.CantidadVendida</td>
+                                        <td>@fila.ImporteTotal.ToString("C2")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

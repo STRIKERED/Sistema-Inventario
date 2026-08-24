@@ -31,7 +31,9 @@ public class BackupController : ControllerBase
         _logger = logger;
     }
 
-    private record BackupManifest(string SchemaVersion, DateTime ExportadoUtc);
+    // NombreSucursal es opcional a propósito: un respaldo armado fuera de este endpoint (p. ej. el
+    // export directo de Inventario.Desktop, que lee el .db local sin pasar por aquí) puede no traerlo.
+    private record BackupManifest(string SchemaVersion, DateTime ExportadoUtc, string? NombreSucursal);
 
     [HttpGet("exportar")]
     public async Task<IActionResult> Exportar()
@@ -40,7 +42,8 @@ public class BackupController : ControllerBase
         // detener la Api ni bloquear a los demás clientes.
         await _context.Database.ExecuteSqlRawAsync("PRAGMA wal_checkpoint(TRUNCATE);");
 
-        var manifest = new BackupManifest(await ObtenerVersionEsquemaAsync(), DateTime.UtcNow);
+        var nombreSucursal = await _context.Sucursales.Select(s => s.Nombre).FirstOrDefaultAsync();
+        var manifest = new BackupManifest(await ObtenerVersionEsquemaAsync(), DateTime.UtcNow, nombreSucursal);
 
         using var memoria = new MemoryStream();
         using (var zip = new ZipArchive(memoria, ZipArchiveMode.Create, leaveOpen: true))

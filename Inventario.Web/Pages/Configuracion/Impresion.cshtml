@@ -1,0 +1,80 @@
+@page "/configuracion/impresion"
+@model Inventario.Web.Pages.Configuracion.ImpresionModel
+
+@{
+    ViewBag.Title = "Configuración de impresión";
+}
+
+@section styles
+{
+
+}
+
+@await Html.PartialAsync("~/Pages/Shared/Partials/_PageTitle.cshtml", new {
+pageTitle = "Impresión de tickets y cotizaciones",
+pageSubTitle1 = "Administración",
+pageSubTitle2 = "Configuración",
+pageSubText = (string?)null
+})
+
+<div class="main-content">
+    <div class="row">
+        <div class="col-lg-7">
+            <div class="card shadow-0 mb-g">
+                <div class="card-body">
+                    <p class="opacity-70">
+                        Configura la impresora térmica y los datos que aparecen en el ticket de venta y
+                        en el PDF de cotizaciones para el Inventario con el que estás operando.
+                    </p>
+
+                    @if (!string.IsNullOrEmpty(Model.MensajeExito))
+                    {
+                        <div class="alert alert-success" role="alert">@Model.MensajeExito</div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.ErrorMensaje))
+                    {
+                        <div class="alert alert-danger" role="alert">@Model.ErrorMensaje</div>
+                    }
+
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                    <form method="post">
+                        <div class="mb-3">
+                            <label asp-for="NombreImpresora" class="form-label">Nombre de la impresora</label>
+                            <input asp-for="NombreImpresora" class="form-control" placeholder="Nombre exacto tal como aparece en Windows, ej. POS-80" />
+                            <span asp-validation-for="NombreImpresora" class="text-danger fs-sm"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="AnchoTicketMm" class="form-label">Ancho del rollo</label>
+                            <select asp-for="AnchoTicketMm" class="form-select">
+                                @foreach (var ancho in Model.AnchosDisponiblesMm)
+                                {
+                                    <option value="@ancho">@ancho mm</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="EncabezadoTicket" class="form-label">Encabezado del ticket (opcional)</label>
+                            <input asp-for="EncabezadoTicket" class="form-control" placeholder="Ej. nombre del negocio" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="PiePaginaTicket" class="form-label">Pie de página del ticket (opcional)</label>
+                            <input asp-for="PiePaginaTicket" class="form-control" placeholder="Ej. Gracias por su compra" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="LogoRutaPdf" class="form-label">Logo para cotizaciones en PDF (opcional)</label>
+                            <input asp-for="LogoRutaPdf" class="form-control" placeholder="Ruta del archivo de imagen en el servidor de Inventario.Api" />
+                            <div class="form-text">Es una ruta en el equipo donde corre Inventario.Api (no en este navegador) — cópiala ahí primero.</div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

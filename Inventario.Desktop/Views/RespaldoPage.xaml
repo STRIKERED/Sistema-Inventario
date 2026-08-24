@@ -18,6 +18,7 @@
                     <Label Text="Exportar" FontAttributes="Bold" FontSize="16" />
                     <Label Opacity="0.7" Text="Genera un .zip con fecha y lo guarda en la carpeta local de respaldos." />
                     <Button Text="Exportar respaldo" Command="{Binding ExportarCommand}" BackgroundColor="ForestGreen" TextColor="White" />
+                    <Label Text="{Binding UltimoRespaldoLocalTexto}" Opacity="0.6" FontSize="12" />
                 </VerticalStackLayout>
             </Border>
 

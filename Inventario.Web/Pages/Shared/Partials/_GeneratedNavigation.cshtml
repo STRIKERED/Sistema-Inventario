@@ -1,3 +1,6 @@
+@using Inventario.Core.Enums
+@inject Inventario.Web.Services.Sesion.ICurrentSessionAccessor Sesion
+
 <ul id="js-nav-menu" class="nav-menu">
 
     <li class="nav-title"><span>Inventario</span></li>
@@ -28,6 +31,92 @@
             <span class="nav-link-text">Stock</span>
         </a>
     </li>
+
+    <li>
+        <a href="ventas">
+            <svg class="sa-icon">
+                <use href="icons/sprite.svg#shopping-cart"></use>
+            </svg>
+            <span class="nav-link-text">Ventas</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="cotizaciones">
+            <svg class="sa-icon">
+                <use href="icons/sprite.svg#file-text"></use>
+            </svg>
+            <span class="nav-link-text">Cotizaciones</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="caja">
+            <svg class="sa-icon">
+                <use href="icons/sprite.svg#briefcase"></use>
+            </svg>
+            <span class="nav-link-text">Caja</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="reportes">
+            <svg class="sa-icon">
+                <use href="icons/sprite.svg#bar-chart"></use>
+            </svg>
+            <span class="nav-link-text">Reportes</span>
+        </a>
+    </li>
+
+    @if (Sesion.Rol == RolUsuario.Administrador)
+    {
+        <li class="nav-title"><span>Administración</span></li>
+
+        <li>
+            <a href="inventarios">
+                <svg class="sa-icon">
+                    <use href="icons/sprite.svg#layers"></use>
+                </svg>
+                <span class="nav-link-text">Inventarios</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="usuarios">
+                <svg class="sa-icon">
+                    <use href="icons/sprite.svg#users"></use>
+                </svg>
+                <span class="nav-link-text">Usuarios</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="#" title="Configuración" data-filter-tags>
+                <svg class="sa-icon">
+                    <use href="icons/sprite.svg#settings"></use>
+                </svg>
+                <span class="nav-link-text">Configuración</span>
+            </a>
+
+            <ul>
+                <li>
+                    <a href="configuracion/tienda">
+                        <span class="nav-link-text">Datos de la tienda</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="configuracion/impresion">
+                        <span class="nav-link-text">Impresión</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="configuracion/respaldo">
+                        <span class="nav-link-text">Respaldo</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+    }
 
     <li class="nav-title"><span>Plantilla de diseño (referencia)</span></li>
 

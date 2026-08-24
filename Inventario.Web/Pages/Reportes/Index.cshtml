@@ -1,0 +1,67 @@
+@page "/reportes"
+@model Inventario.Web.Pages.Reportes.IndexModel
+
+@{
+    ViewBag.Title = "Reportes";
+}
+
+@section styles
+{
+
+}
+
+@await Html.PartialAsync("~/Pages/Shared/Partials/_PageTitle.cshtml", new {
+pageTitle = "Reportes",
+pageSubTitle1 = "Inventario",
+pageSubTitle2 = (string?)null,
+pageSubText = (string?)null
+})
+
+<div class="main-content">
+    <div class="row">
+        <div class="col-md-6 col-xl-3">
+            <a class="text-decoration-none" asp-page="/Reportes/VentasPorPeriodo">
+                <div class="card shadow-0 mb-g">
+                    <div class="card-body">
+                        <svg class="sa-icon sa-icon-2x text-success mb-2"><use href="icons/sprite.svg#dollar-sign"></use></svg>
+                        <div class="fw-bold">Ventas por periodo</div>
+                        <div class="text-muted fs-sm">Por Inventario o consolidado de toda la tienda.</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <a class="text-decoration-none" asp-page="/Reportes/ProductosMasVendidos">
+                <div class="card shadow-0 mb-g">
+                    <div class="card-body">
+                        <svg class="sa-icon sa-icon-2x text-primary mb-2"><use href="icons/sprite.svg#trending-up"></use></svg>
+                        <div class="fw-bold">Productos más vendidos</div>
+                        <div class="text-muted fs-sm">Ranking por unidades vendidas en el periodo.</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <a class="text-decoration-none" asp-page="/Reportes/RotacionInventario">
+                <div class="card shadow-0 mb-g">
+                    <div class="card-body">
+                        <svg class="sa-icon sa-icon-2x text-warning mb-2"><use href="icons/sprite.svg#activity"></use></svg>
+                        <div class="fw-bold">Rotación de inventario</div>
+                        <div class="text-muted fs-sm">Unidades vendidas vs. stock actual, por producto.</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <a class="text-decoration-none" asp-page="/Reportes/CortesDeCaja">
+                <div class="card shadow-0 mb-g">
+                    <div class="card-body">
+                        <svg class="sa-icon sa-icon-2x text-info mb-2"><use href="icons/sprite.svg#shopping-bag"></use></svg>
+                        <div class="fw-bold">Cortes de caja</div>
+                        <div class="text-muted fs-sm">Historial de cortes de todas las cajas, con diferencias.</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>

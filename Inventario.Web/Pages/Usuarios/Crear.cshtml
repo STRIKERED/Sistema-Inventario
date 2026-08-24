@@ -1,0 +1,79 @@
+@page "/usuarios/crear"
+@model Inventario.Web.Pages.Usuarios.CrearModel
+@using Inventario.Core.Enums
+
+@{
+    ViewBag.Title = "Nuevo usuario";
+}
+
+@section styles
+{
+
+}
+
+@await Html.PartialAsync("~/Pages/Shared/Partials/_PageTitle.cshtml", new {
+pageTitle = "Nuevo usuario",
+pageSubTitle1 = "Administración",
+pageSubTitle2 = "Usuarios",
+pageSubText = (string?)null
+})
+
+<div class="main-content">
+    <div class="row">
+        <div class="col-lg-7">
+            <div class="card shadow-0 mb-g">
+                <div class="card-body">
+
+                    @if (!string.IsNullOrEmpty(Model.ErrorMensaje))
+                    {
+                        <div class="alert alert-danger" role="alert">@Model.ErrorMensaje</div>
+                    }
+
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                    <form method="post">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="NombreUsuario" class="form-label">Usuario</label>
+                                <input asp-for="NombreUsuario" class="form-control" />
+                                <span asp-validation-for="NombreUsuario" class="text-danger fs-sm"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Password" class="form-label">Contraseña</label>
+                                <input asp-for="Password" type="password" class="form-control" />
+                                <span asp-validation-for="Password" class="text-danger fs-sm"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="NombreCompleto" class="form-label">Nombre completo (opcional)</label>
+                                <input asp-for="NombreCompleto" class="form-control" />
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Rol" class="form-label">Rol</label>
+                                <select asp-for="Rol" class="form-select" asp-items="Html.GetEnumSelectList<RolUsuario>()"></select>
+                            </div>
+                        </div>
+
+                        <label class="form-label fw-bold mt-4">Inventarios con acceso</label>
+                        <div class="form-text mb-2">Administrador tiene acceso implícito a todos; no hace falta marcar nada para ese rol.</div>
+                        <div class="row">
+                            @foreach (var inventario in Model.InventariosDisponibles)
+                            {
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="InventarioIds" value="@inventario.Id" id="inv-@inventario.Id" />
+                                        <label class="form-check-label" for="inv-@inventario.Id">@inventario.Nombre (@inventario.SucursalNombre)</label>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary">Guardar usuario</button>
+                            <a asp-page="/Usuarios/Index" class="btn btn-outline-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

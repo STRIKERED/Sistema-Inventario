@@ -1,3 +1,4 @@
+using Inventario.Api;
 using Inventario.Core.Dtos;
 using Inventario.Core.Entities;
 using Inventario.Core.Enums;
@@ -68,8 +69,7 @@ public class VentasController : ControllerBase
     public async Task<ActionResult<IEnumerable<VentaDto>>> ObtenerPorInventario(
         int inventarioId, [FromQuery] DateTime? desde, [FromQuery] DateTime? hasta, [FromQuery] bool cancelada = false)
     {
-        var rangoDesde = (desde ?? DateTime.Today).Date;
-        var rangoHasta = (hasta ?? DateTime.Today).Date.AddDays(1).AddTicks(-1);
+        var (rangoDesde, rangoHasta) = RangoFechaLocalHelper.DiaCalendarioAUtc(desde, hasta);
 
         var ventas = await _ventaRepository.ObtenerPorInventarioAsync(inventarioId, rangoDesde, rangoHasta, cancelada);
         return Ok(ventas.ToDto());

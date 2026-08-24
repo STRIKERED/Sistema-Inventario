@@ -1,0 +1,61 @@
+@page "/configuracion/respaldo"
+@model Inventario.Web.Pages.Configuracion.RespaldoModel
+
+@{
+    ViewBag.Title = "Respaldo";
+}
+
+@section styles
+{
+
+}
+
+@await Html.PartialAsync("~/Pages/Shared/Partials/_PageTitle.cshtml", new {
+pageTitle = "Respaldo de la base de datos",
+pageSubTitle1 = "Administración",
+pageSubTitle2 = "Configuración",
+pageSubText = (string?)null
+})
+
+<div class="main-content">
+    <div class="row">
+        <div class="col-lg-7">
+
+            @if (!string.IsNullOrEmpty(Model.MensajeExito))
+            {
+                <div class="alert alert-success" role="alert">@Model.MensajeExito</div>
+            }
+            @if (!string.IsNullOrEmpty(Model.ErrorMensaje))
+            {
+                <div class="alert alert-danger" role="alert">@Model.ErrorMensaje</div>
+            }
+
+            <div class="card shadow-0 mb-g">
+                <div class="card-body">
+                    <div class="fw-bold fs-16 mb-1">Exportar</div>
+                    <p class="opacity-70">Descarga un .zip con toda la base de datos de esta sucursal (afecta a todos los Inventarios juntos, ya que es una sola base local).</p>
+                    <a href="/configuracion/respaldo?handler=Exportar" class="btn btn-success">Exportar respaldo</a>
+                </div>
+            </div>
+
+            <div class="card shadow-0 mb-g">
+                <div class="card-body">
+                    <div class="fw-bold fs-16 mb-1 text-danger">Importar</div>
+                    <p class="text-danger">Reemplaza TODOS los datos locales de esta sucursal por los del archivo elegido. Esta acción no se puede deshacer.</p>
+
+                    <form method="post" asp-page-handler="Importar" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label asp-for="Archivo" class="form-label">Archivo (.zip exportado desde aquí, o un .db)</label>
+                            <input asp-for="Archivo" class="form-control" type="file" accept=".zip,.db" />
+                        </div>
+                        <div class="form-check mb-3">
+                            <input asp-for="Forzar" class="form-check-input" />
+                            <label asp-for="Forzar" class="form-check-label">Forzar importación aunque la versión de esquema no coincida</label>
+                        </div>
+                        <button type="submit" class="btn btn-danger">Importar respaldo</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
